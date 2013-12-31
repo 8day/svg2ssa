@@ -35,7 +35,7 @@ What you may want to know:
 * there's no support for .gzip'ed files;
 * stroke rendering in SVG & SSA are a bit different (see ```Inkscape > Menu > Object > Fill and Stroke... > Stroke style > Join/Cap```):
 	* in SVG you can set types of segment's joining & capping, but in SSA/VSFilter it's always ```Round join``` & ```Round cap```;
-	* see difference in how SVG & SSA lay down stroke in ```s2s-stroke-preservation.svg``` [3]: SVG lays down its stroke in the middle of shape's contour, but SSA lays it down outside.
+	* see difference in how SVG & SSA lay down stroke in [```s2s-stroke-preservation.svg```] [3]: SVG lays down its stroke in the middle of shape's contour, but SSA lays it down outside.
 * VSFilter always uses SVG's analogue of ```fill-rule: nonzero```, so select it inside Inkscape so that your SSA drawings looked the same as SVG (```Inkscape > Menu > Object > Fill and Stroke... > Fill > *two V-like black shapes at the top right corner of the tab*```, select the one that is completely black);
 * it may have some issues with relatively highlevel SVG concepts (especially raster images, text, clipping, masking, compositing etc.), but it should suffice as a replacement for ASSDraw/Aegisub: to draw graphics easier & faster.
 * it supports only subset of drawing commands: M, L, H, V, C, S, Q, T and not Z or A (A may be converted to C/S inside of Inkscape);
