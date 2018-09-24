@@ -51,10 +51,10 @@ The main audience of this software is "advanced" anime typesetters. SVG2SSA will
     2. run `cxfreeze ..\s2s.py --target-dir s2s --icon=s2s_logo.ico`;
         * when lxml is used, add line `--include-modules=lxml._elementpath,gzip,inspect`.
 
-[1]: http://www.mediafire.com/view/brr1mywnm2r2lsr/FREEDOM.svg.ass.png                                  "Bitmap tracing"
-[2]: http://www.mediafire.com/view/zqs18bg2xb2lw3j/plane.svg.ass.png                                    "Rendering of 3D objects"
-[3]: http://www.mediafire.com/download/np7annb0loh3rh2/s2s-stroke-preservation.svg                      "s2s-stroke-preservation.svg"
-[4]: http://www.mediafire.com/view/z86emgujwacmmb9/s2s-stroke-preservation.png                          "s2s-stroke-preservation.png"
+[1]: https://github.com/8day/svg2ssa/blob/pub/examples/FREEDOM.svg.ass.png                              "Bitmap tracing"
+[2]: https://github.com/8day/svg2ssa/blob/pub/examples/plane.svg.ass.png                                "Rendering of 3D objects"
+[3]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.svg                      "s2s-stroke-preservation.svg"
+[4]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.png                      "s2s-stroke-preservation.png"
 [5]: http://www.fansubs.ru/forum/viewtopic.php?p=523046&sid=1312f5ed191ccf05e7af622a9e053f01#523046     "tophf's AegiDrawing"
 [6]: http://github.com/torque/AI2ASS                                                                    "torque's AI2ASS"
 [7]: http://www.python.org/download/releases/3.2.5/                                                     "Python 3.2.5"
