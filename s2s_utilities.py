@@ -1,4 +1,4 @@
-﻿import re
+import re
 import s2s_runtime_settings
 from s2s_core import SVGTypeError
 
