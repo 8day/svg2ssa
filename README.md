@@ -60,7 +60,7 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
 [5]: http://www.fansubs.ru/forum/viewtopic.php?p=523046&sid=1312f5ed191ccf05e7af622a9e053f01#523046     "tophf's AegiDrawing"
 [6]: http://github.com/torque/AI2ASS                                                                    "torque's AI2ASS"
 [7]: http://www.python.org/download/releases/3.2.5/                                                     "Python 3.2.5"
-[8]: http://www.mediafire.com/folder/ihrh3ti06fm14/s2s                                                  "extra files for svg2ssa"
+[8]: https://github.com/8day/svg2ssa/releases                                                           "cxfreeze'd binaries for Windows"
 
 
 # TODO
