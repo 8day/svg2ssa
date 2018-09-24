@@ -1,5 +1,6 @@
 if __name__ == '__main__':
     import sys
+    import os
     import argparse
     import s2s_runtime_settings
     
@@ -84,4 +85,8 @@ if __name__ == '__main__':
         s2s_runtime_settings.ssa_event = "Dialogue: 0,0:00:00.00,0:00:02.00,s2s.default,{actor},0000,0000,0000,,{{\\p{m_lev}{trans}{codes}}} {drwng} {{\\p0}}"
     
     import s2s_main
-    s2s_main.S2S(path).convert()
+    if os.path.isfile(path):
+        s2s_main.S2S(path).convert()
+    else:
+        # Print help info if path is invalid, or no path was specified.
+        parser.parse_args(["-h"])
