@@ -151,7 +151,15 @@ class S2SDYacc:
                           | NMB
            v_comm_arg_seq : v_comm_arg_seq NMB
                           | NMB
-           a_comm_arg_seq : a_comm_arg_seq a_comm_arg
+        """
+        if len(p) == 2:
+            p[0] = [ [p[1]] ]
+        else:
+            p[1].append([p[2]])
+            p[0] = p[1]
+
+    def p_arg_seq_5(self, p):
+        """a_comm_arg_seq : a_comm_arg_seq a_comm_arg
                           | a_comm_arg
         """
         if len(p) == 2:
