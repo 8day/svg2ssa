@@ -1,14 +1,19 @@
 import re
 import tkinter
-# Uncomment when cx_Freeze'ing.
+
+# Uncomment when cx_Freeze'ing with lxml.
 # from lxml import etree
+
+# Uncomment when cx_Freeze'ing with xml.etree.
 # from xml.etree import ElementTree as etree
-# Uncomment when used as is.
+
+# Comment when cx_Freeze'ing to prevent loading of lxml even if xml.etree is needed.
 try:
     from lxml import etree
 except ImportError:
     # See: http://lxml.de/compatibility.html
     from xml.etree import ElementTree as etree
+
 import s2s_runtime_settings
 from s2s_core import *
 from s2s_utilities import convert_svglength_to_pixels
