@@ -1,5 +1,4 @@
 import re
-import tkinter
 
 # Uncomment when cx_Freeze'ing with lxml.
 # from lxml import etree
@@ -274,21 +273,13 @@ class S2S:
             ssa_table.append(s2s_runtime_settings.ssa_event.format(actor = atts.pop('id'), trans = atts.pop('transform'), drwng = atts.pop('d'), m_lev = s2s_runtime_settings.magnification_level, codes = ''.join(obj for key, obj in atts.items())))
         ssa_table = '\n'.join(ssa_table)
 
-        if s2s_runtime_settings.export_type == 0:
-            tk = tkinter.Tk()
-            tk.withdraw()
-            tk.clipboard_clear()
-            tk.clipboard_append(ssa_table)
-            tk.destroy()
+        ssa_header = s2s_runtime_settings.ssa_header.format(width = self.ssa_meta['playresx'], height = self.ssa_meta['playresy'])
+        with open(filepath + '.ass', 'w+t', buffering = 65536) as fh:
+            fh.write(ssa_header)
+            fh.write('\n')
+            fh.write(ssa_table)
+            fh.write('\n')
             print('Successfully converted:', filepath if len(filepath) < 52 else '...' + filepath[-52:])
-        elif s2s_runtime_settings.export_type == 1:
-            ssa_header = s2s_runtime_settings.ssa_header.format(width = self.ssa_meta['playresx'], height = self.ssa_meta['playresy'])
-            with open(filepath + '.ass', 'w+t', buffering = 65536) as fh:
-                fh.write(ssa_header)
-                fh.write('\n')
-                fh.write(ssa_table)
-                fh.write('\n')
-                print('Successfully converted:', filepath if len(filepath) < 52 else '...' + filepath[-52:])
         
         self.element_stack = []
         self.container_stack = []
