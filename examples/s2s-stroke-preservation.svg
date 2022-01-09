@@ -1,239 +1,41 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="549.9873"
-   height="309.80692"
-   id="svg2"
-   version="1.1"
-   inkscape:version="0.48.2 r9819"
-   sodipodi:docname="s2s_stroke_preservation.svg">
-  <defs
-     id="defs4">
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath3771">
-      <rect
-         style="fill:#0087e7;fill-opacity:0.49803922;stroke:none"
-         id="rect3773"
-         width="136.16161"
-         height="278.38397"
-         x="200"
-         y="520"
-         transform="matrix(1.0020202,0,0,1.0020202,-18.585861,-379.31312)"
-         ry="0" />
-    </clipPath>
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath3787">
-      <rect
-         ry="0"
-         transform="matrix(-1.0020202,0,0,-1.0020202,382.22221,941.73428)"
-         y="520"
-         x="200"
-         height="278.38397"
-         width="136.16161"
-         id="rect3789"
-         style="fill:#0087e7;fill-opacity:0.49803922;stroke:none" />
-    </clipPath>
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="2.8055193"
-     inkscape:cx="253.24096"
-     inkscape:cy="154.90346"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1018"
-     inkscape:window-x="-8"
-     inkscape:window-y="32"
-     inkscape:window-maximized="1"
-     inkscape:snap-bbox="true"
-     inkscape:bbox-paths="true"
-     inkscape:bbox-nodes="true"
-     inkscape:snap-page="true"
-     inkscape:snap-center="true"
-     inkscape:snap-object-midpoints="true"
-     fit-margin-top="10"
-     fit-margin-left="10"
-     fit-margin-right="10"
-     fit-margin-bottom="10" />
-  <metadata
-     id="metadata7">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-105,-662.55526)">
-    <path
-       sodipodi:type="arc"
-       style="fill:#0087e7;fill-opacity:0.49803922;stroke:#c8c600;stroke-width:10.02020168;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.49803922;stroke-dasharray:none"
-       id="svg_border_example_1"
-       sodipodi:cx="181.81818"
-       sodipodi:cy="282.0202"
-       sodipodi:rx="100.20202"
-       sodipodi:ry="100.20202"
-       d="m 282.0202,282.0202 c 0,55.34005 -44.86198,100.20202 -100.20202,100.20202 -55.34005,0 -100.202022,-44.86197 -100.202022,-100.20202 0,-55.34004 44.861972,-100.20202 100.202022,-100.20202 55.34004,0 100.20202,44.86198 100.20202,100.20202 z"
-       transform="matrix(0.99798389,0,0,0.99798389,358.54839,570.91056)"
-       clip-path="url(#clipPath3787)"
-       inkscape:label="#path2985" />
-    <path
-       transform="matrix(0.99798389,0,0,0.99798389,358.54839,570.91056)"
-       d="m 282.0202,282.0202 c 0,55.34005 -44.86198,100.20202 -100.20202,100.20202 -55.34005,0 -100.202022,-44.86197 -100.202022,-100.20202 0,-55.34004 44.861972,-100.20202 100.202022,-100.20202 55.34004,0 100.20202,44.86198 100.20202,100.20202 z"
-       sodipodi:ry="100.20202"
-       sodipodi:rx="100.20202"
-       sodipodi:cy="282.0202"
-       sodipodi:cx="181.81818"
-       id="ssa_border_example_1-1"
-       style="fill:#0087e7;fill-opacity:0.49803922;stroke:#c8c600;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.49803922;stroke-dasharray:none"
-       sodipodi:type="arc"
-       clip-path="url(#clipPath3771)"
-       inkscape:label="#path3761" />
-    <path
-       style="fill:#c8c600;fill-opacity:0.49803922;stroke:#c8c600;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.49803922;stroke-dasharray:none"
-       d="m 202.59375,415 c -0.86929,-0.01 -1.72842,0.014 -2.59375,0.0312 L 200,420 c 55.22848,0 100,44.77152 100,100 0,55.22848 -44.77152,100 -100,100 l 0,4.96875 c 30.83593,-0.15558 61.74831,-13.45159 80.96875,-37.875 C 309.75779,552.6618 313.55364,499.1209 287.53125,462 268.82723,433.94692 236.35931,415.37431 202.59375,415 z"
-       transform="translate(340,332.36218)"
-       id="ssa_border_example_1-2"
-       inkscape:connector-curvature="0" />
-    <text
-       xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;font-stretch:normal;font-variant:normal"
-       x="73.61483"
-       y="412.01572"
-       id="text3821"
-       sodipodi:linespacing="125%"
-       transform="translate(360.74556,275.06465)"><tspan
-         sodipodi:role="line"
-         id="tspan3823"
-         x="73.61483"
-         y="412.01572">SVG 1.1</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;font-stretch:normal;font-variant:normal"
-       x="272.45215"
-       y="408.01593"
-       id="text3825"
-       sodipodi:linespacing="125%"
-       transform="translate(372.84152,279.06444)"><tspan
-         sodipodi:role="line"
-         id="tspan3827"
-         x="272.45215"
-         y="408.01593">SSA V4+</tspan></text>
-    <path
-       inkscape:label="#path2985"
-       clip-path="url(#clipPath3787)"
-       transform="matrix(0.99798389,0,0,0.99798389,38.54839,570.91056)"
-       d="m 282.0202,282.0202 c 0,55.34005 -44.86198,100.20202 -100.20202,100.20202 -55.34005,0 -100.202022,-44.86197 -100.202022,-100.20202 0,-55.34004 44.861972,-100.20202 100.202022,-100.20202 55.34004,0 100.20202,44.86198 100.20202,100.20202 z"
-       sodipodi:ry="100.20202"
-       sodipodi:rx="100.20202"
-       sodipodi:cy="282.0202"
-       sodipodi:cx="181.81818"
-       id="svg_border_example_2"
-       style="fill:#0087e7;fill-opacity:0.49803922;stroke:#c8c600;stroke-width:10.02020168;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.49803922;stroke-dasharray:none"
-       sodipodi:type="arc" />
-    <path
-       style="fill:#c8c600;fill-opacity:0.49803922;stroke:none"
-       d="m 520,410 0,10 c 55.22848,0 100,44.77152 100,100 0,55.22848 -44.77152,100 -100,100 l 0,10 c 60.75132,0 110,-49.24868 110,-110 0,-60.75132 -49.24868,-110 -110,-110 z"
-       transform="translate(-300,332.36218)"
-       id="path3863"
-       inkscape:connector-curvature="0" />
-    <path
-       inkscape:label="#path3761"
-       clip-path="url(#clipPath3771)"
-       sodipodi:type="arc"
-       style="fill:#0087e7;fill-opacity:0.49803922;stroke:#c8c600;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:0.49803922;stroke-dasharray:none"
-       id="path3837"
-       sodipodi:cx="181.81818"
-       sodipodi:cy="282.0202"
-       sodipodi:rx="100.20202"
-       sodipodi:ry="100.20202"
-       d="m 282.0202,282.0202 c 0,55.34005 -44.86198,100.20202 -100.20202,100.20202 -55.34005,0 -100.202022,-44.86197 -100.202022,-100.20202 0,-55.34004 44.861972,-100.20202 100.202022,-100.20202 55.34004,0 100.20202,44.86198 100.20202,100.20202 z"
-       transform="matrix(0.99798389,0,0,0.99798389,38.54839,570.91056)" />
-    <text
-       transform="translate(41.38517,275.06465)"
-       sodipodi:linespacing="125%"
-       id="text3839"
-       y="412.01572"
-       x="73.61483"
-       style="font-size:20px;font-style:normal;font-weight:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;font-stretch:normal;font-variant:normal"
-       xml:space="preserve"><tspan
-         y="412.01572"
-         x="73.61483"
-         id="tspan3841"
-         sodipodi:role="line">SVG 1.1</tspan></text>
-    <text
-       transform="translate(58.255217,279.06444)"
-       sodipodi:linespacing="125%"
-       id="text3843"
-       y="408.01593"
-       x="272.45215"
-       style="font-size:20px;font-style:normal;font-weight:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial;font-stretch:normal;font-variant:normal"
-       xml:space="preserve"><tspan
-         y="408.01593"
-         x="272.45215"
-         id="tspan3845"
-         sodipodi:role="line">SSA V4+</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="163.29199"
-       y="391.6207"
-       id="text3872"
-       sodipodi:linespacing="125%"
-       transform="translate(350.70312,324.36425)"><tspan
-         sodipodi:role="line"
-         id="tspan3874"
-         x="163.29199"
-         y="391.6207">stroke preservation = 1,</tspan><tspan
-         sodipodi:role="line"
-         x="163.29199"
-         y="406.6207"
-         id="tspan3882">i.e. preserve stroke area</tspan></text>
-    <text
-       transform="translate(28.863278,324.36425)"
-       sodipodi:linespacing="125%"
-       id="text3876"
-       y="391.6207"
-       x="161.45215"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:black;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       xml:space="preserve"><tspan
-         y="391.6207"
-         x="161.45215"
-         id="tspan3878"
-         sodipodi:role="line">stroke preservation = 0,</tspan><tspan
-         y="406.6207"
-         x="161.45215"
-         sodipodi:role="line"
-         id="tspan3880">i.e. preserve stroke width</tspan></text>
-    <path
-       style="fill:none;stroke:black;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 269.11239,0 0,309.80692"
-       id="path3006"
-       inkscape:connector-curvature="0"
-       transform="translate(110.88126,662.55526)" />
+<svg width="1920" height="1088" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <defs>
+  <clipPath id="clipPath3771">
+   <rect transform="matrix(1.002 0 0 1.002 -18.586 -379.31)" x="200" y="520" width="136.16" height="278.38" ry="0" fill="#0087e7" fill-opacity=".49804"/>
+  </clipPath>
+  <clipPath id="clipPath3787">
+   <rect transform="matrix(-1.002 0 0 -1.002 382.22 941.73)" x="200" y="520" width="136.16" height="278.38" ry="0" fill="#0087e7" fill-opacity=".49804"/>
+  </clipPath>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="translate(-104.99 -658.56)">
+  <g fill-opacity=".49804">
+   <circle transform="matrix(3.479,0,0,3.479,990.24,343.08)" cx="181.82" cy="282.02" r="100.2" clip-path="url(#clipPath3787)" fill="#0087e7" stroke="#c8c600" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".49804" stroke-width="10.02"/>
+   <circle transform="matrix(3.479,0,0,3.479,990.24,343.08)" cx="181.82" cy="282.02" r="100.2" clip-path="url(#clipPath3771)" fill="#0087e7" stroke-width="0"/>
+   <path d="m1631.8 958.2c-3.0305-0.0349-6.0253 0.0488-9.0421 0.10807v17.321c192.53 0 348.6 156.08 348.6 348.6s-156.08 348.6-348.6 348.6v17.322c107.5-0.5425 215.26-46.893 282.26-132.03 100.36-120.03 113.59-306.68 22.877-436.08-65.203-97.794-178.39-162.54-296.1-163.84z" fill="#c8c600" stroke-width="0"/>
   </g>
+  <text x="1254.5247" y="748.05072" fill="#000000" font-family="Arial" font-size="41.832px" letter-spacing="0px" stroke-width="3.486" word-spacing="0px" style="line-height:0%" xml:space="preserve"><tspan x="1254.5247" y="748.05072" font-size="69.721px" stroke-width="3.486" style="line-height:1.25">SVG 1.1</tspan></text>
+  <text x="1989.8473" y="748.05072" fill="#000000" font-family="Arial" font-size="41.832px" letter-spacing="0px" stroke-width="3.486" text-align="end" text-anchor="end" word-spacing="0px" style="line-height:0%" xml:space="preserve"><tspan x="1989.8473" y="748.05072" font-size="69.721px" stroke-width="3.486" style="line-height:1.25">SSA V4+</tspan></text>
+  <g fill-opacity=".49804">
+   <circle transform="matrix(3.479,0,0,3.479,-125.29,343.08)" cx="181.82" cy="282.02" r="100.2" clip-path="url(#clipPath3787)" fill="#0087e7" stroke="#c8c600" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".49804" stroke-width="10.02"/>
+   <path d="m507.26 940.77v34.86c192.53 0 348.6 156.08 348.6 348.6s-156.08 348.6-348.6 348.6v34.86c211.78 0 383.46-171.68 383.46-383.46s-171.68-383.46-383.46-383.46z" fill="#c8c600"/>
+   <circle transform="matrix(3.479,0,0,3.479,-125.29,343.08)" cx="181.82" cy="282.02" r="100.2" clip-path="url(#clipPath3771)" fill="#0087e7" stroke-width="0"/>
+  </g>
+  <g font-family="Arial" font-size="41.832px" letter-spacing="0px" stroke-width="3.486" word-spacing="0px">
+   <text x="141.22089" y="748.05072" style="line-height:0%" xml:space="preserve"><tspan x="141.22089" y="748.05072" font-size="69.721px" stroke-width="3.486" style="line-height:1.25">SVG 1.1</tspan></text>
+   <text x="893.18585" y="748.05072" text-align="end" text-anchor="end" style="line-height:0%" xml:space="preserve"><tspan x="893.18585" y="748.05072" font-size="69.721px" stroke-width="3.486" style="line-height:1.25">SSA V4+</tspan></text>
+   <text x="1532.1348" y="848.81317" style="line-height:0%" xml:space="preserve"><tspan x="1532.1348" y="848.81317" style="line-height:1.25">stroke preservation = 1,</tspan><tspan x="1532.1348" y="901.10382" style="line-height:1.25">i.e. preserve stroke area</tspan></text>
+   <text x="403.77368" y="848.81317" style="line-height:0%" xml:space="preserve"><tspan x="403.77368" y="848.81317" style="line-height:1.25">stroke preservation = 0,</tspan><tspan x="403.77368" y="901.10382" style="line-height:1.25">i.e. preserve stroke width</tspan></text>
+  </g>
+  <path d="m1065 662.56v1080" fill="none" stroke="#000" stroke-width="3.486px"/>
+ </g>
 </svg>

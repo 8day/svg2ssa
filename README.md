@@ -57,11 +57,11 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
     2. run `cxfreeze ..\s2s.py --target-dir s2s --icon=s2s_logo.ico`;
         * when lxml is used, add line `--include-modules=lxml._elementpath,gzip,inspect` (try w/o this first because things seem to work even w/o this step).
 
-[1]: https://github.com/8day/svg2ssa/blob/pub/examples/FREEDOM.svg.ass.png                              "Bitmap tracing"
-[2]: https://github.com/8day/svg2ssa/blob/pub/examples/plane.svg.ass.png                                "Rendering of 3D objects"
-[3]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.svg                      "s2s-stroke-preservation.svg"
-[4]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.png                      "s2s-stroke-preservation.png"
-[5]: http://www.fansubs.ru/forum/viewtopic.php?p=523046&sid=1312f5ed191ccf05e7af622a9e053f01#523046     "tophf's AegiDrawing"
-[6]: http://github.com/torque/AI2ASS                                                                    "torque's AI2ASS"
-[7]: http://www.python.org/download/releases/3.2.5/                                                     "Python 3.2.5"
-[8]: https://github.com/8day/svg2ssa/releases                                                           "cxfreeze'd binaries for Windows"
+[1]: https://github.com/8day/svg2ssa/blob/pub/examples/traced-2d/liberty-leading-the-people.jpg.svg.ass.png         "Bitmap tracing"
+[2]: https://github.com/8day/svg2ssa/blob/pub/examples/rendered-3d/eva-new-uvs-blender.fbx.blend.obj.svg.ass.png    "Rendering of 3D objects"
+[3]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.svg                                  "s2s-stroke-preservation.svg"
+[4]: https://github.com/8day/svg2ssa/blob/pub/examples/s2s-stroke-preservation.png                                  "s2s-stroke-preservation.png"
+[5]: http://www.fansubs.ru/forum/viewtopic.php?p=523046&sid=1312f5ed191ccf05e7af622a9e053f01#523046                 "tophf's AegiDrawing"
+[6]: http://github.com/torque/AI2ASS                                                                                "torque's AI2ASS"
+[7]: http://www.python.org/download/releases/3.2.5/                                                                 "Python 3.2.5"
+[8]: https://github.com/8day/svg2ssa/releases                                                                       "cx_Freeze'd binaries for Windows"
