@@ -42,7 +42,7 @@ class S2SDYacc:
     # Lexer to ingore 'Z's. In SVG Rec. it's stated: "If you instead "manually"
     # close the subpath via a "lineto" command, the start of the first segment
     # and the end of the last segment are not joined but instead are each capped
-    # using the current value of ‘stroke-linecap’. At the end of the command,
+    # using the current value of ``stroke-linecap``. At the end of the command,
     # the new current point is set to the initial point of the current subpath."
 
     mvto_lnto_mapping = {'M': ('M', 'L'), 'm': ('m', 'l')}
