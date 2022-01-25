@@ -9,48 +9,48 @@ if __name__ == "__main__":
         epilog='To run, use this syntax: APP_NAME KEYS PATH_TO_THE_FILE. Beware that 1) there\'s no key to specify output file (this file will be automatically placed inside same dir as SVG, with the same name as SVG, but with suffix ".ass"); 2) only one file can be converted at a time, do not specify multiple files.',
     )
     parser.add_argument(
-        "--unnecessary_transformations",
         "-t",
+        "--unnecessary_transformations",
         help='Trafos that should be collapsed into matrix, i.e. "baked". If N trafos are used, then the key should be used N times: -t rotate -t skewX.',
         default=[],
         action="append",
         choices=["scale", "translate", "rotate"],
     )
     parser.add_argument(
-        "--magnification_level",
         "-m",
+        "--magnification_level",
         help="Magnification level of the coordinate system by this formula: (level - 1) ^ 2.",
         default=3,
         type=int,
         metavar="natural_number",
     )
     parser.add_argument(
-        "--stroke_preservation",
         "-s",
+        "--stroke_preservation",
         help='Stroke transformation. "0" preserves stroke width (left untouched); "1" preserve stroke area (stroke size is divided by 2).',
         default=0,
         type=int,
         choices=range(2),
     )
     parser.add_argument(
-        "--collapse_consecutive_path_segments",
         "-c",
+        "--collapse_consecutive_path_segments",
         help="Collapses consecutive path segments of the same type into one: l 10,10 l 20,20 >>> l 10,10 20,20.",
         default=1,
         type=int,
         choices=range(2),
     )
     parser.add_argument(
-        "--ssa_default_playresx",
         "-x",
+        "--ssa_default_playresx",
         help="Custom PlayResX for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResX is set, mod16 is checked.",
         default=1280,
         type=int,
         metavar="natural_number",
     )
     parser.add_argument(
-        "--ssa_default_playresy",
         "-y",
+        "--ssa_default_playresy",
         help="Custom PlayResY for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResY is set, mod16 is checked.",
         default=720,
         type=int,
