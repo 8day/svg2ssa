@@ -5,15 +5,15 @@ from s2s_utilities import convert_svglength_to_pixels
 
 class SVGId(S2SBlockInitData, SVGAttribute):
     """Class for SVG 'id' attribute.
-    
+
     Value:        <string>
     Initial:      [...]
     Inherited:    no
     """
-    
+
     @property
     def dtype(self):
-        return 'id'
+        return "id"
 
     def update(self, other):
         tmp = other.__class__()
@@ -21,24 +21,24 @@ class SVGId(S2SBlockInitData, SVGAttribute):
         return tmp
 
     def convert(self):
-        
+
         # Commas should be replaced to any random characters.
         # It's neccessary since in SSA they used at a format level.
-        
+
         return self.data.replace(",", "_")
 
 
 class SVGStrokeWidth(SVGAttribute):
     """Class for SVG 'stroke-width' attribute.
-    
+
     Value:        <percentage> | <length> | inherit
     Initial:      1
     Inherited:    yes
     """
-    
+
     @property
     def dtype(self):
-        return 'stroke-width'
+        return "stroke-width"
 
     def preprocess(self, data):
         return convert_svglength_to_pixels(data)
@@ -57,6 +57,6 @@ class SVGStrokeWidth(SVGAttribute):
         # half of the paint falls outside of the shape."
 
         if s2s_runtime_settings.stroke_preservation == 0:
-            return r'\bord{0}'.format(self.data)
+            return r"\bord{0}".format(self.data)
         else:
-            return r'\bord{0}'.format(self.data / 2)
+            return r"\bord{0}".format(self.data / 2)

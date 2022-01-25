@@ -19,20 +19,20 @@ from s2s_core import SVGAttribute
 
 class SVGOpacity(SVGAttribute):
     """Class for SVG 'opacity' attribute.
-    
+
     Value:        <opacity-value> | inherit
     Initial:      1
     Inherited:    no
     """
-    
+
     @property
     def dtype(self):
-        return 'opacity'
+        return "opacity"
 
     def preprocess(self, data):
-    
+
         # Todo: add clamping of out-of-range values.
-        
+
         return float(data)
 
     def update(self, other):
@@ -45,38 +45,38 @@ class SVGOpacity(SVGAttribute):
 
     def convert(self):
         val = 255 - (self.data * 255)
-        return r'\alpha&H{0:02X}&'.format(round(val))
+        return r"\alpha&H{0:02X}&".format(round(val))
 
 
 class SVGFillOpacity(SVGOpacity):
     """Class for SVG 'fill-opacity' attribute.
-    
+
     Value:        <opacity-value> | inherit
     Initial:      1
     Inherited:    yes
     """
-    
+
     @property
     def dtype(self):
-        return 'fill-opacity'
+        return "fill-opacity"
 
     def convert(self):
         val = 255 - (self.data * 255)
-        return r'\1a&H{0:02X}&'.format(round(val))
+        return r"\1a&H{0:02X}&".format(round(val))
 
 
 class SVGStrokeOpacity(SVGOpacity):
     """Class for SVG 'stroke-opacity' attribute.
-    
+
     Value:        <opacity-value> | inherit
     Initial:      1
     Inherited:    yes
     """
-    
+
     @property
     def dtype(self):
-        return 'stroke-opacity'
+        return "stroke-opacity"
 
     def convert(self):
         val = 255 - (self.data * 255)
-        return r'\3a&H{0:02X}&'.format(round(val))
+        return r"\3a&H{0:02X}&".format(round(val))

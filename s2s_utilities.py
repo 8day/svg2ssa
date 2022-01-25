@@ -13,13 +13,16 @@ from s2s_core import SVGTypeError
 # Order was swapped because of ambiguity: float is int w/o fraction, but can be
 # changed to r'{0}?(?:{1}|{2})' since 'sign' present in both cases.
 # number = r'{0}?{1}|{0}?{2}'.format(sign, floating_point_constant, integer_constant)
-number = r'[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)'
-length_number = re.compile(r'^({0})$'.format(number))
-length_units = re.compile(r'^({0})(px|pt|pc|cm|mm|in)$'.format(number), re.I)
+number = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
+length_number = re.compile(r"^({0})$".format(number))
+length_units = re.compile(r"^({0})(px|pt|pc|cm|mm|in)$".format(number), re.I)
 
 
-trafos_all = {'matrix', 'skewX', 'skewY', 'scale', 'translate', 'rotate'}
-trafos_unnecessary = (trafos_all & {element for element in s2s_runtime_settings.unnecessary_transformations}) | {'matrix', 'skewX', 'skewY'}
+trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
+trafos_unnecessary = (
+    trafos_all
+    & {element for element in s2s_runtime_settings.unnecessary_transformations}
+) | {"matrix", "skewX", "skewY"}
 trafos_all_without_unnecessary = trafos_all - trafos_unnecessary
 
 
@@ -39,20 +42,24 @@ def convert_svglength_to_pixels(data):
     elif length_units.search(data):
         search_result = length_units.search(data)
         length, unit = float(search_result.group(1)), search_result.group(2).lower()
-        if unit == 'px':
+        if unit == "px":
             data = length
-        elif unit == 'pt':
+        elif unit == "pt":
             data = length * 1.25
-        elif unit == 'pc':
+        elif unit == "pc":
             data = length * 15
-        elif unit == 'mm':
+        elif unit == "mm":
             data = length * 9
-        elif unit == 'cm':
+        elif unit == "cm":
             data = length * 90
-        elif unit == 'in':
+        elif unit == "in":
             data = length * 90
     else:
-        raise SVGTypeError('Wrong length unit! String that caused the error contained this: "{0}".'.format(data))
+        raise SVGTypeError(
+            'Wrong length unit! String that caused the error contained this: "{0}".'.format(
+                data
+            )
+        )
     return data
 
 
@@ -63,7 +70,7 @@ def collapse_consecutive_objects(list_of_objects):
     # In its current form (i.e. two iterations instead of one)
     # algorithm below is *significantly* less complex & very
     # general, which makes it ideal for use in everyday life.
-    
+
     if len(list_of_objects) > 1:
         for i in range(len(list_of_objects) - 1):
             curr = list_of_objects[i]
@@ -104,7 +111,7 @@ def collapse_unnecessary_trafos(list_of_trafos):
             dictionary[trafo.dtype].append(i)
         else:
             dictionary[trafo.dtype] = [i]
-    
+
     # Find index of the furthest unsupported by SSA trafo.
     # Note: by design, the largest idx should be last (since there was no
     # sorting/shuffle applied), so "max(dictionary[trafo])" should be equal
@@ -119,11 +126,15 @@ def collapse_unnecessary_trafos(list_of_trafos):
     # completely acceptable.
     idx_repet = -1
     for trafo in trafos_all_without_unnecessary:
-        if trafo in dictionary and len(dictionary[trafo]) > 1 and dictionary[trafo][-2] > idx_repet:
+        if (
+            trafo in dictionary
+            and len(dictionary[trafo]) > 1
+            and dictionary[trafo][-2] > idx_repet
+        ):
             # Implies that indeces are in the "right" order, i.e. not shuffled.
             # Inside this function it is always true.
             idx_repet = dictionary[trafo][-2]
-    
+
     # Merge trafos, if need be.
     if idx_unnec != -1 or idx_repet != -1:
         # Note: "+1" for making interval inclusive: [n,m] instead of [n,m).
@@ -132,5 +143,5 @@ def collapse_unnecessary_trafos(list_of_trafos):
         for i in range(1, idx):
             acc += list_of_trafos[i]
         list_of_trafos[:idx] = [acc]
-    
+
     return list_of_trafos
