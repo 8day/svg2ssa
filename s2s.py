@@ -34,7 +34,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--collapse_consecutive_path_segments",
-        "-cs",
+        "-c",
         help="Collapses consecutive path segments of the same type into one: l 10,10 l 20,20 >>> l 10,10 20,20.",
         default=1,
         type=int,
