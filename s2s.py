@@ -42,6 +42,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--ssa_default_playresx",
+        "-x",
         help="Custom PlayResX for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResX is set, mod16 is checked.",
         default=1280,
         type=int,
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--ssa_default_playresy",
+        "-y",
         help="Custom PlayResY for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResY is set, mod16 is checked.",
         default=720,
         type=int,
