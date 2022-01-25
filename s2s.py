@@ -59,11 +59,14 @@ if __name__ == "__main__":
     parser.add_argument("path", nargs=argparse.REMAINDER)
 
     args = vars(parser.parse_args(sys.argv[1:]))
-    path = " ".join(args["path"])
-    del args["path"]
 
+    # Pop positional path argument and join path segments split at whitespace.
+    path = " ".join(args.pop("path"))
+
+    # User shouldn't be able to inject anything bad because :mod:`argparse` checks whether option is supported, so this should be safe.
+    # :mod:`argparse` maps data to ``--``-prefixed options instead of ``-``-prefixed, therefore this will result in something like ``s2s_runtime_settings.stroke_preservation = 1`` and not ``s2s_runtime_settings.s = 1`` or whatever.
     for k, v in args.items():
-        exec("s2s_runtime_settings.{0} = {1}".format(k, v))
+        setattr(s2s_runtime_settings, k, v)
 
     s2s_runtime_settings.ssa_header = (
         "[Script Info]\n"
@@ -98,5 +101,4 @@ if __name__ == "__main__":
     if os.path.isfile(path):
         s2s_main.S2S(path).convert()
     else:
-        # Print help info if path is invalid, or no path was specified.
-        parser.parse_args(["-h"])
+        parser.print_help()
