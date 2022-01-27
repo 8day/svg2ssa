@@ -1,6 +1,5 @@
 import re
 import s2s_runtime_settings
-from s2s_core import SVGTypeError
 
 
 # Code below is slightly modified SVG path BNF for coordinates.
@@ -55,7 +54,7 @@ def convert_svglength_to_pixels(data):
         elif unit == "in":
             data = length * 90
     else:
-        raise SVGTypeError(
+        raise TypeError(
             'Wrong length unit! String that caused the error contained this: "{0}".'.format(
                 data
             )

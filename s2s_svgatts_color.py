@@ -1,5 +1,5 @@
 import re
-from s2s_core import SVGBasicEntity, SVGTypeError
+from s2s_core import SVGBasicEntity
 
 
 class SVGColor(SVGBasicEntity):
@@ -198,7 +198,7 @@ class SVGColor(SVGBasicEntity):
             tmp = SVGColor.color_keywords[tmp.lower()]
         else:
             # Note: currently out-of-range values raise errors (which is wrong according to SVG Rec 1.1).
-            raise SVGTypeError(
+            raise TypeError(
                 "{0}: The next color specified in SVG is malformed or unsupported: {1}.".format(
                     self.__class__.__name__, data
                 )

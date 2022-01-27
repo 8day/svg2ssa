@@ -5,7 +5,7 @@ from math import radians, sin, cos, tan
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_transform
-from s2s_core import SVGBasicEntity, SVGContainerEntity, S2STypeError
+from s2s_core import SVGBasicEntity, SVGContainerEntity
 from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_trafos
 
 
@@ -23,7 +23,7 @@ class SVGBlockTrafo(SVGBasicEntity):
             return tmp
         else:
             message = ": You have tried to concatenate different types of objects."
-            raise S2STypeError(self.__class__.__name__ + message)
+            raise TypeError(self.__class__.__name__ + message)
 
 
 class SVGTrafoMatrix(SVGBlockTrafo):
@@ -57,7 +57,7 @@ class SVGTrafoMatrix(SVGBlockTrafo):
             return self + other.matrix
         else:
             message = ": You have tried to concatenate different types of objects."
-            raise S2STypeError(self.__class__.__name__ + message)
+            raise TypeError(self.__class__.__name__ + message)
 
     def convert(self):
         return ""
@@ -290,7 +290,7 @@ class SVGTransform(SVGContainerEntity):
             data = self.data + [other]
         else:
             message = ": You have tried to concatenate different types of objects."
-            raise S2STypeError(self.__class__.__name__ + message)
+            raise TypeError(self.__class__.__name__ + message)
         data = collapse_consecutive_objects(data)
         data = collapse_unnecessary_trafos(data)
         trafos = SVGTransform()

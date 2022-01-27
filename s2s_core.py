@@ -1,27 +1,3 @@
-class S2SError(Exception):
-    pass
-
-
-class S2STypeError(S2SError):
-    pass
-
-
-class S2SAttributeError(S2SError):
-    pass
-
-
-class S2SMethodError(S2SError):
-    pass
-
-
-class SVGError(S2SError):
-    pass
-
-
-class SVGTypeError(SVGError):
-    pass
-
-
 class SVGBasicEntity:
     def __init__(self, data=None):
         self._data = self.preprocess(data) if data is not None else None
@@ -38,7 +14,7 @@ class SVGBasicEntity:
     def dtype(self):
         """Stores string with data type name."""
 
-        raise S2SAttributeError(
+        raise NotImplementedError(
             self.__class__.__name__ + ': "dtype" property is not redefined.'
         )
 
@@ -50,7 +26,7 @@ class SVGBasicEntity:
         pre-processed.
         """
 
-        raise S2SMethodError(
+        raise NotImplementedError(
             self.__class__.__name__ + ': "preprocess" method is not redefined.'
         )
 
@@ -62,7 +38,7 @@ class SVGBasicEntity:
         o. 'other' when property inheritance in SVG Rec. is 'no'.
         """
 
-        raise S2SMethodError(
+        raise NotImplementedError(
             self.__class__.__name__ + ': "update" method is not redefined.'
         )
 
@@ -72,7 +48,7 @@ class SVGBasicEntity:
         It does not, or at least should not modify original data.
         """
 
-        raise S2SAttributeError(
+        raise NotImplementedError(
             self.__class__.__name__ + ': "convert" method is not redefined.'
         )
 
