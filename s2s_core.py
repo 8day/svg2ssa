@@ -22,16 +22,6 @@ class SVGTypeError(SVGError):
     pass
 
 
-class S2SBlockDataChangeable:
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        self._data = data
-
-
 class S2SBlockDtypeChangeable:
     @property
     def dtype(self):
@@ -69,9 +59,17 @@ class S2SBlockContainer:
             return False
 
 
-class SVGAttribute(S2SBlockDataChangeable):
+class SVGAttribute:
     def __init__(self, data=None):
         self._data = self.preprocess(data) if data is not None else None
+
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, data):
+        self._data = data
 
     @property
     def dtype(self):
