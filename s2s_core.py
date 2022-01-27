@@ -22,11 +22,6 @@ class SVGTypeError(SVGError):
     pass
 
 
-class S2SBlockInitDataProc:
-    def __init__(self, data=None):
-        self._data = self.preprocess(data) if data is not None else None
-
-
 class S2SBlockInitDataProcDtype:
     def __init__(self, dtype=None, data=None):
         self._dtype = dtype
@@ -80,7 +75,10 @@ class S2SBlockContainer:
             return False
 
 
-class SVGAttribute(S2SBlockInitDataProc, S2SBlockDataChangeable):
+class SVGAttribute(S2SBlockDataChangeable):
+    def __init__(self, data=None):
+        self._data = self.preprocess(data) if data is not None else None
+
     @property
     def dtype(self):
         """Stores string with data type name."""
