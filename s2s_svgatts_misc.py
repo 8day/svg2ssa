@@ -1,9 +1,9 @@
 import s2s_runtime_settings
-from s2s_core import S2SBlockInitData, SVGAttribute
+from s2s_core import SVGAttribute
 from s2s_utilities import convert_svglength_to_pixels
 
 
-class SVGId(S2SBlockInitData, SVGAttribute):
+class SVGId(SVGAttribute):
     """Class for SVG 'id' attribute.
 
     Value:        <string>
@@ -14,6 +14,9 @@ class SVGId(S2SBlockInitData, SVGAttribute):
     @property
     def dtype(self):
         return "id"
+
+    def preprocess(self, data):
+        return data
 
     def update(self, other):
         tmp = other.__class__()

@@ -5,7 +5,7 @@ from math import radians, sin, cos, tan
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_transform
-from s2s_core import SVGAttribute, S2SBlockInitData, S2SBlockContainer, S2STypeError
+from s2s_core import SVGAttribute, S2SBlockContainer, S2STypeError
 from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_trafos
 
 
@@ -26,7 +26,7 @@ class SVGBlockTrafo(SVGAttribute):
             raise S2STypeError(self.__class__.__name__ + message)
 
 
-class SVGTrafoMatrix(S2SBlockInitData, SVGBlockTrafo):
+class SVGTrafoMatrix(SVGBlockTrafo):
     """Class for SVG "transform" "matrix"."""
 
     @property
@@ -36,6 +36,9 @@ class SVGTrafoMatrix(S2SBlockInitData, SVGBlockTrafo):
     @property
     def matrix(self):
         return self
+
+    def preprocess(self, data):
+        return data
 
     def update(self, other):
         if isinstance(other, SVGTrafoMatrix):
@@ -131,7 +134,7 @@ class SVGTrafoScale(SVGBlockTrafo):
         return r"\fscx{0}\fscy{1}".format(sx, sy)
 
 
-class SVGTrafoSkewX(S2SBlockInitData, SVGBlockTrafo):
+class SVGTrafoSkewX(SVGBlockTrafo):
     """Class for SVG "transform" "skewX"."""
 
     @property
@@ -143,11 +146,14 @@ class SVGTrafoSkewX(S2SBlockInitData, SVGBlockTrafo):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
+    def preprocess(self, data):
+        return data
+
     def convert(self):
         return ""
 
 
-class SVGTrafoSkewY(S2SBlockInitData, SVGBlockTrafo):
+class SVGTrafoSkewY(SVGBlockTrafo):
     """Class for SVG "transform" "skewY"."""
 
     @property
@@ -158,6 +164,9 @@ class SVGTrafoSkewY(S2SBlockInitData, SVGBlockTrafo):
     def matrix(self):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
+
+    def preprocess(self, data):
+        return data
 
     def convert(self):
         return ""
