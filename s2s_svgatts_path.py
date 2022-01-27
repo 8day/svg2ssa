@@ -5,7 +5,6 @@ from ply_yacc import yacc
 import ply_lex_d
 import s2s_runtime_settings
 from s2s_core import (
-    S2SBlockInitDataDtype,
     S2SBlockDtypeChangeable,
     SVGAttribute,
     S2SBlockContainer,
@@ -14,7 +13,7 @@ from s2s_utilities import collapse_consecutive_objects
 from s2s_svgatts_trafos import SVGTrafoScale
 
 
-class SVGDSeg(S2SBlockInitDataDtype, S2SBlockDtypeChangeable, SVGAttribute):
+class SVGDSeg(S2SBlockDtypeChangeable, SVGAttribute):
     """Common class for all subpaths used in SVG 'd' attribute.
 
     Inherited: no
@@ -25,6 +24,13 @@ class SVGDSeg(S2SBlockInitDataDtype, S2SBlockDtypeChangeable, SVGAttribute):
     # current point of previous segment.
 
     ssa_comm_type = dict(M="m", L="l", C="b")
+
+    def __init__(self, dtype=None, data=None):
+        super().__init__(data)
+        self._dtype = dtype
+
+    def preprocess(self, data):
+        return data
 
     def update(self, other):
         tmp = self.__class__()
