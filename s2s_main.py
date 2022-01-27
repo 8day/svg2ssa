@@ -23,7 +23,7 @@ from s2s_svgatts_trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
 from s2s_svgatts_path import SVGD
 
 
-class SVGElement(SVGAttribute, S2SBlockContainer):
+class SVGElement(SVGContainerEntity):
     """Converts all the attributes that other classes feed him.
 
     Currently works only with "path" and "g".

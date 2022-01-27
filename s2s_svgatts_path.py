@@ -4,12 +4,12 @@ from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_d
 import s2s_runtime_settings
-from s2s_core import SVGAttribute, S2SBlockContainer
+from s2s_core import SVGBasicEntity, SVGContainerEntity
 from s2s_utilities import collapse_consecutive_objects
 from s2s_svgatts_trafos import SVGTrafoScale
 
 
-class SVGDSeg(SVGAttribute):
+class SVGDSeg(SVGBasicEntity):
     """Common class for all subpaths used in SVG 'd' attribute.
 
     Inherited: no
@@ -202,7 +202,7 @@ class S2SDYacc:
     tokens = ply_lex_d.tokens
 
 
-class SVGD(SVGAttribute, S2SBlockContainer):
+class SVGD(SVGContainerEntity):
     """Class for SVG "d" attribute.
 
     Inherited: no

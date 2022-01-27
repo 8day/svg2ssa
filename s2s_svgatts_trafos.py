@@ -5,11 +5,11 @@ from math import radians, sin, cos, tan
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_transform
-from s2s_core import SVGAttribute, S2SBlockContainer, S2STypeError
+from s2s_core import SVGBasicEntity, SVGContainerEntity, S2STypeError
 from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_trafos
 
 
-class SVGBlockTrafo(SVGAttribute):
+class SVGBlockTrafo(SVGBasicEntity):
     """Generalised superclass for SVG "transform" attribute and its "values"."""
 
     def update(self, other):
@@ -18,7 +18,7 @@ class SVGBlockTrafo(SVGAttribute):
             # W/o tuple() this doesn't work.
             tmp.data = tuple(i + j for i, j in zip(self.data, other.data))
             return tmp
-        elif isinstance(other, SVGBlockTrafo):
+        elif isinstance(other, (SVGBlockTrafo, SVGTransform)):
             tmp = self.matrix + other.matrix
             return tmp
         else:
@@ -248,7 +248,7 @@ class S2STransformYacc:
     tokens = ply_lex_transform.tokens
 
 
-class SVGTransform(SVGBlockTrafo, S2SBlockContainer):
+class SVGTransform(SVGContainerEntity):
     """Class for SVG "transform" attribute.
 
     Inherited: [...]

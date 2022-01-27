@@ -22,7 +22,7 @@ class SVGTypeError(SVGError):
     pass
 
 
-class SVGAttribute:
+class SVGBasicEntity:
     def __init__(self, data=None):
         self._data = self.preprocess(data) if data is not None else None
 
@@ -89,7 +89,7 @@ class SVGAttribute:
         )
 
 
-class S2SBlockContainer:
+class SVGContainerEntity(SVGBasicEntity):
     def __bool__(self):
         return True if self._data else False
 

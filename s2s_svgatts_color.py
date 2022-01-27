@@ -1,8 +1,8 @@
 import re
-from s2s_core import SVGAttribute, SVGTypeError
+from s2s_core import SVGBasicEntity, SVGTypeError
 
 
-class SVGColor(SVGAttribute):
+class SVGColor(SVGBasicEntity):
     """Class for SVG 'color' attribute.
 
     Value:        <color> | inherit

@@ -1,9 +1,9 @@
 import s2s_runtime_settings
-from s2s_core import SVGAttribute
+from s2s_core import SVGBasicEntity
 from s2s_utilities import convert_svglength_to_pixels
 
 
-class SVGId(SVGAttribute):
+class SVGId(SVGBasicEntity):
     """Class for SVG 'id' attribute.
 
     Value:        <string>
@@ -31,7 +31,7 @@ class SVGId(SVGAttribute):
         return self.data.replace(",", "_")
 
 
-class SVGStrokeWidth(SVGAttribute):
+class SVGStrokeWidth(SVGBasicEntity):
     """Class for SVG 'stroke-width' attribute.
 
     Value:        <percentage> | <length> | inherit

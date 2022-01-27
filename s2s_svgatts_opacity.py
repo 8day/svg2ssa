@@ -14,10 +14,10 @@
 # i.e. optimised but not overoptimised). Well, as I said, ATM this kind of optimisation is unnecessary.
 
 
-from s2s_core import SVGAttribute
+from s2s_core import SVGBasicEntity
 
 
-class SVGOpacity(SVGAttribute):
+class SVGOpacity(SVGBasicEntity):
     """Class for SVG 'opacity' attribute.
 
     Value:        <opacity-value> | inherit
