@@ -22,12 +22,6 @@ class SVGTypeError(SVGError):
     pass
 
 
-class S2SBlockInitDataProcDtype:
-    def __init__(self, dtype=None, data=None):
-        self._dtype = dtype
-        self._data = self.preprocess(data) if data is not None else None
-
-
 class S2SBlockDataChangeable:
     @property
     def data(self):

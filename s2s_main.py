@@ -24,7 +24,7 @@ from s2s_svgatts_path import SVGD
 
 
 class SVGElement(
-    S2SBlockInitDataProcDtype, S2SBlockDtypeChangeable, SVGAttribute, S2SBlockContainer
+    S2SBlockDtypeChangeable, SVGAttribute, S2SBlockContainer
 ):
     """Converts all the attributes that other classes feed him.
 
@@ -49,6 +49,10 @@ class SVGElement(
         "d": SVGD,
         "id": SVGId,
     }
+
+    def __init__(self, dtype=None, data=None):
+        self._dtype = dtype
+        super().__init__(data)
 
     @staticmethod
     def process_exceptional_cases(atts):
