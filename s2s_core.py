@@ -22,33 +22,6 @@ class SVGTypeError(SVGError):
     pass
 
 
-class S2SBlockContainer:
-    def __bool__(self):
-        return True if self._data else False
-
-    def __iter__(self):
-        for obj in self._data:
-            yield obj
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, key):
-        return self._data[key]
-
-    def __setitem__(self, key, val):
-        self._data[key] = val
-
-    def __delitem__(self, key):
-        del self._data[key]
-
-    def __contains__(self, item):
-        if any(obj.dtype == item for obj in self._data):
-            return True
-        else:
-            return False
-
-
 class SVGAttribute:
     def __init__(self, data=None):
         self._data = self.preprocess(data) if data is not None else None
@@ -114,3 +87,30 @@ class SVGAttribute:
         return '{0}( "{1}", {2} )'.format(
             self.__class__.__name__, str(self.dtype), str(self.data)
         )
+
+
+class S2SBlockContainer:
+    def __bool__(self):
+        return True if self._data else False
+
+    def __iter__(self):
+        for obj in self._data:
+            yield obj
+
+    def __len__(self):
+        return len(self._data)
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __setitem__(self, key, val):
+        self._data[key] = val
+
+    def __delitem__(self, key):
+        del self._data[key]
+
+    def __contains__(self, item):
+        if any(obj.dtype == item for obj in self._data):
+            return True
+        else:
+            return False
