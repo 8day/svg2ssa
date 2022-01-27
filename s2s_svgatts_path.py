@@ -4,16 +4,12 @@ from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_d
 import s2s_runtime_settings
-from s2s_core import (
-    S2SBlockDtypeChangeable,
-    SVGAttribute,
-    S2SBlockContainer,
-)
+from s2s_core import SVGAttribute, S2SBlockContainer
 from s2s_utilities import collapse_consecutive_objects
 from s2s_svgatts_trafos import SVGTrafoScale
 
 
-class SVGDSeg(S2SBlockDtypeChangeable, SVGAttribute):
+class SVGDSeg(SVGAttribute):
     """Common class for all subpaths used in SVG 'd' attribute.
 
     Inherited: no
@@ -27,6 +23,14 @@ class SVGDSeg(S2SBlockDtypeChangeable, SVGAttribute):
 
     def __init__(self, dtype=None, data=None):
         super().__init__(data)
+        self._dtype = dtype
+
+    @property
+    def dtype(self):
+        return self._dtype
+
+    @dtype.setter
+    def dtype(self, dtype):
         self._dtype = dtype
 
     def preprocess(self, data):

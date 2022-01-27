@@ -23,9 +23,7 @@ from s2s_svgatts_trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
 from s2s_svgatts_path import SVGD
 
 
-class SVGElement(
-    S2SBlockDtypeChangeable, SVGAttribute, S2SBlockContainer
-):
+class SVGElement(SVGAttribute, S2SBlockContainer):
     """Converts all the attributes that other classes feed him.
 
     Currently works only with "path" and "g".
@@ -53,6 +51,14 @@ class SVGElement(
     def __init__(self, dtype=None, data=None):
         self._dtype = dtype
         super().__init__(data)
+
+    @property
+    def dtype(self):
+        return self._dtype
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._dtype = dtype
 
     @staticmethod
     def process_exceptional_cases(atts):

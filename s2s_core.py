@@ -22,16 +22,6 @@ class SVGTypeError(SVGError):
     pass
 
 
-class S2SBlockDtypeChangeable:
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @dtype.setter
-    def dtype(self, dtype):
-        self._dtype = dtype
-
-
 class S2SBlockContainer:
     def __bool__(self):
         return True if self._data else False
