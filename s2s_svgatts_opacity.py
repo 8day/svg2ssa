@@ -36,7 +36,7 @@ class SVGOpacity(SVGBasicEntity):
 
         return cls(float(data))
 
-    def update(self, other):
+    def __add__(self, other):
         # Creation of the third object is neccessary
         # since w/o it 'self' or 'other' may (and will)
         # be modified later on, which is wrong.

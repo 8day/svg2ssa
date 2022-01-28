@@ -206,7 +206,7 @@ class SVGColor(SVGBasicEntity):
             )
         return cls(tmp)
 
-    def update(self, other):
+    def __add__(self, other):
         return self.__class__(self.data)
 
     def convert(self):

@@ -169,7 +169,7 @@ class SVGElement(SVGContainerEntity):
         }
         return cls(dtype, atts)
 
-    def update(self, other):
+    def __add__(self, other):
         # Note: beware of mutability issues.
         curr, prev = self.data, other.data
         for key in prev:

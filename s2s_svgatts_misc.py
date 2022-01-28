@@ -19,7 +19,7 @@ class SVGId(SVGBasicEntity):
     def from_raw_data(cls, data):
         return cls(data)
 
-    def update(self, other):
+    def __add__(self, other):
         return other.__class__(other.data)
 
     def convert(self):
@@ -46,7 +46,7 @@ class SVGStrokeWidth(SVGBasicEntity):
     def from_raw_data(cls, data):
         return cls(convert_svglength_to_pixels(data))
 
-    def update(self, other):
+    def __add__(self, other):
         return self.__class__(self.data)
 
     def convert(self):

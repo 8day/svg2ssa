@@ -12,7 +12,7 @@ from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_tra
 class SVGBlockTrafo(SVGBasicEntity):
     """Generalised superclass for SVG "transform" attribute and its "values"."""
 
-    def update(self, other):
+    def __add__(self, other):
         if isinstance(other, type(self)):
             # W/o tuple() this doesn't work.
             return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
@@ -35,7 +35,7 @@ class SVGTrafoMatrix(SVGBlockTrafo):
     def matrix(self):
         return self
 
-    def update(self, other):
+    def __add__(self, other):
         if isinstance(other, SVGTrafoMatrix):
             ctm = self.data
             m = other.data
@@ -271,7 +271,7 @@ class SVGTransform(SVGContainerEntity):
         data = collapse_unnecessary_trafos(data)
         return cls(data)
 
-    def update(self, other):
+    def __add__(self, other):
         if isinstance(other, SVGTransform):
             # Is this the right order?!
             data = self.data + other.data

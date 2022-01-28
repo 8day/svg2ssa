@@ -33,7 +33,7 @@ class SVGDSeg(SVGBasicEntity):
     def dtype(self, dtype):
         self._dtype = dtype
 
-    def update(self, other):
+    def __add__(self, other):
         return self.__class__(self.dtype, self.data + other.data)
 
     def convert(self):
@@ -224,7 +224,7 @@ class SVGD(SVGContainerEntity):
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    def update(self, other):
+    def __add__(self, other):
         return self.__class__(self.data + other.data)
 
     def process_abs(self, seg):

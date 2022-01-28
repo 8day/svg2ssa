@@ -22,18 +22,6 @@ class SVGBasicEntity:
             cls.__name__ + ': "from_raw_data" class method is not redefined.'
         )
 
-    def update(self, other):
-        """Specifies update rules for attributes aka inheritance.
-
-        Returns (is that still holds true?!):
-        o. 'self' when property inheritance in SVG Rec. is 'yes', or
-        o. 'other' when property inheritance in SVG Rec. is 'no'.
-        """
-
-        raise NotImplementedError(
-            self.__class__.__name__ + ': "update" method is not redefined.'
-        )
-
     def convert(self):
         """Converts data to desired view/representation, which in this case is SSA format.
 
@@ -45,9 +33,16 @@ class SVGBasicEntity:
         )
 
     def __add__(self, other):
-        """Shorthand for .update()."""
+        """Specifies update rules for attributes aka inheritance.
 
-        return self.update(other)
+        Returns (is that still holds true?!):
+        o. 'self' when property inheritance in SVG Rec. is 'yes', or
+        o. 'other' when property inheritance in SVG Rec. is 'no'.
+        """
+
+        raise NotImplementedError(
+            self.__class__.__name__ + ': "__add__" method is not redefined.'
+        )
 
     def __repr__(self):
         """Helps to debug."""
