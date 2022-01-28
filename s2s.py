@@ -1,10 +1,10 @@
 if __name__ == "__main__":
-    import sys
-    import os
-    import argparse
+    from sys import argv as sys_argv
+    from os import path as os_path
+    from argparse import ArgumentParser, REMAINDER
     import s2s_runtime_settings
 
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description="Converts SVG (Rec 1.1) into SSA (v4.0+).",
         epilog='To run, use this syntax: APP_NAME KEYS PATH_TO_THE_FILE. Beware that 1) there\'s no key to specify output file (this file will be automatically placed inside same dir as SVG, with the same name as SVG, but with suffix ".ass"); 2) only one file can be converted at a time, do not specify multiple files.',
     )
@@ -56,9 +56,9 @@ if __name__ == "__main__":
         type=int,
         metavar="natural_number",
     )
-    parser.add_argument("path", nargs=argparse.REMAINDER)
+    parser.add_argument("path", nargs=REMAINDER)
 
-    args = vars(parser.parse_args(sys.argv[1:]))
+    args = vars(parser.parse_args(sys_argv[1:]))
 
     # Pop positional path argument and join path segments split at whitespace.
     path = " ".join(args.pop("path"))
@@ -96,9 +96,10 @@ if __name__ == "__main__":
     )
     s2s_runtime_settings.ssa_event = "Dialogue: 0,0:00:00.00,0:00:02.00,s2s.default,{actor},0000,0000,0000,,{{\\p{m_lev}{trans}{codes}}} {drwng} {{\\p0}}"
 
-    import s2s_main
+    # Must be located in the very end, so that ``s2s_runtime_settings`` got populated.
+    from s2s_main import S2S
 
-    if os.path.isfile(path):
-        s2s_main.S2S(path).ssa_repr()
+    if os_path.isfile(path):
+        S2S(path).ssa_repr()
     else:
         parser.print_help()
