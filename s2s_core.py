@@ -6,9 +6,7 @@ class SVGBasicEntity:
     def dtype(self):
         """Stores string with data type name."""
 
-        raise NotImplementedError(
-            self.__class__.__name__ + ': "dtype" property is not redefined.'
-        )
+        raise NotImplementedError(f"{self.__class__.__name__}: 'dtype' property is not redefined.")
 
     @classmethod
     def from_raw_data(cls, data):
@@ -18,9 +16,7 @@ class SVGBasicEntity:
         and then passes it for construction of :class:`SVGOpacity` itself.
         """
 
-        raise NotImplementedError(
-            cls.__name__ + ': "from_raw_data" class method is not redefined.'
-        )
+        raise NotImplementedError(f"{cls.__name__}: 'from_raw_data' class method is not redefined.")
 
     def ssa_repr(self):
         """SSA representation of SVG data.
@@ -28,9 +24,7 @@ class SVGBasicEntity:
         It does not, or at least should not modify original data.
         """
 
-        raise NotImplementedError(
-            self.__class__.__name__ + ': "ssa_repr" method is not redefined.'
-        )
+        raise NotImplementedError(f"{self.__class__.__name__}: 'ssa_repr' method is not redefined.")
 
     def __add__(self, other):
         """Specifies update rules for attributes aka inheritance.
@@ -40,16 +34,12 @@ class SVGBasicEntity:
         o. 'other' when property inheritance in SVG Rec. is 'no'.
         """
 
-        raise NotImplementedError(
-            self.__class__.__name__ + ': "__add__" method is not redefined.'
-        )
+        raise NotImplementedError(f"{self.__class__.__name__}: '__add__' method is not redefined.")
 
     def __repr__(self):
         """Helps to debug."""
 
-        return '{0}( "{1}", {2} )'.format(
-            self.__class__.__name__, str(self.dtype), str(self.data)
-        )
+        return f"{self.__class__.__name__}( '{self.dtype!s}', {self.data!s} )"
 
 
 class SVGContainerEntity(SVGBasicEntity):

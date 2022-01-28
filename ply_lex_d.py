@@ -16,6 +16,6 @@ def t_NMB(t):
 def t_error(t):
     # Fixme: when t.value[0] will be the last character in the sequence, t.value[1:11] may cause errors.
     raise Exception(
-        'The next illegal character were found in "d" attribute: "{0}".\n'
-        "These characters were right after it: {1}".format(t.value[0], t.value[1:11])
+        f"The next illegal character were found in 'd' attribute: '{t.value[0]}'.\n"
+        f"These characters were right after it: {t.value[1:11]}"
     )

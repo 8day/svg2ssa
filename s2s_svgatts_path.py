@@ -38,7 +38,7 @@ class SVGDSeg(SVGBasicEntity):
 
     def ssa_repr(self):
         tmp = " ".join(str(round(coord)) for coord in self.data)
-        return "{0} {1}".format(SVGDSeg.ssa_comm_type[self.dtype], tmp)
+        return f"{SVGDSeg.ssa_comm_type[self.dtype]} {tmp}"
 
 
 class S2SDYacc:
@@ -180,17 +180,17 @@ class S2SDYacc:
         """a_comm_arg : NMB NMB NMB NMB NMB NMB NMB"""
         if (p[4] < 0 or p[4] > 1) or (p[5] < 0 or p[5] > 1):
             raise Exception(
-                'One of the "flags" in elliptical arc is not valid.\n'
-                "It were found in this sequence: {0}.".format(p[1:7])
+                "One of the 'flags' in elliptical arc is not valid.\n"
+                f"It were found in this sequence: {p[1:7]}."
             )
         else:
             p[0] = [abs(p[1]), abs(p[2]), p[3], p[4], p[5], p[6][0], p[6][1]]
 
     def p_error(self, p):
         raise Exception(
-            'Some error happened while "yacc" were parsing "d" attribute. '
+            "Some error happened while 'yacc' were parsing 'd' attribute. "
             "Looks like he encountered incorrect sequence of tokens.\n"
-            "First ten characters from that sequence: {0}.\n".format(p[0:11])
+            f"First ten characters from that sequence: {p[0:11]}.\n"
         )
 
     tokens = ply_lex_d.tokens

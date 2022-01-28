@@ -5,16 +5,16 @@ import s2s_runtime_settings
 # Code below is slightly modified SVG path BNF for coordinates.
 # digit_sequence = r'(?:[0-9]+)'
 # sign = r'[+-]'
-# exponent = r'(?:[eE]{0}?{1})'.format(sign, digit_sequence)
-# fractional_constant = r'(?:{0}?\.{0}|{0}\.)'.format(digit_sequence)
-# floating_point_constant = r'(?:{0}{1}?|{2}{1})'.format(fractional_constant, exponent, digit_sequence)
+# exponent = f'(?:[eE]{sign}?{digit_sequence})'
+# fractional_constant = f'(?:{digit_sequence}?\\.{digit_sequence}|{digit_sequence}\\.)'
+# floating_point_constant = f'(?:{fractional_constant}{exponent}?|{digit_sequence}{exponent})'
 # integer_constant = digit_sequence
 # Order was swapped because of ambiguity: float is int w/o fraction, but can be
-# changed to r'{0}?(?:{1}|{2})' since 'sign' present in both cases.
-# number = r'{0}?{1}|{0}?{2}'.format(sign, floating_point_constant, integer_constant)
+# changed to f'{sign}?(?:{floating_point_constant}|{integer_constant})' since 'sign' present in both cases.
+# number = f'{sign}?{floating_point_constant}|{sign}?{integer_constant}'
 number = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
-length_number = re.compile(r"^({0})$".format(number))
-length_units = re.compile(r"^({0})(px|pt|pc|cm|mm|in)$".format(number), re.I)
+length_number = re.compile(f"^({number})$")
+length_units = re.compile(f"^({number})(px|pt|pc|cm|mm|in)$", re.I)
 
 
 trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
@@ -54,11 +54,7 @@ def convert_svglength_to_pixels(data):
         elif unit == "in":
             data = length * 90
     else:
-        raise TypeError(
-            'Wrong length unit! String that caused the error contained this: "{0}".'.format(
-                data
-            )
-        )
+        raise TypeError(f"Wrong length unit! String that caused the error contained this: '{data!s}'.")
     return data
 
 

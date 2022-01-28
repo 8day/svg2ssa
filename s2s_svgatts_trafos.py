@@ -20,8 +20,7 @@ class SVGTrafoMixin(SVGBasicEntity):
             tmp = self.matrix + other.matrix
             return tmp
         else:
-            message = ": You have tried to concatenate different types of objects."
-            raise TypeError(self.__class__.__name__ + message)
+            raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
 
 class SVGTrafoMatrix(SVGTrafoMixin):
@@ -51,8 +50,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
         elif isinstance(other, SVGTrafoMixin):
             return self + other.matrix
         else:
-            message = ": You have tried to concatenate different types of objects."
-            raise TypeError(self.__class__.__name__ + message)
+            raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
     def ssa_repr(self):
         return ""
@@ -75,7 +73,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
 
     def ssa_repr(self):
         tx, ty = (round(obj) for obj in self.data)
-        return r"\pos({0},{1})".format(tx, ty)
+        return f"\\pos({tx},{ty})"
 
 
 class SVGTrafoRotate(SVGTrafoMixin):
@@ -104,9 +102,9 @@ class SVGTrafoRotate(SVGTrafoMixin):
     def ssa_repr(self):
         ra, cx, cy = (round(obj) for obj in self.data)
         if ra == 0:
-            return r"\org({0},{1})".format(cx, cy)
+            return f"\\org({cx},{cy})"
         else:
-            return r"\org({0},{1})\frz{2}".format(cx, cy, -ra)
+            return f"\\org({cx},{cy})\frz{-ra}"
 
 
 class SVGTrafoScale(SVGTrafoMixin):
@@ -126,7 +124,7 @@ class SVGTrafoScale(SVGTrafoMixin):
 
     def ssa_repr(self):
         sx, sy = (round(obj) for obj in self.data)
-        return r"\fscx{0}\fscy{1}".format(sx, sy)
+        return f"\\fscx{sx}\fscy{sy}"
 
 
 class SVGTrafoSkewX(SVGTrafoMixin):
@@ -229,9 +227,9 @@ class S2STransformYacc:
 
     def p_error(self, p):
         raise Exception(
-            'Some error happened while "yacc" were parsing "transformation" attribute. '
+            "Some error happened while 'yacc' were parsing 'transformation' attribute. "
             "Looks like he encountered incorrect sequence of tokens.\n"
-            "First ten characters from that sequence: {0}.\n".format(p[0:11])
+            f"First ten characters from that sequence: {p[0:11]}.\n"
         )
 
     tokens = ply_lex_transform.tokens
@@ -279,8 +277,7 @@ class SVGTransform(SVGContainerEntity):
             # Same here.
             data = self.data + [other]
         else:
-            message = ": You have tried to concatenate different types of objects."
-            raise TypeError(self.__class__.__name__ + message)
+            raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
         data = collapse_consecutive_objects(data)
         data = collapse_unnecessary_trafos(data)
         return SVGTransform(data)

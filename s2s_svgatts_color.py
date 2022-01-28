@@ -188,22 +188,18 @@ class SVGColor(SVGBasicEntity):
             tmp[0] = int(tmp[0])
             tmp[1] = int(tmp[1])
             tmp[2] = int(tmp[2])
-            tmp = tuple("{0:02X}".format(comp) for comp in tmp)
+            tmp = tuple(f"{comp:02X}" for comp in tmp)
         elif cls.color_funciri_percent.match(tmp):
             tmp = tmp[4:-1].replace("%", "").split(",")
             tmp[0] = int(tmp[0]) * 255 // 100
             tmp[1] = int(tmp[1]) * 255 // 100
             tmp[2] = int(tmp[2]) * 255 // 100
-            tmp = tuple("{0:02X}".format(comp) for comp in tmp)
+            tmp = tuple(f"{comp:02X}" for comp in tmp)
         elif tmp.lower() in cls.color_keywords:
             tmp = cls.color_keywords[tmp.lower()]
         else:
             # Note: currently out-of-range values raise errors (which is wrong according to SVG Rec 1.1).
-            raise TypeError(
-                "{0}: The next color specified in SVG is malformed or unsupported: {1}.".format(
-                    cls.__name__, data
-                )
-            )
+            raise TypeError(f"{cls.__name__}: The next color specified in SVG is malformed or unsupported: {data}.")
         return cls(tmp)
 
     def __add__(self, other):
@@ -211,7 +207,7 @@ class SVGColor(SVGBasicEntity):
 
     def ssa_repr(self):
         r, g, b = self.data
-        return r"\1c&H{0}{1}{2}&".format(b, g, r)
+        return f"\\1c&H{b}{g}{r}&"
 
 
 class SVGFill(SVGColor):
@@ -241,4 +237,4 @@ class SVGStroke(SVGColor):
 
     def ssa_repr(self):
         r, g, b = self.data
-        return r"\3c&H{0}{1}{2}&".format(b, g, r)
+        return f"\\3c&H{b}{g}{r}&"

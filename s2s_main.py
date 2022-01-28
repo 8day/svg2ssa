@@ -153,7 +153,7 @@ class SVGElement(SVGContainerEntity):
         elif dtype == "g":
             supported = cls.atts_group
         else:
-            raise ValueError("Unknown dtype supplied to SVGElement.from_string(): {0}".format(dtype))
+            raise ValueError(f"Unknown dtype supplied to SVGElement.from_string(): {dtype}.")
         # Filter out unsupported attributes.
         atts = {key: val for key, val in data.items() if key in supported}
         # Unpack properties from "style" to the common set of attributes.

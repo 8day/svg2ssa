@@ -59,8 +59,8 @@ class SVGStrokeWidth(SVGBasicEntity):
 
         stroke = s2s_runtime_settings.stroke_preservation
         if stroke == 0:
-            return r"\bord{0}".format(self.data)
+            return f"\\bord{self.data}"
         elif stroke == 1:
-            return r"\bord{0}".format(self.data / 2)
+            return f"\bord{self.data / 2}"
         else:
-            raise ValueError("Unknown value for 's2s_runtime_settings.stroke_preservation': {0!s}".format(stroke))
+            raise ValueError(f"Unknown value for 's2s_runtime_settings.stroke_preservation': {stroke!s}.")
