@@ -172,43 +172,42 @@ class SVGColor(SVGBasicEntity):
     def dtype(self):
         return "color"
 
-    def preprocess(self, data):
+    @classmethod
+    def from_raw_data(cls, data):
         tmp = re.sub(r"\s+", "", data)
-        if SVGColor.color_hex_full.match(tmp):
+        if cls.color_hex_full.match(tmp):
             tmp = tmp.upper()
             tmp = tmp[1:3], tmp[3:5], tmp[5:7]
-        elif SVGColor.color_hex_short.match(tmp):
+        elif cls.color_hex_short.match(tmp):
             tmp = tmp.upper()
             tmp = tmp[1:2] + tmp[1:2], tmp[2:3] + tmp[2:3], tmp[3:4] + tmp[3:4]
         elif tmp == "none":
             tmp = None
-        elif SVGColor.color_funciri_decimal.match(tmp):
+        elif cls.color_funciri_decimal.match(tmp):
             tmp = tmp[4:-1].split(",")
             tmp[0] = int(tmp[0])
             tmp[1] = int(tmp[1])
             tmp[2] = int(tmp[2])
             tmp = tuple("{0:02X}".format(comp) for comp in tmp)
-        elif SVGColor.color_funciri_percent.match(tmp):
+        elif cls.color_funciri_percent.match(tmp):
             tmp = tmp[4:-1].replace("%", "").split(",")
             tmp[0] = int(tmp[0]) * 255 // 100
             tmp[1] = int(tmp[1]) * 255 // 100
             tmp[2] = int(tmp[2]) * 255 // 100
             tmp = tuple("{0:02X}".format(comp) for comp in tmp)
-        elif tmp.lower() in SVGColor.color_keywords:
-            tmp = SVGColor.color_keywords[tmp.lower()]
+        elif tmp.lower() in cls.color_keywords:
+            tmp = cls.color_keywords[tmp.lower()]
         else:
             # Note: currently out-of-range values raise errors (which is wrong according to SVG Rec 1.1).
             raise TypeError(
                 "{0}: The next color specified in SVG is malformed or unsupported: {1}.".format(
-                    self.__class__.__name__, data
+                    cls.__name__, data
                 )
             )
-        return tmp
+        return cls(tmp)
 
     def update(self, other):
-        tmp = self.__class__()
-        tmp.data = self.data
-        return tmp
+        return self.__class__(self.data)
 
     def convert(self):
         r, g, b = self.data

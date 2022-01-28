@@ -21,7 +21,7 @@ class SVGDSeg(SVGBasicEntity):
 
     ssa_comm_type = dict(M="m", L="l", C="b")
 
-    def __init__(self, dtype=None, data=None):
+    def __init__(self, dtype, data):
         self._dtype = dtype
         super().__init__(data)
 
@@ -33,14 +33,8 @@ class SVGDSeg(SVGBasicEntity):
     def dtype(self, dtype):
         self._dtype = dtype
 
-    def preprocess(self, data):
-        return data
-
     def update(self, other):
-        tmp = self.__class__()
-        tmp.dtype = self.dtype
-        tmp.data = self.data + other.data
-        return tmp
+        return self.__class__(self.dtype, self.data + other.data)
 
     def convert(self):
         tmp = " ".join(str(round(coord)) for coord in self.data)
@@ -223,17 +217,15 @@ class SVGD(SVGContainerEntity):
     def dtype(self):
         return "d"
 
-    def preprocess(self, data):
+    @classmethod
+    def from_raw_data(cls, data):
         lexer = lex(module=ply_lex_d)
         lexer.input(data)
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
-        data = parser.parse(debug=False, lexer=lexer)
-        return data
+        return cls(parser.parse(debug=False, lexer=lexer))
 
     def update(self, other):
-        tmp = self.__class__()
-        tmp.data = self.data + other.data
-        return tmp
+        return self.__class__(self.data + other.data)
 
     def process_abs(self, seg):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data

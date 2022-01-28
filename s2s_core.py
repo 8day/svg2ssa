@@ -1,6 +1,6 @@
 class SVGBasicEntity:
-    def __init__(self, data=None):
-        self._data = self.preprocess(data) if data is not None else None
+    def __init__(self, data):
+        self._data = data
 
     @property
     def data(self):
@@ -18,16 +18,16 @@ class SVGBasicEntity:
             self.__class__.__name__ + ': "dtype" property is not redefined.'
         )
 
-    def preprocess(self, data):
-        """Pre-processes data upon initialisation, if need be.
+    @classmethod
+    def from_raw_data(cls, data):
+        """Converts raw SVG data to classes with proper data.
 
-        Can use keyword-argument with default value of 'None' to check whether
-        to pre-process or not. Such behaviour may be useful when data allready
-        pre-processed.
+        E.g., converts data passed to :class:`SVGOpacity` from ``"0.0"`` to ``0.0``
+        and then passes it for construction of :class:`SVGOpacity` itself.
         """
 
         raise NotImplementedError(
-            self.__class__.__name__ + ': "preprocess" method is not redefined.'
+            cls.__name__ + ': "from_raw_data" class method is not redefined.'
         )
 
     def update(self, other):

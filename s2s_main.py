@@ -48,17 +48,13 @@ class SVGElement(SVGContainerEntity):
         "id": SVGId,
     }
 
-    def __init__(self, dtype=None, data=None):
+    def __init__(self, dtype, data):
         self._dtype = dtype
         super().__init__(data)
 
     @property
     def dtype(self):
         return self._dtype
-
-    @dtype.setter
-    def dtype(self, dtype):
-        self._dtype = dtype
 
     @staticmethod
     def process_exceptional_cases(atts):
@@ -106,10 +102,7 @@ class SVGElement(SVGContainerEntity):
                 path_ctm = SVGTrafoScale(val).matrix
         else:
             # Create trafos with \org(0,0) and CTM for path.
-            trafos = SVGTransform()
-            rotate = SVGTrafoRotate((0, 0, 0))
-            trafos.data = [rotate]
-            atts["transform"] = trafos
+            atts["transform"] = SVGTransform([SVGTrafoRotate((0, 0, 0))])
             val = 2 ** (s2s_runtime_settings.magnification_level - 1)
             val = val, val
             path_ctm = SVGTrafoScale(val).matrix
@@ -118,30 +111,22 @@ class SVGElement(SVGContainerEntity):
         # Process color. 'Fill' attribute has higher priority over 'color'!
         if "fill" in atts:
             if atts["fill"].data is None:
-                tmp = SVGFillOpacity()
-                tmp.data = 0.0
-                atts["fill-opacity"] = tmp
+                atts["fill-opacity"] = SVGFillOpacity(0.0)
                 del atts["fill"]
             if "color" in atts:
                 del atts["color"]
         if "color" in atts:
             if atts["color"].data is None:
-                tmp = SVGFillOpacity()
-                tmp.data = 0.0
-                atts["fill-opacity"] = tmp
+                atts["fill-opacity"] = SVGFillOpacity(0.0)
             else:
-                tmp = SVGFill()
-                tmp.data = atts["color"].data
                 # Fixme: since I stated that "'Fill' attribute has higher priority over 'color'!!!" (is that right at all?!),
                 # maybe I should've checked first whether 'fill' exists so that I exidentally wouldn't override it?!
                 # Todo: check in custom SVG.
-                atts["fill"] = tmp
+                atts["fill"] = SVGFill(atts["color"].data)
             del atts["color"]
         if "stroke" in atts:
             if atts["stroke"].data is None:
-                tmp = SVGStrokeWidth()
-                tmp.data = 0.0
-                atts["stroke-width"] = tmp
+                atts["stroke-width"] = SVGStrokeWidth(0.0)
                 del atts["stroke"]
         # Process opacity.
         if "opacity" in atts:
@@ -160,14 +145,13 @@ class SVGElement(SVGContainerEntity):
             atts["id"] = SVGId("")
         return atts
 
-    def preprocess(self, data):
+    @classmethod
+    def from_raw_data(cls, dtype, data):
         # Select appropriate set of attributes.
-        if self.dtype == "path":
-            supported = (
-                SVGElement.atts_path
-            )  # IT IS COMPLETELY SAFE TO USE 'SELF' TO ACCESS CLASS VARS. IT'S UNSAFE, THOUGH, WHEN I WANT TO EDIT CLASS VARS: I'LL EDIT INSTANCE VARS INSTEAD.
+        if dtype == "path":
+            supported = cls.atts_path
         else:
-            supported = SVGElement.atts_group
+            supported = cls.atts_group
         # Filter out unsupported attributes.
         atts = {key: val for key, val in data.items() if key in supported}
         # Unpack properties from "style" to the common set of attributes.
@@ -176,14 +160,14 @@ class SVGElement(SVGContainerEntity):
             tokens = re.findall(r"(?:([^:]+?):([^;]+?)(?:;|;\Z|\Z))", tokens)
             if tokens:
                 for key, val in tokens:
-                    if key in SVGElement.atts_style:
+                    if key in cls.atts_style:
                         atts.update({key: val})
             del atts["style"]
         # Process attributes.
         atts = {
-            key: SVGElement.atts_to_class_mapping[key](val) for key, val in atts.items()
+            key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()
         }
-        return atts
+        return cls(dtype, atts)
 
     def update(self, other):
         # Note: beware of mutability issues.
@@ -214,7 +198,7 @@ class S2S:
         return nmb
 
     def start_event_for_g(self, atts):
-        curr = SVGElement("g", atts)
+        curr = SVGElement.from_raw_data("g", atts)
         try:
             prev = self.container_stack[-1]
             curr += prev
@@ -227,7 +211,7 @@ class S2S:
             del self.container_stack[-1]
 
     def start_event_for_path(self, atts):
-        curr = SVGElement("path", atts)
+        curr = SVGElement.from_raw_data("path", atts)
         try:
             prev = self.container_stack[-1]
             curr += prev

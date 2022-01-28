@@ -29,19 +29,18 @@ class SVGOpacity(SVGBasicEntity):
     def dtype(self):
         return "opacity"
 
-    def preprocess(self, data):
+    @classmethod
+    def from_raw_data(cls, data):
 
         # Todo: add clamping of out-of-range values.
 
-        return float(data)
+        return cls(float(data))
 
     def update(self, other):
         # Creation of the third object is neccessary
         # since w/o it 'self' or 'other' may (and will)
         # be modified later on, which is wrong.
-        tmp = self.__class__()
-        tmp.data = self.data * other.data
-        return tmp
+        return self.__class__(self.data * other.data)
 
     def convert(self):
         val = 255 - (self.data * 255)

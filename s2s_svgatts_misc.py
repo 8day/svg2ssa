@@ -15,13 +15,12 @@ class SVGId(SVGBasicEntity):
     def dtype(self):
         return "id"
 
-    def preprocess(self, data):
-        return data
+    @classmethod
+    def from_raw_data(cls, data):
+        return cls(data)
 
     def update(self, other):
-        tmp = other.__class__()
-        tmp.data = other.data
-        return tmp
+        return other.__class__(other.data)
 
     def convert(self):
 
@@ -43,13 +42,12 @@ class SVGStrokeWidth(SVGBasicEntity):
     def dtype(self):
         return "stroke-width"
 
-    def preprocess(self, data):
-        return convert_svglength_to_pixels(data)
+    @classmethod
+    def from_raw_data(cls, data):
+        return cls(convert_svglength_to_pixels(data))
 
     def update(self, other):
-        tmp = self.__class__()
-        tmp.data = self.data
-        return tmp
+        return self.__class__(self.data)
 
     def convert(self):
 

@@ -14,10 +14,8 @@ class SVGBlockTrafo(SVGBasicEntity):
 
     def update(self, other):
         if isinstance(other, type(self)):
-            tmp = self.__class__()
             # W/o tuple() this doesn't work.
-            tmp.data = tuple(i + j for i, j in zip(self.data, other.data))
-            return tmp
+            return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
         elif isinstance(other, (SVGBlockTrafo, SVGTransform)):
             tmp = self.matrix + other.matrix
             return tmp
@@ -36,9 +34,6 @@ class SVGTrafoMatrix(SVGBlockTrafo):
     @property
     def matrix(self):
         return self
-
-    def preprocess(self, data):
-        return data
 
     def update(self, other):
         if isinstance(other, SVGTrafoMatrix):
@@ -66,6 +61,9 @@ class SVGTrafoMatrix(SVGBlockTrafo):
 class SVGTrafoTranslate(SVGBlockTrafo):
     """Class for SVG "transform" "translate"."""
 
+    def __init__(self, data):
+        super().__init__(data if len(data) == 2 else (data[0], 0))
+
     @property
     def dtype(self):
         return "translate"
@@ -75,9 +73,6 @@ class SVGTrafoTranslate(SVGBlockTrafo):
         tx, ty = self.data
         return SVGTrafoMatrix((1, 0, 0, 1, tx, ty))
 
-    def preprocess(self, data):
-        return data if len(data) == 2 else (data[0], 0)
-
     def convert(self):
         tx, ty = (round(obj) for obj in self.data)
         return r"\pos({0},{1})".format(tx, ty)
@@ -85,6 +80,9 @@ class SVGTrafoTranslate(SVGBlockTrafo):
 
 class SVGTrafoRotate(SVGBlockTrafo):
     """Class for SVG "transform" "rotate"."""
+
+    def __init__(self, data):
+        super().__init__(data if len(data) == 3 else (data[0], 0, 0))
 
     @property
     def dtype(self):
@@ -103,9 +101,6 @@ class SVGTrafoRotate(SVGBlockTrafo):
             m = mt1 + mr + mt2
         return m
 
-    def preprocess(self, data):
-        return data if len(data) == 3 else (data[0], 0, 0)
-
     def convert(self):
         ra, cx, cy = (round(obj) for obj in self.data)
         if ra == 0:
@@ -117,6 +112,9 @@ class SVGTrafoRotate(SVGBlockTrafo):
 class SVGTrafoScale(SVGBlockTrafo):
     """Class for SVG "transform" "scale"."""
 
+    def __init__(self, data):
+        super().__init__(data if len(data) == 2 else (data[0], data[0]))
+
     @property
     def dtype(self):
         return "scale"
@@ -125,9 +123,6 @@ class SVGTrafoScale(SVGBlockTrafo):
     def matrix(self):
         sx, sy = self.data
         return SVGTrafoMatrix((sx, 0, 0, sy, 0, 0))
-
-    def preprocess(self, data):
-        return data if len(data) == 2 else (data[0], data[0])
 
     def convert(self):
         sx, sy = (round(obj) for obj in self.data)
@@ -146,9 +141,6 @@ class SVGTrafoSkewX(SVGBlockTrafo):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
-    def preprocess(self, data):
-        return data
-
     def convert(self):
         return ""
 
@@ -164,9 +156,6 @@ class SVGTrafoSkewY(SVGBlockTrafo):
     def matrix(self):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
-
-    def preprocess(self, data):
-        return data
 
     def convert(self):
         return ""
@@ -272,14 +261,15 @@ class SVGTransform(SVGContainerEntity):
         else:
             return data[0].matrix
 
-    def preprocess(self, data):
+    @classmethod
+    def from_raw_data(cls, data):
         lexer = lex(module=ply_lex_transform)
         lexer.input(data)
         parser = yacc(module=S2STransformYacc(), write_tables=0, debug=False)
         data = parser.parse(debug=False, lexer=lexer)
         data = collapse_consecutive_objects(data)
         data = collapse_unnecessary_trafos(data)
-        return data
+        return cls(data)
 
     def update(self, other):
         if isinstance(other, SVGTransform):
@@ -293,9 +283,7 @@ class SVGTransform(SVGContainerEntity):
             raise TypeError(self.__class__.__name__ + message)
         data = collapse_consecutive_objects(data)
         data = collapse_unnecessary_trafos(data)
-        trafos = SVGTransform()
-        trafos.data = data
-        return trafos
+        return SVGTransform(data)
 
     def convert(self):
         return "".join(trafo.convert() for trafo in self.data)
