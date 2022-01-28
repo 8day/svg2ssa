@@ -18,7 +18,7 @@ class SVGBasicEntity:
 
         raise NotImplementedError(f"{cls.__name__}: 'from_raw_data' class method is not redefined.")
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         """SSA representation of SVG data.
 
         It does not, or at least should not modify original data.

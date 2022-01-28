@@ -1,4 +1,3 @@
-import s2s_runtime_settings
 from s2s_core import SVGContainerEntity
 from s2s_svgatts_misc import SVGId, SVGStrokeWidth
 from s2s_svgatts_color import SVGColor, SVGFill, SVGStroke
@@ -40,8 +39,9 @@ class SVGElement(SVGContainerEntity):
     def dtype(self):
         return self._dtype
 
-    @staticmethod
-    def process_exceptional_cases(atts):
+    def ssa_repr(self, ssa_repr_config):
+        # Process exceptional cases.
+        atts = self.data
         # Process trafos.
         if "transform" in atts:
             trafos = atts["transform"]
@@ -77,15 +77,15 @@ class SVGElement(SVGContainerEntity):
                     atts["transform"] = trafos + SVGTrafoRotate((0, 0, 0))
             # Create CTM for path to emulate subpixel precision.
             if "matrix" in trafos:
-                val = 2 ** (s2s_runtime_settings.magnification_level - 1)
+                val = 2 ** (ssa_repr_config["magnification_level"] - 1)
                 path_ctm = SVGTrafoScale((val, val)).matrix + trafos.data[0]
             else:
-                val = 2 ** (s2s_runtime_settings.magnification_level - 1)
+                val = 2 ** (ssa_repr_config["magnification_level"] - 1)
                 path_ctm = SVGTrafoScale((val, val)).matrix
         else:
             # Create trafos with \org(0,0) and CTM for path.
             atts["transform"] = SVGTransform([SVGTrafoRotate((0, 0, 0))])
-            val = 2 ** (s2s_runtime_settings.magnification_level - 1)
+            val = 2 ** (ssa_repr_config["magnification_level"] - 1)
             path_ctm = SVGTrafoScale((val, val)).matrix
         # Process path.
         atts["d"].ctm = path_ctm
@@ -124,7 +124,7 @@ class SVGElement(SVGContainerEntity):
         # Process 'id'.
         if not "id" in atts:
             atts["id"] = SVGId("")
-        return atts
+        return {key: att.ssa_repr(ssa_repr_config) for key, att in atts.items()}
 
     @classmethod
     def from_raw_data(cls, dtype, data):
@@ -159,7 +159,3 @@ class SVGElement(SVGContainerEntity):
         for key in prev:
             curr[key] = curr[key] + prev[key] if key in curr else prev[key]
         return self
-
-    def ssa_repr(self):
-        atts = SVGElement.process_exceptional_cases(self.data)
-        return {key: att.ssa_repr() for key, att in atts.items()}

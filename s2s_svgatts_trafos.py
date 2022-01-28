@@ -51,7 +51,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
         else:
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return ""
 
 
@@ -70,7 +70,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
         tx, ty = self.data
         return SVGTrafoMatrix((1, 0, 0, 1, tx, ty))
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         tx, ty = (round(obj) for obj in self.data)
         return f"\\pos({tx},{ty})"
 
@@ -98,7 +98,7 @@ class SVGTrafoRotate(SVGTrafoMixin):
             m = mt1 + mr + mt2
         return m
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         ra, cx, cy = (round(obj) for obj in self.data)
         if ra == 0:
             return f"\\org({cx},{cy})"
@@ -121,7 +121,7 @@ class SVGTrafoScale(SVGTrafoMixin):
         sx, sy = self.data
         return SVGTrafoMatrix((sx, 0, 0, sy, 0, 0))
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         sx, sy = (round(obj) for obj in self.data)
         return f"\\fscx{sx}\fscy{sy}"
 
@@ -138,7 +138,7 @@ class SVGTrafoSkewX(SVGTrafoMixin):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return ""
 
 
@@ -154,7 +154,7 @@ class SVGTrafoSkewY(SVGTrafoMixin):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return ""
 
 
@@ -263,10 +263,7 @@ class SVGTransform(SVGContainerEntity):
         lexer = lex(module=ply_lex_transform)
         lexer.input(data)
         parser = yacc(module=S2STransformYacc(), write_tables=0, debug=False)
-        data = parser.parse(debug=False, lexer=lexer)
-        data = collapse_consecutive_objects(data)
-        data = collapse_unnecessary_trafos(data)
-        return cls(data)
+        return cls(parser.parse(debug=False, lexer=lexer))
 
     def __add__(self, other):
         if isinstance(other, SVGTransform):
@@ -277,9 +274,9 @@ class SVGTransform(SVGContainerEntity):
             data = self.data + [other]
         else:
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
-        data = collapse_consecutive_objects(data)
-        data = collapse_unnecessary_trafos(data)
         return SVGTransform(data)
 
-    def ssa_repr(self):
-        return "".join(trafo.ssa_repr() for trafo in self.data)
+    def ssa_repr(self, ssa_repr_config):
+        trafos = collapse_consecutive_objects(self.data)
+        trafos = collapse_unnecessary_trafos(trafos, ssa_repr_config["unnecessary_transformations"])
+        return "".join(trafo.ssa_repr(ssa_repr_config) for trafo in trafos)

@@ -205,7 +205,7 @@ class SVGColor(SVGBasicEntity):
     def __add__(self, other):
         return self.__class__(self.data)
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         r, g, b = self.data
         return f"\\1c&H{b}{g}{r}&"
 
@@ -235,6 +235,6 @@ class SVGStroke(SVGColor):
     def dtype(self):
         return "stroke"
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         r, g, b = self.data
         return f"\\3c&H{b}{g}{r}&"

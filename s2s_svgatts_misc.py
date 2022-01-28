@@ -1,4 +1,3 @@
-import s2s_runtime_settings
 from s2s_core import SVGBasicEntity
 from s2s_utilities import convert_svglength_to_pixels
 
@@ -22,7 +21,7 @@ class SVGId(SVGBasicEntity):
     def __add__(self, other):
         return other.__class__(other.data)
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
 
         # Commas should be replaced to any random characters.
         # It's neccessary since in SSA they used at a format level.
@@ -49,7 +48,7 @@ class SVGStrokeWidth(SVGBasicEntity):
     def __add__(self, other):
         return self.__class__(self.data)
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
 
         # Note: The way that SSA lays out border differs from that of SVG!
         # Quote from "REC-SVG11-20110816/render.html#PaintingShapesAndText":
@@ -57,10 +56,10 @@ class SVGStrokeWidth(SVGBasicEntity):
         # in effect, half of the paint falls on the interior of the shape and
         # half of the paint falls outside of the shape."
 
-        stroke = s2s_runtime_settings.stroke_preservation
+        stroke = ssa_repr_config["stroke_preservation"]
         if stroke == 0:
             return f"\\bord{self.data}"
         elif stroke == 1:
             return f"\bord{self.data / 2}"
         else:
-            raise ValueError(f"Unknown value for 's2s_runtime_settings.stroke_preservation': {stroke!s}.")
+            raise ValueError(f"Unknown value for ssa_repr_config['stroke_preservation']: {stroke!s}.")

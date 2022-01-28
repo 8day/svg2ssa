@@ -1,5 +1,4 @@
 import re
-import s2s_runtime_settings
 
 
 # Code below is slightly modified SVG path BNF for coordinates.
@@ -15,14 +14,6 @@ import s2s_runtime_settings
 number = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
 length_number = re.compile(f"^({number})$")
 length_units = re.compile(f"^({number})(px|pt|pc|cm|mm|in)$", re.I)
-
-
-trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
-trafos_unnecessary = (
-    trafos_all
-    & set(s2s_runtime_settings.unnecessary_transformations)
-) | {"matrix", "skewX", "skewY"}
-trafos_all_without_unnecessary = trafos_all - trafos_unnecessary
 
 
 def convert_svglength_to_pixels(data):
@@ -95,10 +86,14 @@ def collapse_consecutive_objects_alternative_01(list_of_objects):
     return list_of_objects
 
 
-def collapse_unnecessary_trafos(list_of_trafos):
+def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):
     """Finds repeated, unconsecutive trafos and then collapses
     everything inbetween into the matrix (this is handled by trafos themselves).
     """
+
+    trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
+    trafos_unnecessary = trafos_all & set(unnecessary_transformations) | {"matrix", "skewX", "skewY"}
+    trafos_all_without_unnecessary = trafos_all - trafos_unnecessary
 
     # Create dictionary with trafos indeces.
     dictionary = {}

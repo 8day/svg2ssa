@@ -42,7 +42,7 @@ class SVGOpacity(SVGBasicEntity):
         # be modified later on, which is wrong.
         return self.__class__(self.data * other.data)
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return f"\\alpha&H{round(255 - (self.data * 255)):02X}&"
 
 
@@ -58,7 +58,7 @@ class SVGFillOpacity(SVGOpacity):
     def dtype(self):
         return "fill-opacity"
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return f"\\1a&H{round(255 - (self.data * 255)):02X}&"
 
 
@@ -74,5 +74,5 @@ class SVGStrokeOpacity(SVGOpacity):
     def dtype(self):
         return "stroke-opacity"
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         return f"\\3a&H{round(255 - (self.data * 255)):02X}&"

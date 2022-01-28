@@ -3,7 +3,6 @@ from math import sqrt
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_d
-import s2s_runtime_settings
 from s2s_core import SVGBasicEntity, SVGContainerEntity
 from s2s_utilities import collapse_consecutive_objects
 from s2s_svgatts_trafos import SVGTrafoScale
@@ -36,7 +35,7 @@ class SVGDSeg(SVGBasicEntity):
     def __add__(self, other):
         return self.__class__(self.dtype, self.data + other.data)
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         tmp = " ".join(str(round(coord)) for coord in self.data)
         return f"{SVGDSeg.ssa_comm_type[self.dtype]} {tmp}"
 
@@ -375,8 +374,8 @@ class SVGD(SVGContainerEntity):
         t=t,
     )
 
-    def ssa_repr(self):
+    def ssa_repr(self, ssa_repr_config):
         path = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
-        if s2s_runtime_settings.collapse_consecutive_path_segments == 1:
+        if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
             path = collapse_consecutive_objects(path)
-        return " ".join(seg.ssa_repr() for seg in path)
+        return " ".join(seg.ssa_repr(ssa_repr_config) for seg in path)
