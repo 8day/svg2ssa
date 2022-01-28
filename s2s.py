@@ -30,7 +30,7 @@ class S2S:
         self.width = 1280
         self.height = 720
         self.ssa_repr_config = dict(
-            unnecessary_transformations=[],
+            unnecessary_transformations=set(),
             stroke_preservation=0,
             magnification_level=3,
             collapse_consecutive_path_segments=1,
@@ -222,6 +222,7 @@ if __name__ == "__main__":
     parser.add_argument("path", nargs=REMAINDER)
 
     args = vars(parser.parse_args(sys_argv[1:]))
+    args["unnecessary_transformations"] = set(args["unnecessary_transformations"])
 
     # Pop positional path argument and join path segments split at whitespace.
     path = " ".join(args.pop("path"))

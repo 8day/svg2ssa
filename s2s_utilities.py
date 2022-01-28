@@ -86,13 +86,16 @@ def collapse_consecutive_objects_alternative_01(list_of_objects):
     return list_of_objects
 
 
+trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
+trafos_unsupported = {"matrix", "skewX", "skewY"}
+
+
 def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):
     """Finds repeated, unconsecutive trafos and then collapses
     everything inbetween into the matrix (this is handled by trafos themselves).
     """
 
-    trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
-    trafos_unnecessary = trafos_all & set(unnecessary_transformations) | {"matrix", "skewX", "skewY"}
+    trafos_unnecessary = trafos_all & unnecessary_transformations | trafos_unsupported
     trafos_all_without_unnecessary = trafos_all - trafos_unnecessary
 
     # Create dictionary with trafos indeces.
