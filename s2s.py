@@ -20,11 +20,7 @@ from s2s_utilities import convert_svglength_to_pixels
 class S2S:
     """This is 'main()', if you like. Spins all the machinery behind it."""
 
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.reset_to_defaults()
-
-    def reset_to_defaults(self):
+    def __init__(self):
         self.element_stack = []
         self.container_stack = []
         self.width = 1280
@@ -113,9 +109,7 @@ class S2S:
 
     end = dict(path=end_event_for_path, g=end_event_for_g, svg=end_event_for_svg)
 
-    def ssa_repr(self, ssa_repr_config):
-        filepath = self.filepath
-
+    def from_file(self, filepath):
         for action, element in etree.iterparse(filepath, ("start", "end")):
             ns_name, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
             if action == "start":
@@ -125,19 +119,14 @@ class S2S:
                 if local_name in S2S.end:
                     S2S.end[local_name](self)
 
-        ssa_table = []
-        for element in self.element_stack:
-            atts = element.ssa_repr(ssa_repr_config)
-            ssa_table.append(
-                ssa_repr_config["ssa_event"].format(
-                    actor=atts.pop("id"),
-                    trans=atts.pop("transform"),
-                    drwng=atts.pop("d"),
-                    m_lev=ssa_repr_config["magnification_level"],
-                    codes="".join(atts.values()),
-                )
-            )
-        ssa_table = "\n".join(ssa_table)
+    def to_file(self, filepath, ssa_repr_config):
+        ssa = self.ssa_repr({**self.ssa_repr_config, **ssa_repr_config})
+        with open(filepath, "w+t", buffering=65536) as fh:
+            fh.write(ssa)
+            fh.write("\n")
+
+    def ssa_repr(self, ssa_repr_config):
+        ssa = []
 
         if self.width is not None and self.height is not None:
             width = convert_svglength_to_pixels(self.width)
@@ -147,19 +136,19 @@ class S2S:
         else:
             width = ssa_repr_config["ssa_default_playresx"]
             height = ssa_repr_config["ssa_default_playresx"]
-        ssa_header = ssa_repr_config["ssa_header"].format(width=width, height=height)
+        ssa.append(ssa_repr_config["ssa_header"].format(width=width, height=height))
 
-        with open(filepath + ".ass", "w+t", buffering=65536) as fh:
-            fh.write(ssa_header)
-            fh.write("\n")
-            fh.write(ssa_table)
-            fh.write("\n")
-            print(
-                "Successfully converted:",
-                filepath if len(filepath) < 52 else "..." + filepath[-52:],
-            )
+        for element in self.element_stack:
+            atts = element.ssa_repr(ssa_repr_config)
+            ssa.append(ssa_repr_config["ssa_event"].format(
+                actor=atts.pop("id"),
+                trans=atts.pop("transform"),
+                drwng=atts.pop("d"),
+                m_lev=ssa_repr_config["magnification_level"],
+                codes="".join(atts.values()),
+            ))
 
-        self.reset_to_defaults()
+        return "\n".join(ssa)
 
 
 if __name__ == "__main__":
@@ -228,9 +217,10 @@ if __name__ == "__main__":
     path = " ".join(args.pop("path"))
 
     if os_path.isfile(path):
-        s2s = S2S(path)
+        s2s = S2S()
+        s2s.from_file(path)
         # User shouldn't be able to inject anything bad because :mod:`argparse` checks whether option is supported, so this should be safe.
         # :mod:`argparse` maps data to ``--``-prefixed options instead of ``-``-prefixed, therefore this will result in something like ``stroke_preservation = 1`` and not ``s = 1`` or whatever.
-        s2s.ssa_repr({**s2s.ssa_repr_config, **args})
+        s2s.to_file(path + ".ass", args)
     else:
         parser.print_help()
