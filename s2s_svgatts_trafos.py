@@ -9,14 +9,14 @@ from s2s_core import SVGBasicEntity, SVGContainerEntity
 from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_trafos
 
 
-class SVGBlockTrafo(SVGBasicEntity):
+class SVGTrafoMixin(SVGBasicEntity):
     """Generalised superclass for SVG "transform" attribute and its "values"."""
 
     def __add__(self, other):
         if isinstance(other, type(self)):
             # W/o tuple() this doesn't work.
             return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
-        elif isinstance(other, (SVGBlockTrafo, SVGTransform)):
+        elif isinstance(other, (SVGTrafoMixin, SVGTransform)):
             tmp = self.matrix + other.matrix
             return tmp
         else:
@@ -24,7 +24,7 @@ class SVGBlockTrafo(SVGBasicEntity):
             raise TypeError(self.__class__.__name__ + message)
 
 
-class SVGTrafoMatrix(SVGBlockTrafo):
+class SVGTrafoMatrix(SVGTrafoMixin):
     """Class for SVG "transform" "matrix"."""
 
     @property
@@ -48,7 +48,7 @@ class SVGTrafoMatrix(SVGBlockTrafo):
                 ctm[1] * m[4] + ctm[3] * m[5] + ctm[5],
             )
             return SVGTrafoMatrix(data)
-        elif isinstance(other, SVGBlockTrafo):
+        elif isinstance(other, SVGTrafoMixin):
             return self + other.matrix
         else:
             message = ": You have tried to concatenate different types of objects."
@@ -58,7 +58,7 @@ class SVGTrafoMatrix(SVGBlockTrafo):
         return ""
 
 
-class SVGTrafoTranslate(SVGBlockTrafo):
+class SVGTrafoTranslate(SVGTrafoMixin):
     """Class for SVG "transform" "translate"."""
 
     def __init__(self, data):
@@ -78,7 +78,7 @@ class SVGTrafoTranslate(SVGBlockTrafo):
         return r"\pos({0},{1})".format(tx, ty)
 
 
-class SVGTrafoRotate(SVGBlockTrafo):
+class SVGTrafoRotate(SVGTrafoMixin):
     """Class for SVG "transform" "rotate"."""
 
     def __init__(self, data):
@@ -109,7 +109,7 @@ class SVGTrafoRotate(SVGBlockTrafo):
             return r"\org({0},{1})\frz{2}".format(cx, cy, -ra)
 
 
-class SVGTrafoScale(SVGBlockTrafo):
+class SVGTrafoScale(SVGTrafoMixin):
     """Class for SVG "transform" "scale"."""
 
     def __init__(self, data):
@@ -129,7 +129,7 @@ class SVGTrafoScale(SVGBlockTrafo):
         return r"\fscx{0}\fscy{1}".format(sx, sy)
 
 
-class SVGTrafoSkewX(SVGBlockTrafo):
+class SVGTrafoSkewX(SVGTrafoMixin):
     """Class for SVG "transform" "skewX"."""
 
     @property
@@ -145,7 +145,7 @@ class SVGTrafoSkewX(SVGBlockTrafo):
         return ""
 
 
-class SVGTrafoSkewY(SVGBlockTrafo):
+class SVGTrafoSkewY(SVGTrafoMixin):
     """Class for SVG "transform" "skewY"."""
 
     @property
@@ -275,7 +275,7 @@ class SVGTransform(SVGContainerEntity):
         if isinstance(other, SVGTransform):
             # Is this the right order?!
             data = self.data + other.data
-        elif isinstance(other, SVGBlockTrafo):
+        elif isinstance(other, SVGTrafoMixin):
             # Same here.
             data = self.data + [other]
         else:
