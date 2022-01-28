@@ -39,6 +39,32 @@ class SVGElement(SVGContainerEntity):
     def dtype(self):
         return self._dtype
 
+    @classmethod
+    def from_raw_data(cls, dtype, data):
+        # Select appropriate set of attributes.
+        if dtype == "path":
+            supported = cls.atts_path
+        elif dtype == "g":
+            supported = cls.atts_group
+        else:
+            raise ValueError(f"Unknown dtype supplied to SVGElement.from_string(): {dtype}.")
+        # Filter out unsupported attributes.
+        atts = {key: val for key, val in data.items() if key in supported}
+        # Unpack properties from "style" to the common set of attributes.
+        if "style" in atts:
+            tokens = re.sub("\s+", "", atts["style"])
+            tokens = re.findall(r"(?:([^:]+?):([^;]+?)(?:;|;\Z|\Z))", tokens)
+            if tokens:
+                for key, val in tokens:
+                    if key in cls.atts_style:
+                        atts[key] = val
+            del atts["style"]
+        # Process attributes.
+        atts = {
+            key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()
+        }
+        return cls(dtype, atts)
+
     def ssa_repr(self, ssa_repr_config):
         # Process exceptional cases.
         atts = self.data
@@ -125,32 +151,6 @@ class SVGElement(SVGContainerEntity):
         if not "id" in atts:
             atts["id"] = SVGId("")
         return {key: att.ssa_repr(ssa_repr_config) for key, att in atts.items()}
-
-    @classmethod
-    def from_raw_data(cls, dtype, data):
-        # Select appropriate set of attributes.
-        if dtype == "path":
-            supported = cls.atts_path
-        elif dtype == "g":
-            supported = cls.atts_group
-        else:
-            raise ValueError(f"Unknown dtype supplied to SVGElement.from_string(): {dtype}.")
-        # Filter out unsupported attributes.
-        atts = {key: val for key, val in data.items() if key in supported}
-        # Unpack properties from "style" to the common set of attributes.
-        if "style" in atts:
-            tokens = re.sub("\s+", "", atts["style"])
-            tokens = re.findall(r"(?:([^:]+?):([^;]+?)(?:;|;\Z|\Z))", tokens)
-            if tokens:
-                for key, val in tokens:
-                    if key in cls.atts_style:
-                        atts[key] = val
-            del atts["style"]
-        # Process attributes.
-        atts = {
-            key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()
-        }
-        return cls(dtype, atts)
 
     def __add__(self, other):
         # Note: beware of mutability issues.

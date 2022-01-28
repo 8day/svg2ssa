@@ -202,12 +202,12 @@ class SVGColor(SVGBasicEntity):
             raise TypeError(f"{cls.__name__}: The next color specified in SVG is malformed or unsupported: {data}.")
         return cls(tmp)
 
-    def __add__(self, other):
-        return self.__class__(self.data)
-
     def ssa_repr(self, ssa_repr_config):
         r, g, b = self.data
         return f"\\1c&H{b}{g}{r}&"
+
+    def __add__(self, other):
+        return self.__class__(self.data)
 
 
 class SVGFill(SVGColor):

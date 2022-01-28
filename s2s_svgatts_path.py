@@ -32,12 +32,12 @@ class SVGDSeg(SVGBasicEntity):
     def dtype(self, dtype):
         self._dtype = dtype
 
-    def __add__(self, other):
-        return self.__class__(self.dtype, self.data + other.data)
-
     def ssa_repr(self, ssa_repr_config):
         tmp = " ".join(str(round(coord)) for coord in self.data)
         return f"{SVGDSeg.ssa_comm_type[self.dtype]} {tmp}"
+
+    def __add__(self, other):
+        return self.__class__(self.dtype, self.data + other.data)
 
 
 class S2SDYacc:
@@ -223,9 +223,6 @@ class SVGD(SVGContainerEntity):
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    def __add__(self, other):
-        return self.__class__(self.data + other.data)
-
     def process_abs(self, seg):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
         coords = seg.data
@@ -379,3 +376,6 @@ class SVGD(SVGContainerEntity):
         if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
             path = collapse_consecutive_objects(path)
         return " ".join(seg.ssa_repr(ssa_repr_config) for seg in path)
+
+    def __add__(self, other):
+        return self.__class__(self.data + other.data)

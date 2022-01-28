@@ -36,14 +36,14 @@ class SVGOpacity(SVGBasicEntity):
 
         return cls(float(data))
 
+    def ssa_repr(self, ssa_repr_config):
+        return f"\\alpha&H{round(255 - (self.data * 255)):02X}&"
+
     def __add__(self, other):
         # Creation of the third object is neccessary
         # since w/o it 'self' or 'other' may (and will)
         # be modified later on, which is wrong.
         return self.__class__(self.data * other.data)
-
-    def ssa_repr(self, ssa_repr_config):
-        return f"\\alpha&H{round(255 - (self.data * 255)):02X}&"
 
 
 class SVGFillOpacity(SVGOpacity):
