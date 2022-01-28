@@ -57,7 +57,10 @@ class SVGStrokeWidth(SVGBasicEntity):
         # in effect, half of the paint falls on the interior of the shape and
         # half of the paint falls outside of the shape."
 
-        if s2s_runtime_settings.stroke_preservation == 0:
+        stroke = s2s_runtime_settings.stroke_preservation
+        if stroke == 0:
             return r"\bord{0}".format(self.data)
-        else:
+        elif stroke == 1:
             return r"\bord{0}".format(self.data / 2)
+        else:
+            raise ValueError("Unknown value for 's2s_runtime_settings.stroke_preservation': {0!s}".format(stroke))
