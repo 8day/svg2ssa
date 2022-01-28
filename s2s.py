@@ -134,7 +134,7 @@ class S2S:
                     trans=atts.pop("transform"),
                     drwng=atts.pop("d"),
                     m_lev=ssa_repr_config["magnification_level"],
-                    codes="".join(obj for key, obj in atts.items()),
+                    codes="".join(atts.values()),
                 )
             )
         ssa_table = "\n".join(ssa_table)
