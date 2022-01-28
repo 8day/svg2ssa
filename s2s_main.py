@@ -14,11 +14,11 @@ except ImportError:
     from xml.etree import ElementTree as etree
 
 import s2s_runtime_settings
-from s2s_core import *
+from s2s_core import SVGContainerEntity
 from s2s_utilities import convert_svglength_to_pixels
-from s2s_svgatts_misc import *
-from s2s_svgatts_color import *
-from s2s_svgatts_opacity import *
+from s2s_svgatts_misc import SVGId, SVGStrokeWidth
+from s2s_svgatts_color import SVGColor, SVGFill, SVGStroke
+from s2s_svgatts_opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity
 from s2s_svgatts_trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
 from s2s_svgatts_path import SVGD
 
