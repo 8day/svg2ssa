@@ -17,8 +17,7 @@ class SVGTrafoMixin(SVGBasicEntity):
             # W/o tuple() this doesn't work.
             return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
         elif isinstance(other, (SVGTrafoMixin, SVGTransform)):
-            tmp = self.matrix + other.matrix
-            return tmp
+            return self.matrix + other.matrix
         else:
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 

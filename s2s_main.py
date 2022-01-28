@@ -94,18 +94,15 @@ class SVGElement(SVGContainerEntity):
             # Create CTM for path to emulate subpixel precision.
             if "matrix" in trafos:
                 val = 2 ** (s2s_runtime_settings.magnification_level - 1)
-                val = val, val
-                path_ctm = SVGTrafoScale(val).matrix + trafos.data[0]
+                path_ctm = SVGTrafoScale((val, val)).matrix + trafos.data[0]
             else:
                 val = 2 ** (s2s_runtime_settings.magnification_level - 1)
-                val = val, val
-                path_ctm = SVGTrafoScale(val).matrix
+                path_ctm = SVGTrafoScale((val, val)).matrix
         else:
             # Create trafos with \org(0,0) and CTM for path.
             atts["transform"] = SVGTransform([SVGTrafoRotate((0, 0, 0))])
             val = 2 ** (s2s_runtime_settings.magnification_level - 1)
-            val = val, val
-            path_ctm = SVGTrafoScale(val).matrix
+            path_ctm = SVGTrafoScale((val, val)).matrix
         # Process path.
         atts["d"].ctm = path_ctm
         # Process color. 'Fill' attribute has higher priority over 'color'!
@@ -163,7 +160,7 @@ class SVGElement(SVGContainerEntity):
             if tokens:
                 for key, val in tokens:
                     if key in cls.atts_style:
-                        atts.update({key: val})
+                        atts[key] = val
             del atts["style"]
         # Process attributes.
         atts = {
@@ -173,7 +170,8 @@ class SVGElement(SVGContainerEntity):
 
     def __add__(self, other):
         # Note: beware of mutability issues.
-        curr, prev = self.data, other.data
+        curr = self.data
+        prev = other.data
         for key in prev:
             curr[key] = curr[key] + prev[key] if key in curr else prev[key]
         return self

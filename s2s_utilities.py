@@ -20,7 +20,7 @@ length_units = re.compile(f"^({number})(px|pt|pc|cm|mm|in)$", re.I)
 trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
 trafos_unnecessary = (
     trafos_all
-    & {element for element in s2s_runtime_settings.unnecessary_transformations}
+    & set(s2s_runtime_settings.unnecessary_transformations)
 ) | {"matrix", "skewX", "skewY"}
 trafos_all_without_unnecessary = trafos_all - trafos_unnecessary
 
@@ -40,7 +40,8 @@ def convert_svglength_to_pixels(data):
         data = float(data)
     elif length_units.search(data):
         search_result = length_units.search(data)
-        length, unit = float(search_result.group(1)), search_result.group(2).lower()
+        length = float(search_result.group(1))
+        unit = search_result.group(2).lower()
         if unit == "px":
             data = length
         elif unit == "pt":
@@ -100,7 +101,7 @@ def collapse_unnecessary_trafos(list_of_trafos):
     """
 
     # Create dictionary with trafos indeces.
-    dictionary = dict()
+    dictionary = {}
     for i, trafo in enumerate(list_of_trafos):
         if trafo.dtype in dictionary:
             dictionary[trafo.dtype].append(i)

@@ -293,8 +293,7 @@ class SVGD(SVGContainerEntity):
         return self.process_abs(seg)
 
     def l(self, seg):
-        seg = self.process_rel(seg)
-        return self.L(seg)
+        return self.L(self.process_rel(seg))
 
     def H(self, seg):
         seg.dtype = "L"
@@ -321,8 +320,7 @@ class SVGD(SVGContainerEntity):
         return self.process_abs(seg)
 
     def c(self, seg):
-        seg = self.process_rel(seg)
-        return self.C(seg)
+        return self.C(self.process_rel(seg))
 
     def S(self, seg):
         seg.dtype = "C"
@@ -330,8 +328,7 @@ class SVGD(SVGContainerEntity):
         return self.C(seg)
 
     def s(self, seg):
-        seg = self.process_rel(seg)
-        return self.S(seg)
+        return self.S(self.process_rel(seg))
 
     def Q(self, seg):  # unique command type
         qp0x, qp0y = self.last_abs_seg.data[-2:]
@@ -349,8 +346,7 @@ class SVGD(SVGContainerEntity):
         return self.process_abs(seg)
 
     def q(self, seg):
-        seg = self.process_rel(seg)
-        return self.Q(seg)
+        return self.Q(self.process_rel(seg))
 
     def T(self, seg):
         seg.dtype = "Q"
@@ -358,8 +354,7 @@ class SVGD(SVGContainerEntity):
         return self.Q(seg)
 
     def t(self, seg):
-        seg = self.process_rel(seg)
-        return self.T(seg)
+        return self.T(self.process_rel(seg))
 
     processing_method = dict(
         M=M,
@@ -381,9 +376,7 @@ class SVGD(SVGContainerEntity):
     )
 
     def ssa_repr(self):
-        path = self.data
-        path = [SVGD.processing_method[seg.dtype](self, seg) for seg in path]
+        path = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
         if s2s_runtime_settings.collapse_consecutive_path_segments == 1:
             path = collapse_consecutive_objects(path)
-        path = " ".join(seg.ssa_repr() for seg in path)
-        return path
+        return " ".join(seg.ssa_repr() for seg in path)

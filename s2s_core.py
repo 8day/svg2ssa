@@ -63,7 +63,4 @@ class SVGContainerEntity(SVGBasicEntity):
         del self.data[key]
 
     def __contains__(self, item):
-        if any(obj.dtype == item for obj in self.data):
-            return True
-        else:
-            return False
+        return any(obj.dtype == item for obj in self.data)
