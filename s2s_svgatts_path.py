@@ -22,8 +22,8 @@ class SVGDSeg(SVGBasicEntity):
     ssa_comm_type = dict(M="m", L="l", C="b")
 
     def __init__(self, dtype=None, data=None):
-        super().__init__(data)
         self._dtype = dtype
+        super().__init__(data)
 
     @property
     def dtype(self):
