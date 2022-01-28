@@ -1,14 +1,6 @@
 class SVGBasicEntity:
     def __init__(self, data):
-        self._data = data
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        self._data = data
+        self.data = data
 
     @property
     def dtype(self):
@@ -67,26 +59,26 @@ class SVGBasicEntity:
 
 class SVGContainerEntity(SVGBasicEntity):
     def __bool__(self):
-        return True if self._data else False
+        return True if self.data else False
 
     def __iter__(self):
-        for obj in self._data:
+        for obj in self.data:
             yield obj
 
     def __len__(self):
-        return len(self._data)
+        return len(self.data)
 
     def __getitem__(self, key):
-        return self._data[key]
+        return self.data[key]
 
     def __setitem__(self, key, val):
-        self._data[key] = val
+        self.data[key] = val
 
     def __delitem__(self, key):
-        del self._data[key]
+        del self.data[key]
 
     def __contains__(self, item):
-        if any(obj.dtype == item for obj in self._data):
+        if any(obj.dtype == item for obj in self.data):
             return True
         else:
             return False
