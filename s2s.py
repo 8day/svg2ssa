@@ -99,6 +99,6 @@ if __name__ == "__main__":
     import s2s_main
 
     if os.path.isfile(path):
-        s2s_main.S2S(path).convert()
+        s2s_main.S2S(path).ssa_repr()
     else:
         parser.print_help()

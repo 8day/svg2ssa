@@ -54,7 +54,7 @@ class SVGTrafoMatrix(SVGBlockTrafo):
             message = ": You have tried to concatenate different types of objects."
             raise TypeError(self.__class__.__name__ + message)
 
-    def convert(self):
+    def ssa_repr(self):
         return ""
 
 
@@ -73,7 +73,7 @@ class SVGTrafoTranslate(SVGBlockTrafo):
         tx, ty = self.data
         return SVGTrafoMatrix((1, 0, 0, 1, tx, ty))
 
-    def convert(self):
+    def ssa_repr(self):
         tx, ty = (round(obj) for obj in self.data)
         return r"\pos({0},{1})".format(tx, ty)
 
@@ -101,7 +101,7 @@ class SVGTrafoRotate(SVGBlockTrafo):
             m = mt1 + mr + mt2
         return m
 
-    def convert(self):
+    def ssa_repr(self):
         ra, cx, cy = (round(obj) for obj in self.data)
         if ra == 0:
             return r"\org({0},{1})".format(cx, cy)
@@ -124,7 +124,7 @@ class SVGTrafoScale(SVGBlockTrafo):
         sx, sy = self.data
         return SVGTrafoMatrix((sx, 0, 0, sy, 0, 0))
 
-    def convert(self):
+    def ssa_repr(self):
         sx, sy = (round(obj) for obj in self.data)
         return r"\fscx{0}\fscy{1}".format(sx, sy)
 
@@ -141,7 +141,7 @@ class SVGTrafoSkewX(SVGBlockTrafo):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
-    def convert(self):
+    def ssa_repr(self):
         return ""
 
 
@@ -157,7 +157,7 @@ class SVGTrafoSkewY(SVGBlockTrafo):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
 
-    def convert(self):
+    def ssa_repr(self):
         return ""
 
 
@@ -285,5 +285,5 @@ class SVGTransform(SVGContainerEntity):
         data = collapse_unnecessary_trafos(data)
         return SVGTransform(data)
 
-    def convert(self):
-        return "".join(trafo.convert() for trafo in self.data)
+    def ssa_repr(self):
+        return "".join(trafo.ssa_repr() for trafo in self.data)

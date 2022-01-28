@@ -22,7 +22,7 @@ class SVGId(SVGBasicEntity):
     def __add__(self, other):
         return other.__class__(other.data)
 
-    def convert(self):
+    def ssa_repr(self):
 
         # Commas should be replaced to any random characters.
         # It's neccessary since in SSA they used at a format level.
@@ -49,7 +49,7 @@ class SVGStrokeWidth(SVGBasicEntity):
     def __add__(self, other):
         return self.__class__(self.data)
 
-    def convert(self):
+    def ssa_repr(self):
 
         # Note: The way that SSA lays out border differs from that of SVG!
         # Quote from "REC-SVG11-20110816/render.html#PaintingShapesAndText":

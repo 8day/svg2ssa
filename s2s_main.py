@@ -176,9 +176,9 @@ class SVGElement(SVGContainerEntity):
             curr[key] = curr[key] + prev[key] if key in curr else prev[key]
         return self
 
-    def convert(self):
+    def ssa_repr(self):
         atts = SVGElement.process_exceptional_cases(self.data)
-        return {key: att.convert() for key, att in atts.items()}
+        return {key: att.ssa_repr() for key, att in atts.items()}
 
 
 class S2S:
@@ -247,7 +247,7 @@ class S2S:
 
     end = dict(path=end_event_for_path, g=end_event_for_g, svg=end_event_for_svg)
 
-    def convert(self):
+    def ssa_repr(self):
         filepath = self.filepath
         for action, element in etree.iterparse(filepath, ("start", "end")):
             ns_name, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
@@ -260,7 +260,7 @@ class S2S:
 
         ssa_table = []
         for element in self.element_stack:
-            atts = element.convert()
+            atts = element.ssa_repr()
             ssa_table.append(
                 s2s_runtime_settings.ssa_event.format(
                     actor=atts.pop("id"),

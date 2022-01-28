@@ -22,14 +22,14 @@ class SVGBasicEntity:
             cls.__name__ + ': "from_raw_data" class method is not redefined.'
         )
 
-    def convert(self):
-        """Converts data to desired view/representation, which in this case is SSA format.
+    def ssa_repr(self):
+        """SSA representation of SVG data.
 
         It does not, or at least should not modify original data.
         """
 
         raise NotImplementedError(
-            self.__class__.__name__ + ': "convert" method is not redefined.'
+            self.__class__.__name__ + ': "ssa_repr" method is not redefined.'
         )
 
     def __add__(self, other):
