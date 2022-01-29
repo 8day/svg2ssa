@@ -6,7 +6,7 @@ from s2s_svgatts_trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
 from s2s_svgatts_path import SVGD
 
 
-class SVGElement(SVGContainerEntity):
+class SVGElementMixin(SVGContainerEntity):
     """Converts all the attributes that other classes feed him.
 
     Currently works only with "path" and "g".
@@ -16,8 +16,6 @@ class SVGElement(SVGContainerEntity):
     atts_opacity = {"opacity", "fill-opacity", "stroke-opacity"}
     atts_rest = {"stroke-width"}
     atts_style = atts_color | atts_opacity | atts_rest
-    atts_path = {"d", "id", "transform", "style"} | atts_style
-    atts_group = {"transform", "style"} | atts_style
     atts_to_class_mapping = {
         "transform": SVGTransform,
         "color": SVGColor,
@@ -31,25 +29,10 @@ class SVGElement(SVGContainerEntity):
         "id": SVGId,
     }
 
-    def __init__(self, dtype, data):
-        self._dtype = dtype
-        super().__init__(data)
-
-    @property
-    def dtype(self):
-        return self._dtype
-
     @classmethod
-    def from_raw_data(cls, dtype, data):
-        # Select appropriate set of attributes.
-        if dtype == "path":
-            supported = cls.atts_path
-        elif dtype == "g":
-            supported = cls.atts_group
-        else:
-            raise ValueError(f"Unknown dtype supplied to SVGElement.from_string(): {dtype}.")
+    def from_raw_data(cls, data):
         # Filter out unsupported attributes.
-        atts = {key: val for key, val in data.items() if key in supported}
+        atts = {key: val for key, val in data.items() if key in cls.supported}
         # Unpack properties from "style" to the common set of attributes.
         if "style" in atts:
             tokens = re.sub("\s+", "", atts["style"])
@@ -63,7 +46,31 @@ class SVGElement(SVGContainerEntity):
         atts = {
             key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()
         }
-        return cls(dtype, atts)
+        return cls(atts)
+
+    def __add__(self, other):
+        # Note: beware of mutability issues.
+        curr = self.data
+        prev = other.data
+        for key in prev:
+            curr[key] = curr[key] + prev[key] if key in curr else prev[key]
+        return self
+
+
+class SVGElementG(SVGElementMixin):
+    supported = {"transform", "style"} | SVGElementMixin.atts_style
+
+    @property
+    def dtype(self):
+        return "g"
+
+
+class SVGElementPath(SVGElementMixin):
+    supported = {"d", "id", "transform", "style"} | SVGElementMixin.atts_style
+
+    @property
+    def dtype(self):
+        return "path"
 
     def ssa_repr(self, ssa_repr_config):
         # Process exceptional cases.
@@ -151,11 +158,3 @@ class SVGElement(SVGContainerEntity):
         if not "id" in atts:
             atts["id"] = SVGId("")
         return {key: att.ssa_repr(ssa_repr_config) for key, att in atts.items()}
-
-    def __add__(self, other):
-        # Note: beware of mutability issues.
-        curr = self.data
-        prev = other.data
-        for key in prev:
-            curr[key] = curr[key] + prev[key] if key in curr else prev[key]
-        return self

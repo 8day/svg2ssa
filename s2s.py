@@ -13,7 +13,7 @@ except ImportError:
     # See: http://lxml.de/compatibility.html
     from xml.etree import ElementTree as etree
 
-from s2s_elems import SVGElement
+from s2s_elems import SVGElementG, SVGElementPath
 from s2s_utilities import convert_svglength_to_pixels
 
 
@@ -76,7 +76,7 @@ class SVG:
         return nmb
 
     def _g_started(self, atts):
-        curr = SVGElement.from_raw_data("g", atts)
+        curr = SVGElementG.from_raw_data(atts)
         try:
             prev = self.container_stack[-1]
             curr += prev
@@ -89,7 +89,7 @@ class SVG:
             del self.container_stack[-1]
 
     def _path_started(self, atts):
-        curr = SVGElement.from_raw_data("path", atts)
+        curr = SVGElementPath.from_raw_data(atts)
         try:
             prev = self.container_stack[-1]
             curr += prev
