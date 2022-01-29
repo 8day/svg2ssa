@@ -25,8 +25,8 @@ class SVG:
     """This is 'main()', if you like. Spins all the machinery behind it."""
 
     def __init__(self):
-        self.element_stack = []
-        self.container_stack = []
+        self.terminal_element_stack = []
+        self.container_element_stack = []
         self.width = DEFAULT_WIDTH
         self.height = DEFAULT_HEIGHT
         self.default_ssa_repr_config = dict(
@@ -78,24 +78,24 @@ class SVG:
     def _g_started(self, atts):
         curr = SVGElementG.from_raw_data(atts)
         try:
-            prev = self.container_stack[-1]
+            prev = self.container_element_stack[-1]
             curr += prev
         except IndexError:
             pass
-        self.container_stack.append(curr)
+        self.container_element_stack.append(curr)
 
     def _g_ended(self):
-        if self.container_stack:
-            del self.container_stack[-1]
+        if self.container_element_stack:
+            del self.container_element_stack[-1]
 
     def _path_started(self, atts):
         curr = SVGElementPath.from_raw_data(atts)
         try:
-            prev = self.container_stack[-1]
+            prev = self.container_element_stack[-1]
             curr += prev
         except IndexError:
             pass
-        self.element_stack.append(curr)
+        self.terminal_element_stack.append(curr)
 
     def _path_ended(self):
         pass
@@ -140,7 +140,7 @@ class SVG:
             height = ssa_repr_config["default_playresx"]
         ssa.append(ssa_repr_config["header_template"].format(width=width, height=height))
 
-        for element in self.element_stack:
+        for element in self.terminal_element_stack:
             atts = element.ssa_repr(ssa_repr_config)
             ssa.append(ssa_repr_config["event_template"].format(
                 actor=atts.pop("id"),
