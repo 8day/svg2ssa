@@ -230,7 +230,6 @@ class SVGD(SVGContainerEntity):
             x, y = coords[i], coords[i + 1]
             coords[i] = ctma * x + ctmc * y + ctme
             coords[i + 1] = ctmb * x + ctmd * y + ctmf
-        seg.data = coords
         return seg
 
     def process_rel(self, seg):
@@ -240,7 +239,6 @@ class SVGD(SVGContainerEntity):
             coords[i] += cpx
             coords[i + 1] += cpy
         seg.dtype = seg.dtype.upper()
-        seg.data = coords
         return seg
 
     def get_control_point_unoptimised_reference(self, seg):
@@ -278,10 +276,8 @@ class SVGD(SVGContainerEntity):
 
     def m(self, seg):
         seg.dtype = "M"
-        seg.data = [
-            seg.data[0] + self.last_abs_moveto.data[0],
-            seg.data[1] + self.last_abs_moveto.data[1],
-        ]
+        seg.data[0] += self.last_abs_moveto.data[0]
+        seg.data[1] += self.last_abs_moveto.data[1]
         return self.M(seg)
 
     def L(self, seg):  # unique command type
@@ -293,22 +289,22 @@ class SVGD(SVGContainerEntity):
 
     def H(self, seg):
         seg.dtype = "L"
-        seg.data = [seg.data[0], self.last_abs_seg.data[-1]]
+        seg.data.insert(1, self.last_abs_seg.data[-1])
         return self.L(seg)
 
     def h(self, seg):
         seg.dtype = "H"
-        seg.data = [seg.data[0] + self.last_abs_seg.data[-2]]
+        seg.data[0] += self.last_abs_seg.data[-2]
         return self.H(seg)
 
     def V(self, seg):
         seg.dtype = "L"
-        seg.data = [self.last_abs_seg.data[-2], seg.data[0]]
+        seg.data.insert(0, self.last_abs_seg.data[-2])
         return self.L(seg)
 
     def v(self, seg):
         seg.dtype = "V"
-        seg.data = [seg.data[0] + self.last_abs_seg.data[-1]]
+        seg.data[0] += self.last_abs_seg.data[-1]
         return self.V(seg)
 
     def C(self, seg):  # unique command type
