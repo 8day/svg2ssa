@@ -119,7 +119,7 @@ class SVG:
 
     def to_ssa_file(self, filepath, ssa_repr_config):
         ssa = self.ssa_repr({**self.default_ssa_repr_config, **ssa_repr_config})
-        with open(filepath, "w+t", buffering=65536) as fh:
+        with open(filepath, "w+t", buffering=65536, encoding="utf-8") as fh:
             fh.write(ssa)
             fh.write("\n")
 
