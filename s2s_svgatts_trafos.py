@@ -20,7 +20,7 @@ class SVGTrafoMixin(SVGBasicEntity):
             # W/o tuple() this doesn't work.
             return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
         elif isinstance(other, (SVGTrafoMixin, SVGTransform)):
-            return self.matrix + other.matrix
+            return self.matrix() + other.matrix()
         else:
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
@@ -32,7 +32,6 @@ class SVGTrafoMatrix(SVGTrafoMixin):
     def dtype(self):
         return "matrix"
 
-    @property
     def matrix(self):
         return self
 
@@ -50,7 +49,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
             )
             return SVGTrafoMatrix(data)
         elif isinstance(other, SVGTrafoMixin):
-            return self + other.matrix
+            return self + other.matrix()
         else:
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
@@ -65,7 +64,6 @@ class SVGTrafoTranslate(SVGTrafoMixin):
     def dtype(self):
         return "translate"
 
-    @property
     def matrix(self):
         tx, ty = self.data
         return SVGTrafoMatrix((1, 0, 0, 1, tx, ty))
@@ -85,16 +83,15 @@ class SVGTrafoRotate(SVGTrafoMixin):
     def dtype(self):
         return "rotate"
 
-    @property
     def matrix(self):
         ra, cx, cy = self.data
         if cx == 0 and cy == 0:
             ra = radians(ra)
             m = SVGTrafoMatrix((cos(ra), sin(ra), -sin(ra), cos(ra), 0, 0))
         else:
-            mt1 = SVGTrafoTranslate((cx, cy)).matrix
-            mr = SVGTrafoRotate((ra, 0, 0)).matrix
-            mt2 = SVGTrafoTranslate((-cx, -cy)).matrix
+            mt1 = SVGTrafoTranslate((cx, cy)).matrix()
+            mr = SVGTrafoRotate((ra, 0, 0)).matrix()
+            mt2 = SVGTrafoTranslate((-cx, -cy)).matrix()
             m = mt1 + mr + mt2
         return m
 
@@ -116,7 +113,6 @@ class SVGTrafoScale(SVGTrafoMixin):
     def dtype(self):
         return "scale"
 
-    @property
     def matrix(self):
         sx, sy = self.data
         return SVGTrafoMatrix((sx, 0, 0, sy, 0, 0))
@@ -133,7 +129,6 @@ class SVGTrafoSkewX(SVGTrafoMixin):
     def dtype(self):
         return "skewX"
 
-    @property
     def matrix(self):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
@@ -146,7 +141,6 @@ class SVGTrafoSkewY(SVGTrafoMixin):
     def dtype(self):
         return "skewY"
 
-    @property
     def matrix(self):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
@@ -241,16 +235,15 @@ class SVGTransform(SVGContainerEntity):
     def dtype(self):
         return "transform"
 
-    @property
     def matrix(self):
         data = self.data
         if len(data) > 1:
-            acc = data[0].matrix
+            acc = data[0].matrix()
             for trafo in data[1:]:
-                acc += trafo.matrix
+                acc += trafo.matrix()
             return acc
         else:
-            return data[0].matrix
+            return data[0].matrix()
 
     @classmethod
     def from_raw_data(cls, data):

@@ -104,15 +104,15 @@ class SVGElement(SVGContainerEntity):
             # Create CTM for path to emulate subpixel precision.
             if "matrix" in trafos:
                 val = 2 ** (ssa_repr_config["magnification_level"] - 1)
-                path_ctm = SVGTrafoScale((val, val)).matrix + trafos.data[0]
+                path_ctm = SVGTrafoScale((val, val)).matrix() + trafos.data[0]
             else:
                 val = 2 ** (ssa_repr_config["magnification_level"] - 1)
-                path_ctm = SVGTrafoScale((val, val)).matrix
+                path_ctm = SVGTrafoScale((val, val)).matrix()
         else:
             # Create trafos with \org(0,0) and CTM for path.
             atts["transform"] = SVGTransform([SVGTrafoRotate((0, 0, 0))])
             val = 2 ** (ssa_repr_config["magnification_level"] - 1)
-            path_ctm = SVGTrafoScale((val, val)).matrix
+            path_ctm = SVGTrafoScale((val, val)).matrix()
         # Process path.
         atts["d"].ctm = path_ctm
         # Process color. 'Fill' attribute has higher priority over 'color'!

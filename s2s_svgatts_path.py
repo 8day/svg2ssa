@@ -207,7 +207,7 @@ class SVGD(SVGContainerEntity):
 
     def __init__(self, data):
         super().__init__(data)
-        self.ctm = SVGTrafoScale((1, 1)).matrix
+        self.ctm = SVGTrafoScale((1, 1)).matrix()
         moveto = SVGDSeg("M", [0, 0])
         self.last_abs_seg = moveto
         self.last_abs_moveto = moveto
