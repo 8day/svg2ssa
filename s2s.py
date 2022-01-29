@@ -156,12 +156,21 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(
         description="Converts SVG (Rec 1.1) into SSA (v4.0+).",
-        epilog='To run, use this syntax: APP_NAME KEYS PATH_TO_THE_FILE. Beware that 1) there\'s no key to specify output file (this file will be automatically placed inside same dir as SVG, with the same name as SVG, but with suffix ".ass"); 2) only one file can be converted at a time, do not specify multiple files.',
+        epilog=(
+            "To run, use this syntax: APP_NAME KEYS PATH_TO_THE_FILE. "
+            "Beware that 1) there's no key to specify output file "
+            "(this file will be automatically placed inside same dir as SVG, "
+            "with the same name as SVG, but with suffix '.ass'); "
+            "2) only one file can be converted at a time, do not specify multiple files."
+        ),
     )
     parser.add_argument(
         "-t",
         "--unnecessary_transformations",
-        help='Trafos that should be collapsed into matrix, i.e. "baked". If N trafos are used, then the key should be used N times: -t rotate -t skewX.',
+        help=(
+            "Trafos that should be collapsed into matrix, i.e. 'baked'. "
+            "If N trafos are used, then the key should be used N times: -t rotate -t skewX."
+        ),
         default=[],
         action="append",
         choices=["scale", "translate", "rotate"],
@@ -177,7 +186,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "-s",
         "--stroke_preservation",
-        help='Stroke transformation. "0" preserves stroke width (left untouched); "1" preserve stroke area (stroke size is divided by 2).',
+        help=(
+            "Stroke transformation. '0' preserves stroke width (left untouched); "
+            "'1' preserve stroke area (stroke size is divided by 2)."
+        ),
         default=0,
         type=int,
         choices=range(2),
@@ -193,7 +205,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-x",
         "--default_playresx",
-        help="Custom PlayResX for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResX is set, mod16 is checked.",
+        help=(
+            "Default PlayResX for SSA script in case if SVG counterpart won't be set. "
+            "Should be equal to the video dimensions (and/or to the drawing being converted). "
+            "Checked for mod16."
+        ),
         default=1280,
         type=int,
         metavar="natural_number",
@@ -201,7 +217,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "-y",
         "--default_playresy",
-        help="Custom PlayResY for SSA script. Should be equal to the video dimensions (and/or to the drawing being converted). When custom PlayResY is set, mod16 is checked.",
+        help=(
+            "Default PlayResY for SSA script in case if SVG counterpart won't be set. "
+            "Should be equal to the video dimensions (and/or to the drawing being converted). "
+            "Checked for mod16."
+        ),
         default=720,
         type=int,
         metavar="natural_number",
