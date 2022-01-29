@@ -152,28 +152,18 @@ class SVG:
 if __name__ == "__main__":
     from sys import argv as sys_argv
     from os import path as os_path
-    from argparse import ArgumentParser, REMAINDER
+    from argparse import ArgumentParser
 
     parser = ArgumentParser(
         description="Converts SVG (Rec 1.1) into SSA (v4.0+).",
-        epilog=(
-            "To run, use this syntax: APP_NAME KEYS PATH_TO_THE_FILE. "
-            "Beware that 1) there's no key to specify output file "
-            "(this file will be automatically placed inside same dir as SVG, "
-            "with the same name as SVG, but with suffix '.ass'); "
-            "2) only one file can be converted at a time, do not specify multiple files."
-        ),
     )
     parser.add_argument(
         "-t",
         "--unnecessary_transformations",
-        help=(
-            "Trafos that should be collapsed into matrix, i.e. 'baked'. "
-            "If N trafos are used, then the key should be used N times: -t rotate -t skewX."
-        ),
+        help="Trafos that should be collapsed into matrix, i.e. 'baked'.",
         default=[],
-        action="append",
         choices=["scale", "translate", "rotate"],
+        nargs="*",
     )
     parser.add_argument(
         "-m",
@@ -181,7 +171,7 @@ if __name__ == "__main__":
         help="Magnification level of the coordinate system by this formula: (level - 1) ^ 2.",
         default=3,
         type=int,
-        metavar="natural_number",
+        metavar="int",
     )
     parser.add_argument(
         "-s",
@@ -212,7 +202,7 @@ if __name__ == "__main__":
         ),
         default=1280,
         type=int,
-        metavar="natural_number",
+        metavar="int",
     )
     parser.add_argument(
         "-y",
@@ -224,21 +214,35 @@ if __name__ == "__main__":
         ),
         default=720,
         type=int,
-        metavar="natural_number",
+        metavar="int",
     )
-    parser.add_argument("path", nargs=REMAINDER)
+    parser.add_argument(
+        "-i",
+        "--file_in",
+        help="SVG file to be read. Path containing whitespace must be quoted.",
+        default="",
+        metavar="str",
+        required=True,
+    )
+    parser.add_argument(
+        "-o",
+        "--file_out",
+        help="SSA file to be written. Path containing whitespace must be quoted.",
+        default="",
+        metavar="str",
+    )
 
     args = vars(parser.parse_args(sys_argv[1:]))
     args["unnecessary_transformations"] = set(args["unnecessary_transformations"])
 
-    # Pop positional path argument and join path segments split at whitespace.
-    path = " ".join(args.pop("path"))
+    file_in = args.pop("file_in")
+    file_out = args.pop("file_out")
 
-    if os_path.isfile(path):
+    if os_path.isfile(file_in):
         svg = SVG()
-        svg.from_svg_file(path)
+        svg.from_svg_file(file_in)
         # User shouldn't be able to inject anything bad because :mod:`argparse` checks whether option is supported, so this should be safe.
         # :mod:`argparse` maps data to ``--``-prefixed options instead of ``-``-prefixed, therefore this will result in something like ``stroke_preservation = 1`` and not ``s = 1`` or whatever.
-        svg.to_ssa_file(path + ".ass", args)
+        svg.to_ssa_file(file_out if file_out else f"{file_in}.ass", args)
     else:
         parser.print_help()

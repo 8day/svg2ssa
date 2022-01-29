@@ -8,7 +8,7 @@ svg2ssa is a converter written in Python 3 that is intended to convert *vector g
 The main audience of this software is "advanced" anime typesetters. svg2ssa will help them to create their graphics inside more neat, usable & specifically designed editor like Inkscape. It's hard to enumerate all possible uses and benefits: for some they are minor and not worth it, but for others they may be almost infinite. E.g., Inkscape's feature to trace bitmaps (despite some limits), render 3D objects from Wavefront \*.OBJ files produced by Blender, convert text to shapes. BTW, conversion of text to shapes means that there's no need to embed fonts for a few titles containing a few letters, maybe even drop font embedding altogether.
 
 # How to use svg2ssa (on example of Windows)
-Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe`. After that, type `s2s.exe some.svg` to convert SVG to SSA and store it in same directory as SVG. For more info, type `s2s.exe --help`.
+Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe`. After that, type `s2s.exe -i "c:\path to dir\with\file.svg"` to convert SVG to SSA and store it in same directory as SVG. For more info, type `s2s.exe --help`.
 
 # Misc info
 ### The most notable features of Inkscape & svg2ssa combo
@@ -28,8 +28,8 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
     * go to `Menu > Path > Object to Path`.
 
 ### The most notable features of svg2ssa
-* subpixel precision by changing the size of coordinate system (\\pN along with hardcoded scaling of drawings; S2S key: `-m {natural_number}`);
-* ability to choose whether to hardcode trafos or convert them to SSA equivalents (S2S key: `-t {'scale', 'translate', 'rotate'}`);
+* subpixel precision by changing the size of coordinate system (\\pN along with hardcoded scaling of drawings; S2S key: `-m {int}`);
+* ability to choose whether to hardcode trafos or convert them to SSA equivalents (S2S key: `-t {scale, translate, rotate}`);
 * other features and how-to can be found by typing `s2s.exe --help` in your terminal.
 
 ### What you may want to know
