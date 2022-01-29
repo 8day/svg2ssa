@@ -12,6 +12,9 @@ from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_tra
 class SVGTrafoMixin(SVGBasicEntity):
     """Generalised superclass for SVG "transform" attribute and its "values"."""
 
+    def ssa_repr(self, ssa_repr_config):
+        return ""
+
     def __add__(self, other):
         if isinstance(other, type(self)):
             # W/o tuple() this doesn't work.
@@ -32,9 +35,6 @@ class SVGTrafoMatrix(SVGTrafoMixin):
     @property
     def matrix(self):
         return self
-
-    def ssa_repr(self, ssa_repr_config):
-        return ""
 
     def __add__(self, other):
         if isinstance(other, SVGTrafoMatrix):
@@ -138,9 +138,6 @@ class SVGTrafoSkewX(SVGTrafoMixin):
         skX = tan(self.data[0])
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
-    def ssa_repr(self, ssa_repr_config):
-        return ""
-
 
 class SVGTrafoSkewY(SVGTrafoMixin):
     """Class for SVG "transform" "skewY"."""
@@ -153,9 +150,6 @@ class SVGTrafoSkewY(SVGTrafoMixin):
     def matrix(self):
         skY = tan(self.data[0])
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
-
-    def ssa_repr(self, ssa_repr_config):
-        return ""
 
 
 class S2STransformYacc:
