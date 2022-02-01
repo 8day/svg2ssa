@@ -268,64 +268,64 @@ class SVGD(SVGContainerEntity):
         for seg in self.data:
             while True:
                 # Unique type of command.
-                def M(self, seg):
+                if seg.dtype == "M":
                     dcopy = deepcopy(seg)
                     self.last_abs_seg = dcopy
                     self.last_abs_moveto = dcopy
                     return self.apply_ctm_to_seg(seg)
 
-                def m(self, seg):
+                elif seg.dtype == "m":
                     seg.dtype = "M"
                     seg.data[0] += self.last_abs_moveto.data[0]
                     seg.data[1] += self.last_abs_moveto.data[1]
                     return self.M(seg)
 
                 # Unique type of command.
-                def L(self, seg):
+                elif seg.dtype == "L":
                     self.last_abs_seg = deepcopy(seg)
                     return self.apply_ctm_to_seg(seg)
 
-                def l(self, seg):
+                elif seg.dtype == "l":
                     return self.L(self.rel_seg_to_abs_seg(seg))
 
-                def H(self, seg):
+                elif seg.dtype == "H":
                     seg.dtype = "L"
                     seg.data.insert(1, self.last_abs_seg.data[-1])
                     return self.L(seg)
 
-                def h(self, seg):
+                elif seg.dtype == "h":
                     seg.dtype = "H"
                     seg.data[0] += self.last_abs_seg.data[-2]
                     return self.H(seg)
 
-                def V(self, seg):
+                elif seg.dtype == "V":
                     seg.dtype = "L"
                     seg.data.insert(0, self.last_abs_seg.data[-2])
                     return self.L(seg)
 
-                def v(self, seg):
+                elif seg.dtype == "v":
                     seg.dtype = "V"
                     seg.data[0] += self.last_abs_seg.data[-1]
                     return self.V(seg)
 
                 # Unique type of command.
-                def C(self, seg):
+                elif seg.dtype == "C":
                     self.last_abs_seg = deepcopy(seg)
                     return self.apply_ctm_to_seg(seg)
 
-                def c(self, seg):
+                elif seg.dtype == "c":
                     return self.C(self.rel_seg_to_abs_seg(seg))
 
-                def S(self, seg):
+                elif seg.dtype == "S":
                     seg.dtype = "C"
                     seg.data = self.control_point(seg) + seg.data
                     return self.C(seg)
 
-                def s(self, seg):
+                elif seg.dtype == "s":
                     return self.S(self.rel_seg_to_abs_seg(seg))
 
                 # Unique type of command.
-                def Q(self, seg):
+                elif seg.dtype == "Q":
                     qp0x, qp0y = self.last_abs_seg.data[-2:]
                     qp1x, qp1y, qp2x, qp2y = seg.data
                     self.last_abs_seg = deepcopy(seg)
@@ -340,15 +340,15 @@ class SVGD(SVGContainerEntity):
                     ]
                     return self.apply_ctm_to_seg(seg)
 
-                def q(self, seg):
+                elif seg.dtype == "q":
                     return self.Q(self.rel_seg_to_abs_seg(seg))
 
-                def T(self, seg):
+                elif seg.dtype == "T":
                     seg.dtype = "Q"
                     seg.data = self.control_point(seg) + seg.data
                     return self.Q(seg)
 
-                def t(self, seg):
+                elif seg.dtype == "t":
                     return self.T(self.rel_seg_to_abs_seg(seg))
 
         return segs
