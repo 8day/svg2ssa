@@ -221,24 +221,6 @@ class SVGD(SVGContainerEntity):
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    def apply_ctm_to_seg(self, seg):
-        ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
-        coords = seg.data
-        for i in range(0, len(coords), 2):
-            x, y = coords[i], coords[i + 1]
-            coords[i] = ctma * x + ctmc * y + ctme
-            coords[i + 1] = ctmb * x + ctmd * y + ctmf
-        return seg
-
-    def rel_seg_to_abs_seg(self, seg):
-        cpx, cpy = self.last_abs_seg.data[-2:]
-        coords = seg.data
-        for i in range(0, len(coords), 2):
-            coords[i] += cpx
-            coords[i + 1] += cpy
-        seg.dtype = seg.dtype.upper()
-        return seg
-
     def control_point_unoptimized_reference(self, seg):
         # T & S automatically unpacked to Q & C, hence this statement.
         if self.last_abs_seg.dtype == seg.dtype:
@@ -264,13 +246,20 @@ class SVGD(SVGContainerEntity):
     control_point = control_point_optimized_alternative
 
     def terminal_abs_segs(self):
+        ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
         basic_rel_comms = {"l", "c", "s", "q", "t"}
         terminal_comms = {"M", "L", "C"}
         segs = []
         for seg in self.data:
             while True:
+                # Convert rel comms to abs.
                 if seg.dtype in basic_rel_comms:
-                    seg = self.rel_seg_to_abs_seg(seg)
+                    cpx, cpy = self.last_abs_seg.data[-2:]
+                    coords = seg.data
+                    for i in range(0, len(coords), 2):
+                        coords[i] += cpx
+                        coords[i + 1] += cpy
+                    seg.dtype = seg.dtype.upper()
 
                 if seg.dtype == "m":
                     seg.dtype = "M"
@@ -320,7 +309,15 @@ class SVGD(SVGContainerEntity):
                     self.last_abs_seg = dcopy
                     if seg.dtype == "M":
                         self.last_abs_moveto = dcopy
-                    segs.append(self.apply_ctm_to_seg(seg))
+
+                    # Apply CTM to terminal, abs comms.
+                    coords = seg.data
+                    for i in range(0, len(coords), 2):
+                        x, y = coords[i], coords[i + 1]
+                        coords[i] = ctma * x + ctmc * y + ctme
+                        coords[i + 1] = ctmb * x + ctmd * y + ctmf
+
+                    segs.append(seg)
                     break
 
         return segs
