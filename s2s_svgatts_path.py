@@ -221,7 +221,7 @@ class SVGD(SVGContainerEntity):
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    def process_abs(self, seg):
+    def apply_ctm_to_seg(self, seg):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
         coords = seg.data
         for i in range(0, len(coords), 2):
@@ -230,7 +230,7 @@ class SVGD(SVGContainerEntity):
             coords[i + 1] = ctmb * x + ctmd * y + ctmf
         return seg
 
-    def process_rel(self, seg):
+    def rel_seg_to_abs_seg(self, seg):
         cpx, cpy = self.last_abs_seg.data[-2:]
         coords = seg.data
         for i in range(0, len(coords), 2):
@@ -239,7 +239,7 @@ class SVGD(SVGContainerEntity):
         seg.dtype = seg.dtype.upper()
         return seg
 
-    def get_control_point_unoptimized_reference(self, seg):
+    def control_point_unoptimized_reference(self, seg):
         # T & S automatically unpacked to Q & C, hence this statement.
         if self.last_abs_seg.dtype == seg.dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
@@ -253,7 +253,7 @@ class SVGD(SVGContainerEntity):
             ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
-    def get_control_point_optimized_alternative(self, seg):
+    def control_point_optimized_alternative(self, seg):
         if self.last_abs_seg.dtype == seg.dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
@@ -261,14 +261,14 @@ class SVGD(SVGContainerEntity):
             ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
-    get_control_point = get_control_point_optimized_alternative
+    control_point = control_point_optimized_alternative
 
     # Unique type of command.
     def M(self, seg):
         dcopy = deepcopy(seg)
         self.last_abs_seg = dcopy
         self.last_abs_moveto = dcopy
-        return self.process_abs(seg)
+        return self.apply_ctm_to_seg(seg)
 
     def m(self, seg):
         seg.dtype = "M"
@@ -279,10 +279,10 @@ class SVGD(SVGContainerEntity):
     # Unique type of command.
     def L(self, seg):
         self.last_abs_seg = deepcopy(seg)
-        return self.process_abs(seg)
+        return self.apply_ctm_to_seg(seg)
 
     def l(self, seg):
-        return self.L(self.process_rel(seg))
+        return self.L(self.rel_seg_to_abs_seg(seg))
 
     def H(self, seg):
         seg.dtype = "L"
@@ -307,18 +307,18 @@ class SVGD(SVGContainerEntity):
     # Unique type of command.
     def C(self, seg):
         self.last_abs_seg = deepcopy(seg)
-        return self.process_abs(seg)
+        return self.apply_ctm_to_seg(seg)
 
     def c(self, seg):
-        return self.C(self.process_rel(seg))
+        return self.C(self.rel_seg_to_abs_seg(seg))
 
     def S(self, seg):
         seg.dtype = "C"
-        seg.data = self.get_control_point(seg) + seg.data
+        seg.data = self.control_point(seg) + seg.data
         return self.C(seg)
 
     def s(self, seg):
-        return self.S(self.process_rel(seg))
+        return self.S(self.rel_seg_to_abs_seg(seg))
 
     # Unique type of command.
     def Q(self, seg):
@@ -334,18 +334,18 @@ class SVGD(SVGContainerEntity):
             qp2x,
             qp2y,
         ]
-        return self.process_abs(seg)
+        return self.apply_ctm_to_seg(seg)
 
     def q(self, seg):
-        return self.Q(self.process_rel(seg))
+        return self.Q(self.rel_seg_to_abs_seg(seg))
 
     def T(self, seg):
         seg.dtype = "Q"
-        seg.data = self.get_control_point(seg) + seg.data
+        seg.data = self.control_point(seg) + seg.data
         return self.Q(seg)
 
     def t(self, seg):
-        return self.T(self.process_rel(seg))
+        return self.T(self.rel_seg_to_abs_seg(seg))
 
     processing_method = dict(
         M=M,
@@ -367,10 +367,10 @@ class SVGD(SVGContainerEntity):
     )
 
     def ssa_repr(self, ssa_repr_config):
-        path = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
+        segs = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
         if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
-            path = collapse_consecutive_objects(path)
-        return " ".join(seg.ssa_repr(ssa_repr_config) for seg in path)
+            segs = collapse_consecutive_objects(segs)
+        return " ".join(seg.ssa_repr(ssa_repr_config) for seg in segs)
 
     def __add__(self, other):
         return self.__class__(self.data + other.data)
