@@ -100,7 +100,8 @@ class S2SDYacc:
         a_comm : "A" a_comm_arg_seq
                | "a" a_comm_arg_seq
         """
-        p[0] = [SVGDSeg(p[1], arg_seq) for arg_seq in p[2]]
+        comm = p[1]
+        p[0] = [SVGDSeg(comm, arg_seq) for arg_seq in p[2]]
 
     def p_comms_2(self, p):
         """m_comm : "M" m_comm_arg_seq
