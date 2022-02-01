@@ -1,4 +1,3 @@
-from copy import deepcopy
 from math import sqrt
 from ply_lex import lex
 from ply_yacc import yacc
@@ -276,20 +275,20 @@ class SVGD(SVGContainerEntity):
 
                 if dtype in terminal_comms:
                     last_abs_seg_dtype = dtype
-                    dcopy = deepcopy(data)
-                    last_abs_seg_data = dcopy
+                    last_abs_seg_data = data
                     if dtype == "M":
-                        last_abs_moveto_data = dcopy
+                        last_abs_moveto_data = data
 
                     # Apply CTM to terminal, abs comms.
+                    processed = []
                     for i in range(0, len(data), 2):
                         x = data[i]
                         y = data[i + 1]
-                        data[i] = ctma * x + ctmc * y + ctme
-                        data[i + 1] = ctmb * x + ctmd * y + ctmf
+                        processed.append(str(round(ctma * x + ctmc * y + ctme)))
+                        processed.append(str(round(ctmb * x + ctmd * y + ctmf)))
 
                     # Convert to SSA representation.
-                    segs.append(f"{terminal_comms[dtype]} {' '.join(str(round(coord)) for coord in data)}")
+                    segs.append(f"{terminal_comms[dtype]} {' '.join(processed)}")
                     break
 
         return " ".join(segs)
