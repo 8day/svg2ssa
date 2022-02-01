@@ -263,111 +263,98 @@ class SVGD(SVGContainerEntity):
 
     control_point = control_point_optimized_alternative
 
-    # Unique type of command.
-    def M(self, seg):
-        dcopy = deepcopy(seg)
-        self.last_abs_seg = dcopy
-        self.last_abs_moveto = dcopy
-        return self.apply_ctm_to_seg(seg)
+    def terminal_abs_segs(self):
+        segs = []
+        for seg in self.data:
+            while True:
+                # Unique type of command.
+                def M(self, seg):
+                    dcopy = deepcopy(seg)
+                    self.last_abs_seg = dcopy
+                    self.last_abs_moveto = dcopy
+                    return self.apply_ctm_to_seg(seg)
 
-    def m(self, seg):
-        seg.dtype = "M"
-        seg.data[0] += self.last_abs_moveto.data[0]
-        seg.data[1] += self.last_abs_moveto.data[1]
-        return self.M(seg)
+                def m(self, seg):
+                    seg.dtype = "M"
+                    seg.data[0] += self.last_abs_moveto.data[0]
+                    seg.data[1] += self.last_abs_moveto.data[1]
+                    return self.M(seg)
 
-    # Unique type of command.
-    def L(self, seg):
-        self.last_abs_seg = deepcopy(seg)
-        return self.apply_ctm_to_seg(seg)
+                # Unique type of command.
+                def L(self, seg):
+                    self.last_abs_seg = deepcopy(seg)
+                    return self.apply_ctm_to_seg(seg)
 
-    def l(self, seg):
-        return self.L(self.rel_seg_to_abs_seg(seg))
+                def l(self, seg):
+                    return self.L(self.rel_seg_to_abs_seg(seg))
 
-    def H(self, seg):
-        seg.dtype = "L"
-        seg.data.insert(1, self.last_abs_seg.data[-1])
-        return self.L(seg)
+                def H(self, seg):
+                    seg.dtype = "L"
+                    seg.data.insert(1, self.last_abs_seg.data[-1])
+                    return self.L(seg)
 
-    def h(self, seg):
-        seg.dtype = "H"
-        seg.data[0] += self.last_abs_seg.data[-2]
-        return self.H(seg)
+                def h(self, seg):
+                    seg.dtype = "H"
+                    seg.data[0] += self.last_abs_seg.data[-2]
+                    return self.H(seg)
 
-    def V(self, seg):
-        seg.dtype = "L"
-        seg.data.insert(0, self.last_abs_seg.data[-2])
-        return self.L(seg)
+                def V(self, seg):
+                    seg.dtype = "L"
+                    seg.data.insert(0, self.last_abs_seg.data[-2])
+                    return self.L(seg)
 
-    def v(self, seg):
-        seg.dtype = "V"
-        seg.data[0] += self.last_abs_seg.data[-1]
-        return self.V(seg)
+                def v(self, seg):
+                    seg.dtype = "V"
+                    seg.data[0] += self.last_abs_seg.data[-1]
+                    return self.V(seg)
 
-    # Unique type of command.
-    def C(self, seg):
-        self.last_abs_seg = deepcopy(seg)
-        return self.apply_ctm_to_seg(seg)
+                # Unique type of command.
+                def C(self, seg):
+                    self.last_abs_seg = deepcopy(seg)
+                    return self.apply_ctm_to_seg(seg)
 
-    def c(self, seg):
-        return self.C(self.rel_seg_to_abs_seg(seg))
+                def c(self, seg):
+                    return self.C(self.rel_seg_to_abs_seg(seg))
 
-    def S(self, seg):
-        seg.dtype = "C"
-        seg.data = self.control_point(seg) + seg.data
-        return self.C(seg)
+                def S(self, seg):
+                    seg.dtype = "C"
+                    seg.data = self.control_point(seg) + seg.data
+                    return self.C(seg)
 
-    def s(self, seg):
-        return self.S(self.rel_seg_to_abs_seg(seg))
+                def s(self, seg):
+                    return self.S(self.rel_seg_to_abs_seg(seg))
 
-    # Unique type of command.
-    def Q(self, seg):
-        qp0x, qp0y = self.last_abs_seg.data[-2:]
-        qp1x, qp1y, qp2x, qp2y = seg.data
-        self.last_abs_seg = deepcopy(seg)
-        seg.dtype = "C"
-        seg.data = [
-            qp0x + (2 / 3) * (qp1x - qp0x),
-            qp0y + (2 / 3) * (qp1y - qp0y),
-            qp2x + (2 / 3) * (qp1x - qp2x),
-            qp2y + (2 / 3) * (qp1y - qp2y),
-            qp2x,
-            qp2y,
-        ]
-        return self.apply_ctm_to_seg(seg)
+                # Unique type of command.
+                def Q(self, seg):
+                    qp0x, qp0y = self.last_abs_seg.data[-2:]
+                    qp1x, qp1y, qp2x, qp2y = seg.data
+                    self.last_abs_seg = deepcopy(seg)
+                    seg.dtype = "C"
+                    seg.data = [
+                        qp0x + (2 / 3) * (qp1x - qp0x),
+                        qp0y + (2 / 3) * (qp1y - qp0y),
+                        qp2x + (2 / 3) * (qp1x - qp2x),
+                        qp2y + (2 / 3) * (qp1y - qp2y),
+                        qp2x,
+                        qp2y,
+                    ]
+                    return self.apply_ctm_to_seg(seg)
 
-    def q(self, seg):
-        return self.Q(self.rel_seg_to_abs_seg(seg))
+                def q(self, seg):
+                    return self.Q(self.rel_seg_to_abs_seg(seg))
 
-    def T(self, seg):
-        seg.dtype = "Q"
-        seg.data = self.control_point(seg) + seg.data
-        return self.Q(seg)
+                def T(self, seg):
+                    seg.dtype = "Q"
+                    seg.data = self.control_point(seg) + seg.data
+                    return self.Q(seg)
 
-    def t(self, seg):
-        return self.T(self.rel_seg_to_abs_seg(seg))
+                def t(self, seg):
+                    return self.T(self.rel_seg_to_abs_seg(seg))
 
-    processing_method = dict(
-        M=M,
-        m=m,
-        L=L,
-        l=l,
-        H=H,
-        h=h,
-        V=V,
-        v=v,
-        C=C,
-        c=c,
-        S=S,
-        s=s,
-        Q=Q,
-        q=q,
-        T=T,
-        t=t,
-    )
+        return segs
 
     def ssa_repr(self, ssa_repr_config):
-        segs = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
+        segs = self.terminal_abs_segs()
         if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
             segs = collapse_consecutive_objects(segs)
         return " ".join(seg.ssa_repr(ssa_repr_config) for seg in segs)
