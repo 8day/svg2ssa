@@ -351,6 +351,9 @@ class SVGD(SVGContainerEntity):
                 elif seg.dtype == "t":
                     return self.T(self.rel_seg_to_abs_seg(seg))
 
+                else:
+                    raise TypeError(f"Unsupported type of segment in SVGD.data: {seg!r}.")
+
         return segs
 
     def ssa_repr(self, ssa_repr_config):
