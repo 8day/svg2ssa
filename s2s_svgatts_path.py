@@ -272,57 +272,54 @@ class SVGD(SVGContainerEntity):
                     dcopy = deepcopy(seg)
                     self.last_abs_seg = dcopy
                     self.last_abs_moveto = dcopy
-                    return self.apply_ctm_to_seg(seg)
+                    segs.append(self.apply_ctm_to_seg(seg))
+                    break
 
                 elif seg.dtype == "m":
                     seg.dtype = "M"
                     seg.data[0] += self.last_abs_moveto.data[0]
                     seg.data[1] += self.last_abs_moveto.data[1]
-                    return self.M(seg)
 
                 # Unique type of command.
                 elif seg.dtype == "L":
                     self.last_abs_seg = deepcopy(seg)
-                    return self.apply_ctm_to_seg(seg)
+                    segs.append(self.apply_ctm_to_seg(seg))
+                    break
 
                 elif seg.dtype == "l":
-                    return self.L(self.rel_seg_to_abs_seg(seg))
+                    seg = self.rel_seg_to_abs_seg(seg)
 
                 elif seg.dtype == "H":
                     seg.dtype = "L"
                     seg.data.insert(1, self.last_abs_seg.data[-1])
-                    return self.L(seg)
 
                 elif seg.dtype == "h":
                     seg.dtype = "H"
                     seg.data[0] += self.last_abs_seg.data[-2]
-                    return self.H(seg)
 
                 elif seg.dtype == "V":
                     seg.dtype = "L"
                     seg.data.insert(0, self.last_abs_seg.data[-2])
-                    return self.L(seg)
 
                 elif seg.dtype == "v":
                     seg.dtype = "V"
                     seg.data[0] += self.last_abs_seg.data[-1]
-                    return self.V(seg)
 
                 # Unique type of command.
                 elif seg.dtype == "C":
                     self.last_abs_seg = deepcopy(seg)
-                    return self.apply_ctm_to_seg(seg)
+                    segs.append(self.apply_ctm_to_seg(seg))
+                    break
 
                 elif seg.dtype == "c":
-                    return self.C(self.rel_seg_to_abs_seg(seg))
+                    seg = self.rel_seg_to_abs_seg(seg)
 
                 elif seg.dtype == "S":
                     seg.dtype = "C"
                     seg.data = self.control_point(seg) + seg.data
-                    return self.C(seg)
 
                 elif seg.dtype == "s":
-                    return self.S(self.rel_seg_to_abs_seg(seg))
+                    seg = self.rel_seg_to_abs_seg(seg)
 
                 # Unique type of command.
                 elif seg.dtype == "Q":
@@ -338,18 +335,18 @@ class SVGD(SVGContainerEntity):
                         qp2x,
                         qp2y,
                     ]
-                    return self.apply_ctm_to_seg(seg)
+                    segs.append(self.apply_ctm_to_seg(seg))
+                    break
 
                 elif seg.dtype == "q":
-                    return self.Q(self.rel_seg_to_abs_seg(seg))
+                    seg = self.rel_seg_to_abs_seg(seg)
 
                 elif seg.dtype == "T":
                     seg.dtype = "Q"
                     seg.data = self.control_point(seg) + seg.data
-                    return self.Q(seg)
 
                 elif seg.dtype == "t":
-                    return self.T(self.rel_seg_to_abs_seg(seg))
+                    seg = self.rel_seg_to_abs_seg(seg)
 
                 else:
                     raise TypeError(f"Unsupported type of segment in SVGD.data: {seg!r}.")
