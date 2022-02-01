@@ -240,9 +240,8 @@ class SVGD(SVGContainerEntity):
         return seg
 
     def get_control_point_unoptimised_reference(self, seg):
-        if (
-            self.last_abs_seg.dtype == seg.dtype
-        ):  # T & S automatically unpacked to Q & C, hence this statement.
+        # T & S automatically unpacked to Q & C, hence this statement.
+        if self.last_abs_seg.dtype == seg.dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
             d = sqrt((cpx - ctrlp2x) ** 2 + (cpy - ctrlp2y) ** 2)
             ctrlp1x = cpx + d * (cpx - ctrlp2x) / d
@@ -266,7 +265,8 @@ class SVGD(SVGContainerEntity):
 
     get_control_point = get_control_point_optimised_alternative_01
 
-    def M(self, seg):  # unique command type
+    # Unique type of command.
+    def M(self, seg):
         dcopy = deepcopy(seg)
         self.last_abs_seg = dcopy
         self.last_abs_moveto = dcopy
@@ -278,7 +278,8 @@ class SVGD(SVGContainerEntity):
         seg.data[1] += self.last_abs_moveto.data[1]
         return self.M(seg)
 
-    def L(self, seg):  # unique command type
+    # Unique type of command.
+    def L(self, seg):
         self.last_abs_seg = deepcopy(seg)
         return self.process_abs(seg)
 
@@ -305,7 +306,8 @@ class SVGD(SVGContainerEntity):
         seg.data[0] += self.last_abs_seg.data[-1]
         return self.V(seg)
 
-    def C(self, seg):  # unique command type
+    # Unique type of command.
+    def C(self, seg):
         self.last_abs_seg = deepcopy(seg)
         return self.process_abs(seg)
 
@@ -320,7 +322,8 @@ class SVGD(SVGContainerEntity):
     def s(self, seg):
         return self.S(self.process_rel(seg))
 
-    def Q(self, seg):  # unique command type
+    # Unique type of command.
+    def Q(self, seg):
         qp0x, qp0y = self.last_abs_seg.data[-2:]
         qp1x, qp1y, qp2x, qp2y = seg.data
         self.last_abs_seg = deepcopy(seg)
