@@ -239,7 +239,7 @@ class SVGD(SVGContainerEntity):
         seg.dtype = seg.dtype.upper()
         return seg
 
-    def get_control_point_unoptimised_reference(self, seg):
+    def get_control_point_unoptimized_reference(self, seg):
         # T & S automatically unpacked to Q & C, hence this statement.
         if self.last_abs_seg.dtype == seg.dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
@@ -253,7 +253,7 @@ class SVGD(SVGContainerEntity):
             ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
-    def get_control_point_optimised_alternative_01(self, seg):
+    def get_control_point_optimized_alternative(self, seg):
         if self.last_abs_seg.dtype == seg.dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
@@ -261,7 +261,7 @@ class SVGD(SVGContainerEntity):
             ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
-    get_control_point = get_control_point_optimised_alternative_01
+    get_control_point = get_control_point_optimized_alternative
 
     # Unique type of command.
     def M(self, seg):

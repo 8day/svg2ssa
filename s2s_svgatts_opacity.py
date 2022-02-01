@@ -11,7 +11,7 @@
 # replaced to r'\1a&H{0:02X}&' if class is SVGFillOpacity.
 # Though it may be a bad idea, since the same thing can be done to color, but there this modification will
 # be overwhelming, unnecessary. So, it's probably better to leave it as is (KISS; simple but not simpler,
-# i.e. optimised but not overoptimised). Well, as I said, ATM this kind of optimisation is unnecessary.
+# i.e. optimized but not overoptimized). Well, as I said, ATM this kind of optimization is unnecessary.
 
 
 from s2s_core import SVGBasicEntity
