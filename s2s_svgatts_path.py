@@ -107,15 +107,15 @@ class S2SDYacc:
         """m_comm : "M" m_comm_arg_seq
         | "m" m_comm_arg_seq
         """
-        mapping = S2SDYacc.mvto_lnto_mapping
+        mvto, lnto = S2SDYacc.mvto_lnto_mapping[p[1]]
         arg_seqs = p[2]
         if len(arg_seqs) == 1:
-            segs = [SVGDSeg(p[1], arg_seqs[0])]
+            segs = [SVGDSeg(mvto, arg_seqs[0])]
         else:
             segs = [
-                SVGDSeg(mapping[p[1]][1], arg_seqs[i]) for i in range(1, len(arg_seqs), 1)
+                SVGDSeg(lnto, arg_seqs[i]) for i in range(1, len(arg_seqs), 1)
             ]
-            segs.insert(0, SVGDSeg(mapping[p[1]][0], arg_seqs[0]))
+            segs.insert(0, SVGDSeg(mvto, arg_seqs[0]))
         p[0] = segs
 
     def p_arg_seq_1(self, p):
