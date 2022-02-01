@@ -215,10 +215,10 @@ class SVGD(SVGContainerEntity):
         return cls(parser.parse(debug=False, lexer=lexer))
 
     @staticmethod
-    def control_point_unoptimized_reference(last_abs_seg, seg):
+    def control_point_unoptimized_reference(last_abs_seg_dtype, last_abs_seg_data, dtype):
         # T & S automatically unpacked to Q & C, hence this statement.
-        if last_abs_seg.dtype == seg.dtype:
-            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg.data[-4:]
+        if last_abs_seg_dtype == dtype:
+            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             d = sqrt((cpx - ctrlp2x) ** 2 + (cpy - ctrlp2y) ** 2)
             ctrlp1x = cpx + d * (cpx - ctrlp2x) / d
             ctrlp1y = cpy + d * (cpy - ctrlp2y) / d
@@ -226,72 +226,72 @@ class SVGD(SVGContainerEntity):
             ctrlp1y = (cpy / d) + (cpy - ctrlp2y)
             ctrlp = [ctrlp1x, ctrlp1y]
         else:
-            ctrlp = last_abs_seg.data[-2:]
+            ctrlp = last_abs_seg_data[-2:]
         return ctrlp
 
     @staticmethod
-    def control_point_optimized_alternative(last_abs_seg, seg):
-        if last_abs_seg.dtype == seg.dtype:
-            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg.data[-4:]
+    def control_point_optimized_alternative(last_abs_seg_dtype, last_abs_seg_data, dtype):
+        if last_abs_seg_dtype == dtype:
+            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
         else:
-            ctrlp = last_abs_seg.data[-2:]
+            ctrlp = last_abs_seg_data[-2:]
         return ctrlp
 
     control_point = control_point_optimized_alternative
 
     def terminal_abs_segs(self):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
-        moveto = SVGDSeg("M", [0, 0])
-        # "last_abs_seg": contains "current point". Also almost whole segment is needed for Q, T, S.
-        # "last_abs_moveto": last seen absolute moveto command.
-        last_abs_seg = moveto
-        last_abs_moveto = moveto
+        # "last_abs_seg_data": contains "current point". Also almost whole segment is needed for Q, T, S.
+        # "last_abs_moveto_data": last seen absolute moveto command.
+        last_abs_seg_dtype = "M"
+        last_abs_seg_data = last_abs_moveto_data = [0, 0]
         basic_rel_comms = {"l", "c", "s", "q", "t"}
         terminal_comms = {"M", "L", "C"}
         segs = []
         for seg in self.data:
+            dtype = seg.dtype
+            data = seg.data
             while True:
                 # Convert rel comms to abs.
-                if seg.dtype in basic_rel_comms:
-                    cpx, cpy = last_abs_seg.data[-2:]
-                    coords = seg.data
-                    for i in range(0, len(coords), 2):
-                        coords[i] += cpx
-                        coords[i + 1] += cpy
-                    seg.dtype = seg.dtype.upper()
+                if dtype in basic_rel_comms:
+                    cpx, cpy = last_abs_seg_data[-2:]
+                    for i in range(0, len(data), 2):
+                        data[i] += cpx
+                        data[i + 1] += cpy
+                    dtype = dtype.upper()
 
-                if seg.dtype == "m":
-                    seg.dtype = "M"
-                    seg.data[0] += last_abs_moveto.data[0]
-                    seg.data[1] += last_abs_moveto.data[1]
+                if dtype == "m":
+                    dtype = "M"
+                    data[0] += last_abs_moveto_data[0]
+                    data[1] += last_abs_moveto_data[1]
 
-                elif seg.dtype == "H":
-                    seg.dtype = "L"
-                    seg.data.insert(1, last_abs_seg.data[-1])
+                elif dtype == "H":
+                    dtype = "L"
+                    data.insert(1, last_abs_seg_data[-1])
 
-                elif seg.dtype == "h":
-                    seg.dtype = "H"
-                    seg.data[0] += last_abs_seg.data[-2]
+                elif dtype == "h":
+                    dtype = "H"
+                    data[0] += last_abs_seg_data[-2]
 
-                elif seg.dtype == "V":
-                    seg.dtype = "L"
-                    seg.data.insert(0, last_abs_seg.data[-2])
+                elif dtype == "V":
+                    dtype = "L"
+                    data.insert(0, last_abs_seg_data[-2])
 
-                elif seg.dtype == "v":
-                    seg.dtype = "V"
-                    seg.data[0] += last_abs_seg.data[-1]
+                elif dtype == "v":
+                    dtype = "V"
+                    data[0] += last_abs_seg_data[-1]
 
-                elif seg.dtype == "S":
-                    seg.dtype = "C"
-                    seg.data = SVGD.control_point(last_abs_seg, seg) + seg.data
+                elif dtype == "S":
+                    dtype = "C"
+                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
 
                 # Unique type of command.
-                elif seg.dtype == "Q":
-                    qp0x, qp0y = last_abs_seg.data[-2:]
-                    qp1x, qp1y, qp2x, qp2y = seg.data
-                    seg.dtype = "C"
-                    seg.data = [
+                elif dtype == "Q":
+                    qp0x, qp0y = last_abs_seg_data[-2:]
+                    qp1x, qp1y, qp2x, qp2y = data
+                    dtype = "C"
+                    data = [
                         qp0x + (2 / 3) * (qp1x - qp0x),
                         qp0y + (2 / 3) * (qp1y - qp0y),
                         qp2x + (2 / 3) * (qp1x - qp2x),
@@ -300,24 +300,24 @@ class SVGD(SVGContainerEntity):
                         qp2y,
                     ]
 
-                elif seg.dtype == "T":
-                    seg.dtype = "Q"
-                    seg.data = SVGD.control_point(last_abs_seg, seg) + seg.data
+                elif dtype == "T":
+                    dtype = "Q"
+                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
 
-                if seg.dtype in terminal_comms:
-                    dcopy = deepcopy(seg)
-                    last_abs_seg = dcopy
-                    if seg.dtype == "M":
-                        last_abs_moveto = dcopy
+                if dtype in terminal_comms:
+                    last_abs_seg_dtype = dtype
+                    dcopy = deepcopy(data)
+                    last_abs_seg_data = dcopy
+                    if dtype == "M":
+                        last_abs_moveto_data = dcopy
 
                     # Apply CTM to terminal, abs comms.
-                    coords = seg.data
-                    for i in range(0, len(coords), 2):
-                        x, y = coords[i], coords[i + 1]
-                        coords[i] = ctma * x + ctmc * y + ctme
-                        coords[i + 1] = ctmb * x + ctmd * y + ctmf
+                    for i in range(0, len(data), 2):
+                        x, y = data[i], data[i + 1]
+                        data[i] = ctma * x + ctmc * y + ctme
+                        data[i + 1] = ctmb * x + ctmd * y + ctmf
 
-                    segs.append(seg)
+                    segs.append(SVGDSeg(dtype, data))
                     break
 
         return segs
