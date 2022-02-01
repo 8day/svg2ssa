@@ -250,8 +250,7 @@ class SVGD(SVGContainerEntity):
             ctrlp1y = (cpy / d) + (cpy - ctrlp2y)
             ctrlp = [ctrlp1x, ctrlp1y]
         else:
-            cpx, cpy = self.last_abs_seg.data[-2:]
-            ctrlp = [cpx, cpy]
+            ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
     def get_control_point_optimised_alternative_01(self, seg):
@@ -259,8 +258,7 @@ class SVGD(SVGContainerEntity):
             ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
         else:
-            cpx, cpy = self.last_abs_seg.data[-2:]
-            ctrlp = [cpx, cpy]
+            ctrlp = self.last_abs_seg.data[-2:]
         return ctrlp
 
     get_control_point = get_control_point_optimised_alternative_01
