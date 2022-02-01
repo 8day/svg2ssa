@@ -264,9 +264,13 @@ class SVGD(SVGContainerEntity):
     control_point = control_point_optimized_alternative
 
     def terminal_abs_segs(self):
+        basic_rel_comms = {"l", "c", "s", "q", "t"}
         segs = []
         for seg in self.data:
             while True:
+                if seg.dtype in basic_rel_comms:
+                    seg = self.rel_seg_to_abs_seg(seg)
+
                 # Unique type of command.
                 if seg.dtype == "M":
                     dcopy = deepcopy(seg)
@@ -285,9 +289,6 @@ class SVGD(SVGContainerEntity):
                     self.last_abs_seg = deepcopy(seg)
                     segs.append(self.apply_ctm_to_seg(seg))
                     break
-
-                elif seg.dtype == "l":
-                    seg = self.rel_seg_to_abs_seg(seg)
 
                 elif seg.dtype == "H":
                     seg.dtype = "L"
@@ -311,15 +312,9 @@ class SVGD(SVGContainerEntity):
                     segs.append(self.apply_ctm_to_seg(seg))
                     break
 
-                elif seg.dtype == "c":
-                    seg = self.rel_seg_to_abs_seg(seg)
-
                 elif seg.dtype == "S":
                     seg.dtype = "C"
                     seg.data = self.control_point(seg) + seg.data
-
-                elif seg.dtype == "s":
-                    seg = self.rel_seg_to_abs_seg(seg)
 
                 # Unique type of command.
                 elif seg.dtype == "Q":
@@ -338,15 +333,9 @@ class SVGD(SVGContainerEntity):
                     segs.append(self.apply_ctm_to_seg(seg))
                     break
 
-                elif seg.dtype == "q":
-                    seg = self.rel_seg_to_abs_seg(seg)
-
                 elif seg.dtype == "T":
                     seg.dtype = "Q"
                     seg.data = self.control_point(seg) + seg.data
-
-                elif seg.dtype == "t":
-                    seg = self.rel_seg_to_abs_seg(seg)
 
                 else:
                     raise TypeError(f"Unsupported type of segment in SVGD.data: {seg!r}.")
