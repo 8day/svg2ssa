@@ -255,7 +255,8 @@ class SVGD(SVGContainerEntity):
             while True:
                 # Convert rel comms to abs.
                 if dtype in basic_rel_comms:
-                    cpx, cpy = last_abs_seg_data[-2:]
+                    cpx = last_abs_seg_data[-2]
+                    cpy = last_abs_seg_data[-1]
                     for i in range(0, len(data), 2):
                         data[i] += cpx
                         data[i + 1] += cpy
@@ -288,7 +289,8 @@ class SVGD(SVGContainerEntity):
 
                 # Unique type of command.
                 elif dtype == "Q":
-                    qp0x, qp0y = last_abs_seg_data[-2:]
+                    qp0x = last_abs_seg_data[-2]
+                    qp0y = last_abs_seg_data[-1]
                     qp1x, qp1y, qp2x, qp2y = data
                     dtype = "C"
                     data = [
@@ -313,7 +315,8 @@ class SVGD(SVGContainerEntity):
 
                     # Apply CTM to terminal, abs comms.
                     for i in range(0, len(data), 2):
-                        x, y = data[i], data[i + 1]
+                        x = data[i]
+                        y = data[i + 1]
                         data[i] = ctma * x + ctmc * y + ctme
                         data[i + 1] = ctmb * x + ctmd * y + ctmf
 
