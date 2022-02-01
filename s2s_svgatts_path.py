@@ -265,30 +265,17 @@ class SVGD(SVGContainerEntity):
 
     def terminal_abs_segs(self):
         basic_rel_comms = {"l", "c", "s", "q", "t"}
+        terminal_comms = {"M", "L", "C"}
         segs = []
         for seg in self.data:
             while True:
                 if seg.dtype in basic_rel_comms:
                     seg = self.rel_seg_to_abs_seg(seg)
 
-                # Unique type of command.
-                if seg.dtype == "M":
-                    dcopy = deepcopy(seg)
-                    self.last_abs_seg = dcopy
-                    self.last_abs_moveto = dcopy
-                    segs.append(self.apply_ctm_to_seg(seg))
-                    break
-
-                elif seg.dtype == "m":
+                if seg.dtype == "m":
                     seg.dtype = "M"
                     seg.data[0] += self.last_abs_moveto.data[0]
                     seg.data[1] += self.last_abs_moveto.data[1]
-
-                # Unique type of command.
-                elif seg.dtype == "L":
-                    self.last_abs_seg = deepcopy(seg)
-                    segs.append(self.apply_ctm_to_seg(seg))
-                    break
 
                 elif seg.dtype == "H":
                     seg.dtype = "L"
@@ -306,12 +293,6 @@ class SVGD(SVGContainerEntity):
                     seg.dtype = "V"
                     seg.data[0] += self.last_abs_seg.data[-1]
 
-                # Unique type of command.
-                elif seg.dtype == "C":
-                    self.last_abs_seg = deepcopy(seg)
-                    segs.append(self.apply_ctm_to_seg(seg))
-                    break
-
                 elif seg.dtype == "S":
                     seg.dtype = "C"
                     seg.data = self.control_point(seg) + seg.data
@@ -320,7 +301,6 @@ class SVGD(SVGContainerEntity):
                 elif seg.dtype == "Q":
                     qp0x, qp0y = self.last_abs_seg.data[-2:]
                     qp1x, qp1y, qp2x, qp2y = seg.data
-                    self.last_abs_seg = deepcopy(seg)
                     seg.dtype = "C"
                     seg.data = [
                         qp0x + (2 / 3) * (qp1x - qp0x),
@@ -330,15 +310,18 @@ class SVGD(SVGContainerEntity):
                         qp2x,
                         qp2y,
                     ]
-                    segs.append(self.apply_ctm_to_seg(seg))
-                    break
 
                 elif seg.dtype == "T":
                     seg.dtype = "Q"
                     seg.data = self.control_point(seg) + seg.data
 
-                else:
-                    raise TypeError(f"Unsupported type of segment in SVGD.data: {seg!r}.")
+                if seg.dtype in terminal_comms:
+                    dcopy = deepcopy(seg)
+                    self.last_abs_seg = dcopy
+                    if seg.dtype == "M":
+                        self.last_abs_moveto = dcopy
+                    segs.append(self.apply_ctm_to_seg(seg))
+                    break
 
         return segs
 
