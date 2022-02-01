@@ -3,41 +3,8 @@ from math import sqrt
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_d
-from s2s_core import SVGBasicEntity, SVGContainerEntity
-from s2s_utilities import collapse_consecutive_objects
+from s2s_core import SVGContainerEntity
 from s2s_svgatts_trafos import SVGTrafoScale
-
-
-class SVGDSeg(SVGBasicEntity):
-    """Common class for all subpaths used in SVG 'd' attribute.
-
-    Inherited: no
-    """
-
-    # Note: separate classes for all commands have not been made because they are
-    # useless out of SVGD context. I simply cannot properly convert them w/o knowing
-    # current point of previous segment.
-
-    ssa_comm_type = dict(M="m", L="l", C="b")
-
-    def __init__(self, dtype, data):
-        self._dtype = dtype
-        super().__init__(data)
-
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @dtype.setter
-    def dtype(self, dtype):
-        self._dtype = dtype
-
-    def ssa_repr(self, ssa_repr_config):
-        tmp = " ".join(str(round(coord)) for coord in self.data)
-        return f"{SVGDSeg.ssa_comm_type[self.dtype]} {tmp}"
-
-    def __add__(self, other):
-        return self.__class__(self.dtype, self.data + other.data)
 
 
 class S2SDYacc:
@@ -101,7 +68,10 @@ class S2SDYacc:
                | "a" a_comm_arg_seq
         """
         comm = p[1]
-        p[0] = [SVGDSeg(comm, arg_seq) for arg_seq in p[2]]
+        arg_seqs = p[2]
+        for arg_seq in arg_seqs:
+            arg_seq.insert(0, comm)
+        p[0] = arg_seqs
 
     def p_comms_2(self, p):
         """m_comm : "M" m_comm_arg_seq
@@ -109,11 +79,10 @@ class S2SDYacc:
         """
         mvto, lnto = S2SDYacc.mvto_lnto_mapping[p[1]]
         arg_seqs = p[2]
-        segs = [SVGDSeg(mvto, arg_seqs.pop(0))]
-        if len(arg_seqs) > 0:
-            for arg_seq in arg_seqs:
-                segs.append(SVGDSeg(lnto, arg_seq))
-        p[0] = segs
+        arg_seqs[0].insert(0, mvto)
+        for i in range(1, len(arg_seqs)):
+            arg_seqs[i].insert(0, lnto)
+        p[0] = arg_seqs
 
     def p_arg_seq_1(self, p):
         """m_comm_arg_seq : m_comm_arg_seq NMB NMB
@@ -240,18 +209,17 @@ class SVGD(SVGContainerEntity):
 
     control_point = control_point_optimized_alternative
 
-    def terminal_abs_segs(self):
+    def ssa_repr(self, ssa_repr_config):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
         # "last_abs_seg_data": contains "current point". Also almost whole segment is needed for Q, T, S.
         # "last_abs_moveto_data": last seen absolute moveto command.
         last_abs_seg_dtype = "M"
         last_abs_seg_data = last_abs_moveto_data = [0, 0]
         basic_rel_comms = {"l", "c", "s", "q", "t"}
-        terminal_comms = {"M", "L", "C"}
+        terminal_comms = {"M": "m", "L": "l", "C": "b"}
         segs = []
         for seg in self.data:
-            dtype = seg.dtype
-            data = seg.data
+            dtype, *data = seg
             while True:
                 # Convert rel comms to abs.
                 if dtype in basic_rel_comms:
@@ -320,16 +288,11 @@ class SVGD(SVGContainerEntity):
                         data[i] = ctma * x + ctmc * y + ctme
                         data[i + 1] = ctmb * x + ctmd * y + ctmf
 
-                    segs.append(SVGDSeg(dtype, data))
+                    # Convert to SSA representation.
+                    segs.append(f"{terminal_comms[dtype]} {' '.join(str(round(coord)) for coord in data)}")
                     break
 
-        return segs
-
-    def ssa_repr(self, ssa_repr_config):
-        segs = self.terminal_abs_segs()
-        if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
-            segs = collapse_consecutive_objects(segs)
-        return " ".join(seg.ssa_repr(ssa_repr_config) for seg in segs)
+        return " ".join(segs)
 
     def __add__(self, other):
         return self.__class__(self.data + other.data)
