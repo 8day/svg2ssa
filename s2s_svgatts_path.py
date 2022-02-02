@@ -222,12 +222,12 @@ class SVGD(SVGContainerEntity):
             while True:
                 # Convert rel comms to abs.
                 if dtype in basic_rel_comms:
+                    dtype = basic_rel_comms[dtype]
                     cpx = last_abs_seg_data[-2]
                     cpy = last_abs_seg_data[-1]
                     for i in range(0, len(data), 2):
                         data[i] += cpx
                         data[i + 1] += cpy
-                    dtype = basic_rel_comms[dtype]
 
                 if dtype == "m":
                     dtype = "M"
