@@ -169,48 +169,33 @@ class S2STransformYacc:
 
     def p_matrix(self, p):
         """matrix : MATRIX "(" NMB NMB NMB NMB NMB NMB ")" """
-        p[0] = (p[3], p[4], p[5], p[6], p[7], p[8])
-        p[0] = SVGTrafoMatrix(p[0])
+        p[0] = SVGTrafoMatrix((p[3], p[4], p[5], p[6], p[7], p[8]))
 
     def p_translate(self, p):
         """translate : TRANSLATE "(" NMB NMB ")"
         | TRANSLATE "(" NMB ")"
         """
-        if len(p) > 5:
-            p[0] = (p[3], p[4])
-        else:
-            p[0] = (p[3],)
-        p[0] = SVGTrafoTranslate(p[0])
+        p[0] = SVGTrafoTranslate((p[3], p[4]) if len(p) > 5 else (p[3],))
 
     def p_rotate(self, p):
         """rotate : ROTATE "(" NMB NMB NMB ")"
         | ROTATE "(" NMB ")"
         """
-        if len(p) == 7:
-            p[0] = (p[3], p[4], p[5])
-        else:
-            p[0] = (p[3],)
-        p[0] = SVGTrafoRotate(p[0])
+        p[0] = SVGTrafoRotate((p[3], p[4], p[5]) if len(p) == 7 else (p[3],))
 
     def p_scale(self, p):
         """scale : SCALE "(" NMB NMB ")"
         | SCALE "(" NMB ")"
         """
-        if len(p) == 6:
-            p[0] = (p[3], p[4])
-        else:
-            p[0] = (p[3],)
-        p[0] = SVGTrafoScale(p[0])
+        p[0] = SVGTrafoScale((p[3], p[4]) if len(p) == 6 else (p[3],))
 
     def p_skewX(self, p):
         """skewX : SKEWX "(" NMB ")" """
-        p[0] = (p[3],)
-        p[0] = SVGTrafoSkewX(p[0])
+        p[0] = SVGTrafoSkewX((p[3],))
 
     def p_skewY(self, p):
         """skewY : SKEWY "(" NMB ")" """
-        p[0] = (p[3],)
-        p[0] = SVGTrafoSkewY(p[0])
+        p[0] = SVGTrafoSkewY((p[3],))
 
     def p_error(self, p):
         raise Exception(
