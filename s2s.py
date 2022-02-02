@@ -33,7 +33,6 @@ class SVG:
             unnecessary_transformations=set(),
             stroke_preservation=0,
             magnification_level=3,
-            collapse_consecutive_path_segments=1,
             default_playresx=DEFAULT_WIDTH,
             default_playresy=DEFAULT_HEIGHT,
             header_template = (
