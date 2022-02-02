@@ -1,43 +1,9 @@
-from copy import deepcopy
 from math import sqrt
 from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_d
-from s2s_core import SVGBasicEntity, SVGContainerEntity
-from s2s_utilities import collapse_consecutive_objects
+from s2s_core import SVGContainerEntity
 from s2s_svgatts_trafos import SVGTrafoScale
-
-
-class SVGDSeg(SVGBasicEntity):
-    """Common class for all subpaths used in SVG 'd' attribute.
-
-    Inherited: no
-    """
-
-    # Note: separate classes for all commands have not been made because they are
-    # useless out of SVGD context. I simply cannot properly convert them w/o knowing
-    # current point of previous segment.
-
-    ssa_comm_type = dict(M="m", L="l", C="b")
-
-    def __init__(self, dtype, data):
-        self._dtype = dtype
-        super().__init__(data)
-
-    @property
-    def dtype(self):
-        return self._dtype
-
-    @dtype.setter
-    def dtype(self, dtype):
-        self._dtype = dtype
-
-    def ssa_repr(self, ssa_repr_config):
-        tmp = " ".join(str(round(coord)) for coord in self.data)
-        return f"{SVGDSeg.ssa_comm_type[self.dtype]} {tmp}"
-
-    def __add__(self, other):
-        return self.__class__(self.dtype, self.data + other.data)
 
 
 class S2SDYacc:
@@ -101,7 +67,10 @@ class S2SDYacc:
                | "a" a_comm_arg_seq
         """
         comm = p[1]
-        p[0] = [SVGDSeg(comm, arg_seq) for arg_seq in p[2]]
+        arg_seqs = p[2]
+        for arg_seq in arg_seqs:
+            arg_seq.insert(0, comm)
+        p[0] = arg_seqs
 
     def p_comms_2(self, p):
         """m_comm : "M" m_comm_arg_seq
@@ -109,11 +78,10 @@ class S2SDYacc:
         """
         mvto, lnto = S2SDYacc.mvto_lnto_mapping[p[1]]
         arg_seqs = p[2]
-        segs = [SVGDSeg(mvto, arg_seqs.pop(0))]
-        if len(arg_seqs) > 0:
-            for arg_seq in arg_seqs:
-                segs.append(SVGDSeg(lnto, arg_seq))
-        p[0] = segs
+        arg_seqs[0].insert(0, mvto)
+        for i in range(1, len(arg_seqs)):
+            arg_seqs[i].insert(0, lnto)
+        p[0] = arg_seqs
 
     def p_arg_seq_1(self, p):
         """m_comm_arg_seq : m_comm_arg_seq NMB NMB
@@ -199,16 +167,9 @@ class SVGD(SVGContainerEntity):
     Inherited: no
     """
 
-    # "last_abs_seg": contains "current point". Also
-    # almost whole segment is needed for Q, T, S.
-    # "last_abs_moveto": last seen absolute moveto command.
-
     def __init__(self, data):
         super().__init__(data)
         self.ctm = SVGTrafoScale((1, 1)).matrix()
-        moveto = SVGDSeg("M", [0, 0])
-        self.last_abs_seg = moveto
-        self.last_abs_moveto = moveto
 
     @property
     def dtype(self):
@@ -221,28 +182,11 @@ class SVGD(SVGContainerEntity):
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    def apply_ctm_to_seg(self, seg):
-        ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
-        coords = seg.data
-        for i in range(0, len(coords), 2):
-            x, y = coords[i], coords[i + 1]
-            coords[i] = ctma * x + ctmc * y + ctme
-            coords[i + 1] = ctmb * x + ctmd * y + ctmf
-        return seg
-
-    def rel_seg_to_abs_seg(self, seg):
-        cpx, cpy = self.last_abs_seg.data[-2:]
-        coords = seg.data
-        for i in range(0, len(coords), 2):
-            coords[i] += cpx
-            coords[i + 1] += cpy
-        seg.dtype = seg.dtype.upper()
-        return seg
-
-    def control_point_unoptimized_reference(self, seg):
+    @staticmethod
+    def control_point_unoptimized_reference(last_abs_seg_dtype, last_abs_seg_data, dtype):
         # T & S automatically unpacked to Q & C, hence this statement.
-        if self.last_abs_seg.dtype == seg.dtype:
-            ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
+        if last_abs_seg_dtype == dtype:
+            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             d = sqrt((cpx - ctrlp2x) ** 2 + (cpy - ctrlp2y) ** 2)
             ctrlp1x = cpx + d * (cpx - ctrlp2x) / d
             ctrlp1y = cpy + d * (cpy - ctrlp2y) / d
@@ -250,127 +194,101 @@ class SVGD(SVGContainerEntity):
             ctrlp1y = (cpy / d) + (cpy - ctrlp2y)
             ctrlp = [ctrlp1x, ctrlp1y]
         else:
-            ctrlp = self.last_abs_seg.data[-2:]
+            ctrlp = last_abs_seg_data[-2:]
         return ctrlp
 
-    def control_point_optimized_alternative(self, seg):
-        if self.last_abs_seg.dtype == seg.dtype:
-            ctrlp2x, ctrlp2y, cpx, cpy = self.last_abs_seg.data[-4:]
+    @staticmethod
+    def control_point_optimized_alternative(last_abs_seg_dtype, last_abs_seg_data, dtype):
+        if last_abs_seg_dtype == dtype:
+            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
         else:
-            ctrlp = self.last_abs_seg.data[-2:]
+            ctrlp = last_abs_seg_data[-2:]
         return ctrlp
 
     control_point = control_point_optimized_alternative
 
-    # Unique type of command.
-    def M(self, seg):
-        dcopy = deepcopy(seg)
-        self.last_abs_seg = dcopy
-        self.last_abs_moveto = dcopy
-        return self.apply_ctm_to_seg(seg)
-
-    def m(self, seg):
-        seg.dtype = "M"
-        seg.data[0] += self.last_abs_moveto.data[0]
-        seg.data[1] += self.last_abs_moveto.data[1]
-        return self.M(seg)
-
-    # Unique type of command.
-    def L(self, seg):
-        self.last_abs_seg = deepcopy(seg)
-        return self.apply_ctm_to_seg(seg)
-
-    def l(self, seg):
-        return self.L(self.rel_seg_to_abs_seg(seg))
-
-    def H(self, seg):
-        seg.dtype = "L"
-        seg.data.insert(1, self.last_abs_seg.data[-1])
-        return self.L(seg)
-
-    def h(self, seg):
-        seg.dtype = "H"
-        seg.data[0] += self.last_abs_seg.data[-2]
-        return self.H(seg)
-
-    def V(self, seg):
-        seg.dtype = "L"
-        seg.data.insert(0, self.last_abs_seg.data[-2])
-        return self.L(seg)
-
-    def v(self, seg):
-        seg.dtype = "V"
-        seg.data[0] += self.last_abs_seg.data[-1]
-        return self.V(seg)
-
-    # Unique type of command.
-    def C(self, seg):
-        self.last_abs_seg = deepcopy(seg)
-        return self.apply_ctm_to_seg(seg)
-
-    def c(self, seg):
-        return self.C(self.rel_seg_to_abs_seg(seg))
-
-    def S(self, seg):
-        seg.dtype = "C"
-        seg.data = self.control_point(seg) + seg.data
-        return self.C(seg)
-
-    def s(self, seg):
-        return self.S(self.rel_seg_to_abs_seg(seg))
-
-    # Unique type of command.
-    def Q(self, seg):
-        qp0x, qp0y = self.last_abs_seg.data[-2:]
-        qp1x, qp1y, qp2x, qp2y = seg.data
-        self.last_abs_seg = deepcopy(seg)
-        seg.dtype = "C"
-        seg.data = [
-            qp0x + (2 / 3) * (qp1x - qp0x),
-            qp0y + (2 / 3) * (qp1y - qp0y),
-            qp2x + (2 / 3) * (qp1x - qp2x),
-            qp2y + (2 / 3) * (qp1y - qp2y),
-            qp2x,
-            qp2y,
-        ]
-        return self.apply_ctm_to_seg(seg)
-
-    def q(self, seg):
-        return self.Q(self.rel_seg_to_abs_seg(seg))
-
-    def T(self, seg):
-        seg.dtype = "Q"
-        seg.data = self.control_point(seg) + seg.data
-        return self.Q(seg)
-
-    def t(self, seg):
-        return self.T(self.rel_seg_to_abs_seg(seg))
-
-    processing_method = dict(
-        M=M,
-        m=m,
-        L=L,
-        l=l,
-        H=H,
-        h=h,
-        V=V,
-        v=v,
-        C=C,
-        c=c,
-        S=S,
-        s=s,
-        Q=Q,
-        q=q,
-        T=T,
-        t=t,
-    )
-
     def ssa_repr(self, ssa_repr_config):
-        segs = [SVGD.processing_method[seg.dtype](self, seg) for seg in self.data]
-        if ssa_repr_config["collapse_consecutive_path_segments"] == 1:
-            segs = collapse_consecutive_objects(segs)
-        return " ".join(seg.ssa_repr(ssa_repr_config) for seg in segs)
+        ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
+        # "last_abs_seg_data": contains "current point". Also almost whole segment is needed for Q, T, S.
+        # "last_abs_moveto_data": last seen absolute moveto command.
+        last_abs_seg_dtype = "M"
+        last_abs_seg_data = last_abs_moveto_data = [0, 0]
+        basic_rel_comms = {"l": "L", "c": "C", "s": "S", "q": "Q", "t": "T"}
+        terminal_comms = {"M": "m", "L": "l", "C": "b"}
+        segs = []
+        for seg in self.data:
+            dtype, *data = seg
+            while True:
+                # Convert rel comms to abs.
+                if dtype in basic_rel_comms:
+                    dtype = basic_rel_comms[dtype]
+                    cpx = last_abs_seg_data[-2]
+                    cpy = last_abs_seg_data[-1]
+                    for i in range(0, len(data), 2):
+                        data[i] += cpx
+                        data[i + 1] += cpy
 
-    def __add__(self, other):
-        return self.__class__(self.data + other.data)
+                if dtype == "m":
+                    dtype = "M"
+                    data[0] += last_abs_moveto_data[0]
+                    data[1] += last_abs_moveto_data[1]
+
+                elif dtype == "H":
+                    dtype = "L"
+                    data.insert(1, last_abs_seg_data[-1])
+
+                elif dtype == "h":
+                    dtype = "H"
+                    data[0] += last_abs_seg_data[-2]
+
+                elif dtype == "V":
+                    dtype = "L"
+                    data.insert(0, last_abs_seg_data[-2])
+
+                elif dtype == "v":
+                    dtype = "V"
+                    data[0] += last_abs_seg_data[-1]
+
+                elif dtype == "S":
+                    dtype = "C"
+                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
+
+                # Unique type of command.
+                elif dtype == "Q":
+                    qp0x = last_abs_seg_data[-2]
+                    qp0y = last_abs_seg_data[-1]
+                    qp1x, qp1y, qp2x, qp2y = data
+                    dtype = "C"
+                    data = [
+                        qp0x + (2 / 3) * (qp1x - qp0x),
+                        qp0y + (2 / 3) * (qp1y - qp0y),
+                        qp2x + (2 / 3) * (qp1x - qp2x),
+                        qp2y + (2 / 3) * (qp1y - qp2y),
+                        qp2x,
+                        qp2y,
+                    ]
+
+                elif dtype == "T":
+                    dtype = "Q"
+                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
+
+                if dtype in terminal_comms:
+                    last_abs_seg_dtype = dtype
+                    last_abs_seg_data = data
+                    if dtype == "M":
+                        last_abs_moveto_data = data
+
+                    # Apply CTM to terminal, abs comms.
+                    processed = []
+                    for i in range(0, len(data), 2):
+                        x = data[i]
+                        y = data[i + 1]
+                        processed.append(str(round(ctma * x + ctmc * y + ctme)))
+                        processed.append(str(round(ctmb * x + ctmd * y + ctmf)))
+
+                    # Convert to SSA representation.
+                    segs.append(f"{terminal_comms[dtype]} {' '.join(processed)}")
+                    break
+
+        return " ".join(segs)
