@@ -292,6 +292,3 @@ class SVGD(SVGContainerEntity):
                     break
 
         return " ".join(segs)
-
-    def __add__(self, other):
-        return self.__class__(self.data + other.data)
