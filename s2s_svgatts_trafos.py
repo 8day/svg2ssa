@@ -37,15 +37,15 @@ class SVGTrafoMatrix(SVGTrafoMixin):
 
     def __add__(self, other):
         if isinstance(other, SVGTrafoMatrix):
-            ctm = self.data
-            m = other.data
+            ctm0, ctm1, ctm2, ctm4, ctm5 = self.data
+            m0, m1, m2, m3, m4, m5 = other.data
             data = (
-                ctm[0] * m[0] + ctm[2] * m[1],
-                ctm[1] * m[0] + ctm[3] * m[1],
-                ctm[0] * m[2] + ctm[2] * m[3],
-                ctm[1] * m[2] + ctm[3] * m[3],
-                ctm[0] * m[4] + ctm[2] * m[5] + ctm[4],
-                ctm[1] * m[4] + ctm[3] * m[5] + ctm[5],
+                ctm0 * m0 + ctm2 * m1,
+                ctm1 * m0 + ctm3 * m1,
+                ctm0 * m2 + ctm2 * m3,
+                ctm1 * m2 + ctm3 * m3,
+                ctm0 * m4 + ctm2 * m5 + ctm4,
+                ctm1 * m4 + ctm3 * m5 + ctm5,
             )
             return SVGTrafoMatrix(data)
         elif isinstance(other, SVGTrafoMixin):
@@ -237,13 +237,10 @@ class SVGTransform(SVGContainerEntity):
 
     def matrix(self):
         data = self.data
-        if len(data) > 1:
-            acc = data[0].matrix()
-            for trafo in data[1:]:
-                acc += trafo.matrix()
-            return acc
-        else:
-            return data[0].matrix()
+        acc = data[0].matrix()
+        for i in range(1, len(data)):
+            acc += data[i].matrix()
+        return acc
 
     @classmethod
     def from_raw_data(cls, data):

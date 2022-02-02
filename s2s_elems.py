@@ -85,11 +85,9 @@ class SVGElementPath(SVGElementMixin):
             # \pos also will do the trick, but if it's not \pos(0,0).
             if "rotate" in trafos:
                 if "translate" in trafos:
-                    for i in range(len(trafos)):
+                    for i, trafo in enumerate(trafos):
                         # If there's empty \pos, then there's no need in it, so remove \pos, -- there's still \org after all.
-                        if trafos.data[i].dtype == "translate" and (
-                            trafos.data[i].data[0] == 0 and trafos.data[i].data[1] == 0
-                        ):
+                        if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
                             del trafos.data[i]
                             break
                 else:
@@ -97,11 +95,9 @@ class SVGElementPath(SVGElementMixin):
                     pass
             else:
                 if "translate" in trafos:
-                    for i in range(len(trafos)):
+                    for i, trafo in enumerate(trafos):
                         # If there's empty \pos, then there's no need in it, so remove \pos, but add \org(0,0) to maintain collision detection override.
-                        if trafos.data[i].dtype == "translate" and (
-                            trafos.data[i].data[0] == 0 and trafos.data[i].data[1] == 0
-                        ):
+                        if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
                             del trafos.data[i]
                             atts["transform"] = trafos + SVGTrafoRotate((0, 0, 0))
                             break
