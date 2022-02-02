@@ -50,7 +50,7 @@ def convert_svglength_to_pixels(data):
     return data
 
 
-def collapse_consecutive_objects(list_of_objects):
+def collapse_consecutive_objects_unoptimized_reference(list_of_objects):
 
     # Alt. name: grouping (summ) similar objects in a sequence (when sequence length is predefined and it shouldn't change).
     # Do not modify!
@@ -71,7 +71,7 @@ def collapse_consecutive_objects(list_of_objects):
     return list_of_objects
 
 
-def collapse_consecutive_objects_alternative_01(list_of_objects):
+def collapse_consecutive_objects_optimized_alternative(list_of_objects):
     if len(list_of_objects) > 1:
         l = len(list_of_objects) - 1
         i = 0
@@ -85,6 +85,9 @@ def collapse_consecutive_objects_alternative_01(list_of_objects):
             else:
                 i += 1
     return list_of_objects
+
+
+collapse_consecutive_objects = collapse_consecutive_objects_optimized_alternative
 
 
 trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
