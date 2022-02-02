@@ -214,7 +214,7 @@ class SVGD(SVGContainerEntity):
         # "last_abs_moveto_data": last seen absolute moveto command.
         last_abs_seg_dtype = "M"
         last_abs_seg_data = last_abs_moveto_data = [0, 0]
-        basic_rel_comms = {"l", "c", "s", "q", "t"}
+        basic_rel_comms = {"l": "L", "c": "C", "s": "S", "q": "Q", "t": "T"}
         terminal_comms = {"M": "m", "L": "l", "C": "b"}
         segs = []
         for seg in self.data:
@@ -227,7 +227,7 @@ class SVGD(SVGContainerEntity):
                     for i in range(0, len(data), 2):
                         data[i] += cpx
                         data[i + 1] += cpy
-                    dtype = dtype.upper()
+                    dtype = basic_rel_comms[dtype]
 
                 if dtype == "m":
                     dtype = "M"
