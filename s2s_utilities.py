@@ -72,18 +72,17 @@ def collapse_consecutive_objects_unoptimized_reference(list_of_objects):
 
 
 def collapse_consecutive_objects_optimized_alternative(list_of_objects):
-    if len(list_of_objects) > 1:
-        l = len(list_of_objects) - 1
-        i = 0
-        while i < l:
-            curr = list_of_objects[i]
-            next = list_of_objects[i + 1]
-            if curr.dtype == next.dtype:
-                list_of_objects[i + 1] = curr + next
-                del list_of_objects[i]
-                l -= 1
-            else:
-                i += 1
+    l = len(list_of_objects) - 1
+    i = 0
+    while i < l:
+        curr = list_of_objects[i]
+        next = list_of_objects[i + 1]
+        if curr.dtype == next.dtype:
+            list_of_objects[i + 1] = curr + next
+            del list_of_objects[i]
+            l -= 1
+        else:
+            i += 1
     return list_of_objects
 
 
