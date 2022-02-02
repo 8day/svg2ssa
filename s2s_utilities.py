@@ -78,8 +78,8 @@ def collapse_consecutive_objects_optimized_alternative(list_of_objects):
         curr = list_of_objects[i]
         next = list_of_objects[i + 1]
         if curr.dtype == next.dtype:
-            list_of_objects[i + 1] = curr + next
-            del list_of_objects[i]
+            list_of_objects[i] += next
+            del list_of_objects[i + 1]
             l -= 1
         else:
             i += 1
