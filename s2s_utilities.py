@@ -82,7 +82,8 @@ def collapse_consecutive_objects_alternative_01(list_of_objects):
                 list_of_objects[i + 1] = curr + next
                 del list_of_objects[i]
                 l -= 1
-            i += 1
+            else:
+                i += 1
     return list_of_objects
 
 
