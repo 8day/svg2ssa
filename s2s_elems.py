@@ -86,8 +86,8 @@ class SVGElementPath(SVGElementMixin):
             # ATM only VSFilter behaves like this, maybe libass as well,
             # but not ffdshow subtitles filter.
             # \pos also will do the trick, but if it's not \pos(0,0).
-            if "rotate" in trafos:
-                if "translate" in trafos:
+            if trafos.contains_obj_with_dtype("rotate"):
+                if trafos.contains_obj_with_dtype("translate"):
                     for i, trafo in enumerate(trafos):
                         # If there's empty \pos, then there's no need in it, so remove \pos, -- there's still \org after all.
                         if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
@@ -97,7 +97,7 @@ class SVGElementPath(SVGElementMixin):
                     # There's still \org, so everything is OK.
                     pass
             else:
-                if "translate" in trafos:
+                if trafos.contains_obj_with_dtype("translate"):
                     for i, trafo in enumerate(trafos):
                         # If there's empty \pos, then there's no need in it, so remove \pos, but add \org(0,0) to maintain collision detection override.
                         if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
@@ -108,7 +108,7 @@ class SVGElementPath(SVGElementMixin):
                     # There's no \org, so add it.
                     atts["transform"] = trafos + SVGTrafoRotate((0, 0, 0))
             # Create CTM for path to emulate subpixel precision.
-            if "matrix" in trafos:
+            if trafos.contains_obj_with_dtype("matrix"):
                 val = 2 ** (ssa_repr_config["magnification_level"] - 1)
                 path_ctm = SVGTrafoScale((val, val)).matrix() + trafos.data[0]
             else:
