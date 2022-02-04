@@ -53,7 +53,10 @@ class SVGElementMixin(SVGContainerEntity):
         curr = self.data
         prev = other.data
         for key in prev:
-            curr[key] = curr[key] + prev[key] if key in curr else prev[key]
+            if key in curr:
+                curr[key] += prev[key]
+            else:
+                curr[key] = prev[key]
         return self
 
 
