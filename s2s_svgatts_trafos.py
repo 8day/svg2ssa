@@ -11,9 +11,6 @@ from s2s_core import SVGBasicEntity, SVGContainerEntity
 class SVGTrafoMixin(SVGBasicEntity):
     """Generalised superclass for SVG "transform" attribute and its "values"."""
 
-    def ssa_repr(self, ssa_repr_config):
-        return ""
-
     def __add__(self, other):
         if isinstance(other, type(self)):
             # W/o tuple() this doesn't work.
