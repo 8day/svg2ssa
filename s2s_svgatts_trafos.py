@@ -242,14 +242,10 @@ class SVGTransform(SVGContainerEntity):
         parser = yacc(module=S2STransformYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
-    @staticmethod
-    def collapse_consecutive_objects(list_of_objects):
-        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object.
+    def collapse_consecutive_objects(self):
+        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object."""
 
-        Args:
-            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
-        """
-
+        list_of_objects = self.data
         l = len(list_of_objects) - 1
         i = 0
         while i < l:
@@ -263,16 +259,15 @@ class SVGTransform(SVGContainerEntity):
             # Items can't be merged, so move to next item.
             else:
                 i += 1
-        return list_of_objects
 
-    @staticmethod
-    def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):
+    def collapse_unnecessary_trafos(self, unnecessary_transformations):
         """Finds repeated, nonconsecutive trafos and then collapses everything in-between into the matrix (this is handled by trafos themselves).
 
         Args:
-            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
             unnecessary_transformations (set[str]): Trafos that must be collapsed.
         """
+
+        list_of_trafos = self.data
 
         trafos_unnecessary = SVGTransform.trafos_all & unnecessary_transformations | SVGTransform.trafos_unsupported
         trafos_all_without_unnecessary = SVGTransform.trafos_all - trafos_unnecessary
@@ -314,12 +309,10 @@ class SVGTransform(SVGContainerEntity):
                 acc += list_of_trafos[i]
             list_of_trafos[:idx] = [acc]
 
-        return list_of_trafos
-
     def ssa_repr(self, ssa_repr_config):
-        trafos = SVGTransform.collapse_consecutive_objects(self.data)
-        trafos = SVGTransform.collapse_unnecessary_trafos(trafos, ssa_repr_config["unnecessary_transformations"])
-        return "".join(trafo.ssa_repr(ssa_repr_config) for trafo in trafos)
+        self.collapse_consecutive_objects()
+        self.collapse_unnecessary_trafos(ssa_repr_config["unnecessary_transformations"])
+        return "".join(trafo.ssa_repr(ssa_repr_config) for trafo in self.data)
 
     def __add__(self, other):
         if isinstance(other, SVGTransform):
