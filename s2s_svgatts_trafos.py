@@ -243,27 +243,7 @@ class SVGTransform(SVGContainerEntity):
         return cls(parser.parse(debug=False, lexer=lexer))
 
     @staticmethod
-    def collapse_consecutive_objects_unoptimized_reference(list_of_objects):
-        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object.
-
-        Args:
-            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
-        """
-
-        if len(list_of_objects) > 1:
-            for i in range(len(list_of_objects) - 1):
-                curr = list_of_objects[i]
-                next = list_of_objects[i + 1]
-                if curr.dtype == next.dtype:
-                    list_of_objects[i + 1] = curr + next
-                    list_of_objects[i] = None
-            for i in range(len(list_of_objects) - 1, -1, -1):
-                if list_of_objects[i] is None:
-                    del list_of_objects[i]
-        return list_of_objects
-
-    @staticmethod
-    def collapse_consecutive_objects_optimized_alternative(list_of_objects):
+    def collapse_consecutive_objects(list_of_objects):
         """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object.
 
         Args:
@@ -284,8 +264,6 @@ class SVGTransform(SVGContainerEntity):
             else:
                 i += 1
         return list_of_objects
-
-    collapse_consecutive_objects = collapse_consecutive_objects_optimized_alternative
 
     @staticmethod
     def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):

@@ -188,30 +188,14 @@ class SVGD(SVGContainerEntity):
         return cls(parser.parse(debug=False, lexer=lexer))
 
     @staticmethod
-    def control_point_unoptimized_reference(last_abs_seg_dtype, last_abs_seg_data, dtype):
+    def control_point(last_abs_seg_dtype, last_abs_seg_data, dtype):
         # ``T`` & ``S`` are automatically unpacked to ``Q`` & ``C``, hence this statement.
-        if last_abs_seg_dtype == dtype:
-            ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
-            d = sqrt((cpx - ctrlp2x) ** 2 + (cpy - ctrlp2y) ** 2)
-            ctrlp1x = cpx + d * (cpx - ctrlp2x) / d
-            ctrlp1y = cpy + d * (cpy - ctrlp2y) / d
-            ctrlp1x = (cpx / d) + (cpx - ctrlp2x)
-            ctrlp1y = (cpy / d) + (cpy - ctrlp2y)
-            ctrlp = [ctrlp1x, ctrlp1y]
-        else:
-            ctrlp = last_abs_seg_data[-2:]
-        return ctrlp
-
-    @staticmethod
-    def control_point_optimized_alternative(last_abs_seg_dtype, last_abs_seg_data, dtype):
         if last_abs_seg_dtype == dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
         else:
             ctrlp = last_abs_seg_data[-2:]
         return ctrlp
-
-    control_point = control_point_optimized_alternative
 
     def ssa_repr(self, ssa_repr_config):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
