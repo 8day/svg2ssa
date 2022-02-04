@@ -7,21 +7,16 @@ from s2s_svgatts_trafos import SVGTrafoScale
 
 
 class S2SDYacc:
-    """Class for PLY Yacc for "d"."""
+    """Class for PLY Yacc for attr ``d``."""
 
-    # Note: currently support of some intructions disabled on the Lexer level.
-    # BTW, there is a difference in SVG whether 'Z' is present or not: stroke
-    # joins are  rendered differently. With SSA that is not the case, so I forced
-    # Lexer to ingore 'Z's. In SVG Rec. it's stated: "If you instead "manually"
-    # close the subpath via a "lineto" command, the start of the first segment
-    # and the end of the last segment are not joined but instead are each capped
-    # using the current value of ``stroke-linecap``. At the end of the command,
-    # the new current point is set to the initial point of the current subpath."
+    # Currently support of some instructions disabled on the lexer's level.
+    # BTW, there is a difference in SVG whether ``Z`` is present or not: stroke joins are rendered differently. With SSA that is not the case, so I forced lexer to ignore ``Z``'s. In SVG Rec. it's stated: "If you instead "manually" close the subpath via a "lineto" command, the start of the first segment and the end of the last segment are not joined but instead are each capped using the current value of ``stroke-linecap``. At the end of the command, the new current point is set to the initial point of the current subpath."
 
     mvto_lnto_mapping = {"M": ("M", "L"), "m": ("m", "l")}
 
     def p_groups_1(self, p):
         """svg_path : m_drawto_grps"""
+
         p[0] = p[1]
 
     def p_groups_2(self, p):
@@ -32,6 +27,7 @@ class S2SDYacc:
         drawto_comms  : drawto_comms drawto_comm
                       | drawto_comm
         """
+
         p[0] = p[1]
         if len(p) == 3:
             p[0] = p[0] + p[2]
@@ -46,6 +42,7 @@ class S2SDYacc:
         | t_comm
         | a_comm
         """
+
         p[0] = p[1]
 
     def p_comms_1(self, p):
@@ -66,6 +63,7 @@ class S2SDYacc:
         a_comm : "A" a_comm_arg_seq
                | "a" a_comm_arg_seq
         """
+
         comm = p[1]
         arg_seqs = p[2]
         for arg_seq in arg_seqs:
@@ -76,6 +74,7 @@ class S2SDYacc:
         """m_comm : "M" m_comm_arg_seq
         | "m" m_comm_arg_seq
         """
+
         mvto, lnto = S2SDYacc.mvto_lnto_mapping[p[1]]
         arg_seqs = p[2]
         arg_seqs[0].insert(0, mvto)
@@ -91,6 +90,7 @@ class S2SDYacc:
         t_comm_arg_seq : t_comm_arg_seq NMB NMB
                        | NMB NMB
         """
+
         if len(p) == 3:
             p[0] = [[p[1], p[2]]]
         else:
@@ -103,6 +103,7 @@ class S2SDYacc:
         q_comm_arg_seq : q_comm_arg_seq NMB NMB NMB NMB
                        | NMB NMB NMB NMB
         """
+
         if len(p) == 5:
             p[0] = [[p[1], p[2], p[3], p[4]]]
         else:
@@ -113,6 +114,7 @@ class S2SDYacc:
         """c_comm_arg_seq : c_comm_arg_seq NMB NMB NMB NMB NMB NMB
         | NMB NMB NMB NMB NMB NMB
         """
+
         if len(p) == 7:
             p[0] = [[p[1], p[2], p[3], p[4], p[5], p[6]]]
         else:
@@ -125,6 +127,7 @@ class S2SDYacc:
         v_comm_arg_seq : v_comm_arg_seq NMB
                        | NMB
         """
+
         if len(p) == 2:
             p[0] = [[p[1]]]
         else:
@@ -135,6 +138,7 @@ class S2SDYacc:
         """a_comm_arg_seq : a_comm_arg_seq a_comm_arg
         | a_comm_arg
         """
+
         if len(p) == 2:
             p[0] = [p[1]]
         else:
@@ -143,6 +147,7 @@ class S2SDYacc:
 
     def p_arg_1(self, p):
         """a_comm_arg : NMB NMB NMB NMB NMB NMB NMB"""
+
         if (p[4] < 0 or p[4] > 1) or (p[5] < 0 or p[5] > 1):
             raise Exception(
                 "One of the 'flags' in elliptical arc is not valid.\n"
@@ -162,7 +167,7 @@ class S2SDYacc:
 
 
 class SVGD(SVGContainerEntity):
-    """Class for SVG "d" attribute.
+    """Class for SVG ``d`` attribute.
 
     Inherited: no
     """
@@ -184,7 +189,7 @@ class SVGD(SVGContainerEntity):
 
     @staticmethod
     def control_point_unoptimized_reference(last_abs_seg_dtype, last_abs_seg_data, dtype):
-        # T & S automatically unpacked to Q & C, hence this statement.
+        # ``T`` & ``S`` are automatically unpacked to ``Q`` & ``C``, hence this statement.
         if last_abs_seg_dtype == dtype:
             ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             d = sqrt((cpx - ctrlp2x) ** 2 + (cpy - ctrlp2y) ** 2)
@@ -210,8 +215,8 @@ class SVGD(SVGContainerEntity):
 
     def ssa_repr(self, ssa_repr_config):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
-        # "last_abs_seg_data": contains "current point". Also almost whole segment is needed for Q, T, S.
-        # "last_abs_moveto_data": last seen absolute moveto command.
+        # ``last_abs_seg_data`` -- contains "current point". Also almost whole segment is needed for ``Q``, ``T``, ``S``.
+        # ``last_abs_moveto_data`` -- last seen absolute moveto command.
         last_abs_seg_dtype = "M"
         last_abs_seg_data = last_abs_moveto_data = [0, 0]
         basic_rel_comms = {"l": "L", "c": "C", "s": "S", "q": "Q", "t": "T"}

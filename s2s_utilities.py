@@ -8,24 +8,23 @@ import re
 # fractional_constant = f'(?:{digit_sequence}?\\.{digit_sequence}|{digit_sequence}\\.)'
 # floating_point_constant = f'(?:{fractional_constant}{exponent}?|{digit_sequence}{exponent})'
 # integer_constant = digit_sequence
-# Order was swapped because of ambiguity: float is int w/o fraction, but can be
-# changed to f'{sign}?(?:{floating_point_constant}|{integer_constant})' since 'sign' present in both cases.
+# Order was swapped because of ambiguity: ``float`` is ``int`` w/o fraction, but can be changed to ``f'{sign}?(?:{floating_point_constant}|{integer_constant})'`` since ``sign`` present in both cases.
 # number = f'{sign}?{floating_point_constant}|{sign}?{integer_constant}'
 number = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
 length_number = re.compile(f"^({number})$")
 length_units = re.compile(f"^({number})(px|pt|pc|cm|mm|in)$", re.I)
 
 
+# Fixme: Should support ``%`` as well! (Read ``<length>`` spec.)
 def convert_svglength_to_pixels(data):
-    """Converts <length> to its respective pixel equivalent @90dpi,
-    which is in accordance with CSS standard.
-    """
+    """Converts length to its respective pixel equivalent @90dpi, which is in accordance with CSS standard.
 
-    # Fixme: should support '%' as well! (Read <length> spec.)
-    # Note: factors for transforming were taken from Inkscape SVGLoader.py.
-    # Note: currently these units is unsupported:
-    # o. em (relative to CSS "font-size");
-    # o. ex (relative to font x-height).
+    Factors for transforming were taken from Inkscape's ``SVGLoader.py``.
+
+    Currently these units is unsupported:
+    - ``em`` (relative to CSS ``font-size``);
+    - ``ex`` (relative to font x-height).
+    """
 
     if length_number.search(data):
         data = float(data)

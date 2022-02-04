@@ -1,4 +1,4 @@
-# Note: trafos use tuple as their container for data.
+# Trafos use tuple as their container for data for immutability.
 
 
 from math import radians, sin, cos, tan
@@ -9,11 +9,11 @@ from s2s_core import SVGBasicEntity, SVGContainerEntity
 
 
 class SVGTrafoMixin(SVGBasicEntity):
-    """Generalised superclass for SVG "transform" attribute and its "values"."""
+    """Generalized superclass for SVG ``transform`` attribute and its "values"."""
 
     def __add__(self, other):
         if isinstance(other, type(self)):
-            # W/o tuple() this doesn't work.
+            # Doesn't work w/o explicit construction of tuple (:class:`range`` vs :class:`tuple`).
             return self.__class__(tuple(i + j for i, j in zip(self.data, other.data)))
         elif isinstance(other, (SVGTrafoMixin, SVGTransform)):
             return self.matrix() + other.matrix()
@@ -22,7 +22,7 @@ class SVGTrafoMixin(SVGBasicEntity):
 
 
 class SVGTrafoMatrix(SVGTrafoMixin):
-    """Class for SVG "transform" "matrix"."""
+    """Class for SVG ``matrix`` from ``transform`` attr."""
 
     @property
     def dtype(self):
@@ -51,7 +51,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
 
 
 class SVGTrafoTranslate(SVGTrafoMixin):
-    """Class for SVG "transform" "translate"."""
+    """Class for SVG ``translate`` from ``transform`` attr."""
 
     def __init__(self, data):
         super().__init__(data if len(data) == 2 else (data[0], 0))
@@ -70,7 +70,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
 
 
 class SVGTrafoRotate(SVGTrafoMixin):
-    """Class for SVG "transform" "rotate"."""
+    """Class for SVG ``rotate`` from ``transform`` attr."""
 
     def __init__(self, data):
         super().__init__(data if len(data) == 3 else (data[0], 0, 0))
@@ -100,7 +100,7 @@ class SVGTrafoRotate(SVGTrafoMixin):
 
 
 class SVGTrafoScale(SVGTrafoMixin):
-    """Class for SVG "transform" "scale"."""
+    """Class for SVG ``scale`` from ``transform`` attr."""
 
     def __init__(self, data):
         super().__init__(data if len(data) == 2 else (data[0], data[0]))
@@ -119,7 +119,7 @@ class SVGTrafoScale(SVGTrafoMixin):
 
 
 class SVGTrafoSkewX(SVGTrafoMixin):
-    """Class for SVG "transform" "skewX"."""
+    """Class for SVG ``skewX`` from ``transform`` attr."""
 
     @property
     def dtype(self):
@@ -131,7 +131,7 @@ class SVGTrafoSkewX(SVGTrafoMixin):
 
 
 class SVGTrafoSkewY(SVGTrafoMixin):
-    """Class for SVG "transform" "skewY"."""
+    """Class for SVG ``skewY`` from ``transform`` attr."""
 
     @property
     def dtype(self):
@@ -143,12 +143,13 @@ class SVGTrafoSkewY(SVGTrafoMixin):
 
 
 class S2STransformYacc:
-    """Class for PLY Yacc for trafos."""
+    """Class for PLY Yacc for processing of ``transform`` attr."""
 
     def p_trafos_list(self, p):
         """trafos_list : trafos_list trafo
         | trafo
         """
+
         p[0] = p[1]
         if len(p) == 3:
             p[0] += p[2]
@@ -161,36 +162,43 @@ class S2STransformYacc:
         | skewX
         | skewY
         """
+
         p[0] = [p[1]]
 
     def p_matrix(self, p):
         """matrix : MATRIX "(" NMB NMB NMB NMB NMB NMB ")" """
+
         p[0] = SVGTrafoMatrix((p[3], p[4], p[5], p[6], p[7], p[8]))
 
     def p_translate(self, p):
         """translate : TRANSLATE "(" NMB NMB ")"
         | TRANSLATE "(" NMB ")"
         """
+
         p[0] = SVGTrafoTranslate((p[3], p[4]) if len(p) > 5 else (p[3],))
 
     def p_rotate(self, p):
         """rotate : ROTATE "(" NMB NMB NMB ")"
         | ROTATE "(" NMB ")"
         """
+
         p[0] = SVGTrafoRotate((p[3], p[4], p[5]) if len(p) == 7 else (p[3],))
 
     def p_scale(self, p):
         """scale : SCALE "(" NMB NMB ")"
         | SCALE "(" NMB ")"
         """
+
         p[0] = SVGTrafoScale((p[3], p[4]) if len(p) == 6 else (p[3],))
 
     def p_skewX(self, p):
         """skewX : SKEWX "(" NMB ")" """
+
         p[0] = SVGTrafoSkewX((p[3],))
 
     def p_skewY(self, p):
         """skewY : SKEWY "(" NMB ")" """
+
         p[0] = SVGTrafoSkewY((p[3],))
 
     def p_error(self, p):
@@ -203,23 +211,24 @@ class S2STransformYacc:
     tokens = ply_lex_transform.tokens
 
 
+# Fixme: In its current form it may have issues with empty ``transform-list`` -- it'll simply crash!
 class SVGTransform(SVGContainerEntity):
-    """Class for SVG "transform" attribute.
+    """Class for SVG ``transform`` attribute.
 
     Inherited: [...]
     """
 
-    # Note: this class in its current form may have issues
-    # with empty 'transform-list'. It'll simply crash!
-
     trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
+    """set[str]: IDs of all possible trafos."""
     trafos_unsupported = {"matrix", "skewX", "skewY"}
+    """set[str]: IDs of unsupported trafos."""
 
     @property
     def dtype(self):
         return "transform"
 
     def matrix(self):
+        """Returns sum of all trafos as a matrix :class:`SVGTrafoMatrix`."""
         data = self.data
         acc = data[0].matrix()
         for i in range(1, len(data)):
@@ -235,12 +244,11 @@ class SVGTransform(SVGContainerEntity):
 
     @staticmethod
     def collapse_consecutive_objects_unoptimized_reference(list_of_objects):
+        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object.
 
-        # Alt. name: grouping (summ) similar objects in a sequence (when sequence length is predefined and it shouldn't change).
-        # Do not modify!
-        # In its current form (i.e. two iterations instead of one)
-        # algorithm below is *significantly* less complex & very
-        # general, which makes it ideal for use in everyday life.
+        Args:
+            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
+        """
 
         if len(list_of_objects) > 1:
             for i in range(len(list_of_objects) - 1):
@@ -256,15 +264,23 @@ class SVGTransform(SVGContainerEntity):
 
     @staticmethod
     def collapse_consecutive_objects_optimized_alternative(list_of_objects):
+        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object.
+
+        Args:
+            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
+        """
+
         l = len(list_of_objects) - 1
         i = 0
         while i < l:
             curr = list_of_objects[i]
             next = list_of_objects[i + 1]
+            # Items can be merged, so merge next item into current *and* adjust sequence length to account for merge.
             if curr.dtype == next.dtype:
                 list_of_objects[i] += next
                 del list_of_objects[i + 1]
                 l -= 1
+            # Items can't be merged, so move to next item.
             else:
                 i += 1
         return list_of_objects
@@ -273,14 +289,17 @@ class SVGTransform(SVGContainerEntity):
 
     @staticmethod
     def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):
-        """Finds repeated, unconsecutive trafos and then collapses
-        everything inbetween into the matrix (this is handled by trafos themselves).
+        """Finds repeated, nonconsecutive trafos and then collapses everything in-between into the matrix (this is handled by trafos themselves).
+
+        Args:
+            list_of_trafos (list[s2s_core.SVGBasicEntity]): Objects that must be collapsed.
+            unnecessary_transformations (set[str]): Trafos that must be collapsed.
         """
 
         trafos_unnecessary = SVGTransform.trafos_all & unnecessary_transformations | SVGTransform.trafos_unsupported
         trafos_all_without_unnecessary = SVGTransform.trafos_all - trafos_unnecessary
 
-        # Create dictionary with trafos indeces.
+        # Create dictionary with trafos indices.
         dictionary = {}
         for i, trafo in enumerate(list_of_trafos):
             if trafo.dtype in dictionary:
@@ -289,17 +308,14 @@ class SVGTransform(SVGContainerEntity):
                 dictionary[trafo.dtype] = [i]
 
         # Find index of the furthest unsupported by SSA trafo.
-        # Note: by design, the largest idx should be last (since there was no
-        # sorting/shuffle applied), so "max(dictionary[trafo])" should be equal
-        # to "dictionary[trafo][-1]".
+        # By design, the largest idx should be last (since there was no sorting/shuffle applied), so ``max(dictionary[trafo])`` should be equal to ``dictionary[trafo][-1]``.
         idx_unnec = -1
         for trafo in trafos_unnecessary:
             if trafo in dictionary and dictionary[trafo][-1] > idx_unnec:
                 idx_unnec = dictionary[trafo][-1]
 
-        # Find index of the furthest repetitive and unconsecutive trafo.
-        # Note: 'trafos_all_without_unnecessary' *may* be an empty set, it is
-        # completely acceptable.
+        # Find index of the furthest repetitive and nonconsecutive trafo.
+        # ``trafos_all_without_unnecessary`` *may* be an empty set, it is completely acceptable.
         idx_repet = -1
         for trafo in trafos_all_without_unnecessary:
             if (
@@ -307,13 +323,13 @@ class SVGTransform(SVGContainerEntity):
                 and len(dictionary[trafo]) > 1
                 and dictionary[trafo][-2] > idx_repet
             ):
-                # Implies that indeces are in the "right" order, i.e. not shuffled.
+                # Implies that indices are in the "right" order, i.e. not shuffled.
                 # Inside this function it is always true.
                 idx_repet = dictionary[trafo][-2]
 
         # Merge trafos, if need be.
         if idx_unnec != -1 or idx_repet != -1:
-            # Note: "+1" for making interval inclusive: [n,m] instead of [n,m).
+            # ``+1`` for making interval inclusive: [n,m] instead of [n,m).
             idx = (idx_unnec if idx_unnec > idx_repet else idx_repet) + 1
             acc = list_of_trafos[0]
             for i in range(1, idx):

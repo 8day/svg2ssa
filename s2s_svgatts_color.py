@@ -3,7 +3,7 @@ from s2s_core import SVGBasicEntity
 
 
 class SVGColor(SVGBasicEntity):
-    """Class for SVG 'color' attribute.
+    """Class for SVG ``color`` attribute.
 
     Value:        <color> | inherit
     Initial:      depends on user agent
@@ -159,6 +159,7 @@ class SVGColor(SVGBasicEntity):
         "yellow": ("FF", "FF", "00"),
         "yellowgreen": ("32", "CD", "9A"),
     }
+    """dict[str, str]: Mapping of `recognized color keyword names <https://www.w3.org/TR/SVG11/types.html#ColorKeywords>`__ to their string RGB form."""
     color_hex = r"#[0-9A-Fa-f]{0}\Z"
     color_hex_full = re.compile(color_hex.format("{6}"), re.I)
     color_hex_short = re.compile(color_hex.format("{3}"), re.I)
@@ -198,7 +199,7 @@ class SVGColor(SVGBasicEntity):
         elif tmp.lower() in cls.color_keywords:
             tmp = cls.color_keywords[tmp.lower()]
         else:
-            # Note: currently out-of-range values raise errors (which is wrong according to SVG Rec 1.1).
+            # Fixme: Currently out-of-range values raise errors, which is wrong according to SVG Rec 1.1.
             raise TypeError(f"{cls.__name__}: The next color specified in SVG is malformed or unsupported: {data}.")
         return cls(tmp)
 
@@ -211,7 +212,7 @@ class SVGColor(SVGBasicEntity):
 
 
 class SVGFill(SVGColor):
-    """Class for SVG 'fill' attribute.
+    """Class for SVG ``fill`` attribute.
 
     Value:        <paint>
     Initial:      black
@@ -224,7 +225,7 @@ class SVGFill(SVGColor):
 
 
 class SVGStroke(SVGColor):
-    """Class for SVG 'stroke' attribute.
+    """Class for SVG ``stroke`` attribute.
 
     Value:        <paint>
     Initial:      none

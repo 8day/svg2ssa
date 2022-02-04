@@ -1,4 +1,5 @@
-literals = "MmLlHhVvCcSsQqTt"  # All SVG commands
+# All SVG commands.
+literals = "MmLlHhVvCcSsQqTt"
 
 tokens = ("NMB",)
 
@@ -14,7 +15,7 @@ def t_NMB(t):
 
 
 def t_error(t):
-    # Fixme: when t.value[0] will be the last character in the sequence, t.value[1:11] may cause errors.
+    # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
     raise Exception(
         f"The next illegal character were found in 'd' attribute: '{t.value[0]}'.\n"
         f"These characters were right after it: {t.value[1:11]}"

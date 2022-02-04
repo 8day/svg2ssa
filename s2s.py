@@ -1,16 +1,16 @@
 import re
 
-# Uncomment when cx_Freeze'ing with lxml.
+# Uncomment when cx_Freeze'ing with :mod:`lxml`.
 # from lxml import etree
 
-# Uncomment when cx_Freeze'ing with xml.etree.
+# Uncomment when cx_Freeze'ing with :mod:`xml.etree`.
 # from xml.etree import ElementTree as etree
 
-# Comment when cx_Freeze'ing to prevent loading of lxml even if xml.etree is needed.
+# Comment when cx_Freeze'ing to prevent loading of :mod:`lxml` even if :mod:`xml.etree` is needed.
 try:
     from lxml import etree
 except ImportError:
-    # See: http://lxml.de/compatibility.html
+    # See http://lxml.de/compatibility.html.
     from xml.etree import ElementTree as etree
 
 from s2s_elems import SVGElementG, SVGElementPath
@@ -22,13 +22,17 @@ DEFAULT_HEIGHT = 1088
 
 
 class SVG:
-    """This is 'main()', if you like. Spins all the machinery behind it."""
+    """Models Scalable Vector Graphics document convertable to SubStation Alpha subtitle document."""
 
     def __init__(self):
         self.terminal_element_stack = []
+        """list: Sequence with terminal elements convertable to SSA."""
         self.container_element_stack = []
+        """list: Sequence with container elements whose attrs must be passed to enclosed terminal elements."""
         self.width = DEFAULT_WIDTH
+        """int: Default width for the generated SSA document."""
         self.height = DEFAULT_HEIGHT
+        """int: Default height for the generated SSA document."""
         self.default_ssa_repr_config = dict(
             unnecessary_transformations=set(),
             stroke_preservation=0,
@@ -66,15 +70,29 @@ class SVG:
                 "{{\\p{m_lev}{trans}{codes}}} {drwng} {{\\p0}}"
             ),
         )
+        """dict: Template config for conversion to SSA."""
 
     @staticmethod
     def make_round_and_mod(nmb, mod):
+        """Returns ``nmb`` suitable for use as the size of a side of a video frame.
+
+        Args:
+            nmb (int): Size of one of the sides of a picture.
+            mod (int): Modulus.
+        Returns:
+            int: Rounded ``nmb``.
+        """
         nmb = round(nmb)
         if nmb % mod != 0:
             nmb += mod - (nmb % mod)
         return nmb
 
     def _g_started(self, atts):
+        """Builds model of SVG ``g`` element out of its attrs and adds it to :attr:`container_element_stack`. Also merges attrs from parent elements.
+
+        Args:
+            atts (dict[str, str]): Attributes of an element.
+        """
         curr = SVGElementG.from_raw_data(atts)
         try:
             prev = self.container_element_stack[-1]
@@ -84,10 +102,16 @@ class SVG:
         self.container_element_stack.append(curr)
 
     def _g_ended(self):
+        """Pops built model of SVG ``g`` element from :attr:`container_element_stack`."""
         if self.container_element_stack:
             del self.container_element_stack[-1]
 
     def _path_started(self, atts):
+        """Builds model of SVG ``path`` element out of its attrs and adds it to :attr:`terminal_element_stack`. Also merges attrs from parent elements.
+
+        Args:
+            atts (dict[str, str]): Attributes of an element.
+        """
         curr = SVGElementPath.from_raw_data(atts)
         try:
             prev = self.container_element_stack[-1]
@@ -97,20 +121,34 @@ class SVG:
         self.terminal_element_stack.append(curr)
 
     def _path_ended(self):
+        """No processing is required for end tag of element ``path``."""
         pass
 
     def _svg_started(self, atts):
+        """Stores SVG :attr:`width` and :attr:`height`.
+
+        Args:
+            atts (dict[str, str]): Attributes of an element.
+        """
         self.width = atts.get("width")
         self.height = atts.get("height")
 
     def _svg_ended(self):
+        """No processing is required for end tag of element ``svg``."""
         pass
 
     _start = dict(path=_path_started, g=_g_started, svg=_svg_started)
+    """dict[str, Callable[None, [dict, dict]]]: Maps names of elements to handlers of their start tag."""
 
     _end = dict(path=_path_ended, g=_g_ended, svg=_svg_ended)
+    """dict[str, Callable[None, [dict, dict]]]: Maps names of elements to handlers of their end tag."""
 
     def from_svg_file(self, filepath):
+        """Constructs :class:`SVG` out of SVG file stored under ``filepath``.
+
+        Args:
+            filepath (str): Path to SVG file to be read.
+        """
         for action, element in etree.iterparse(filepath, ("start", "end")):
             ns_name, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
             if action == "start":
@@ -121,12 +159,25 @@ class SVG:
                     SVG._end[local_name](self)
 
     def to_ssa_file(self, filepath, ssa_repr_config):
+        """Converts :class:`SVG` to its SSA representation using ``ssa_repr_config``, then saves it under ``filepath``.
+
+        Args:
+            filepath (str): Path to SSA file to be written.
+            ssa_repr_config (dict): See :attr:`SVG.default_ssa_repr_config`.
+        """
         ssa = self.ssa_repr({**self.default_ssa_repr_config, **ssa_repr_config})
         with open(filepath, "w+t", buffering=65536, encoding="utf-8") as fh:
             fh.write(ssa)
             fh.write("\n")
 
     def ssa_repr(self, ssa_repr_config):
+        """Creates SSA representation from an instance of :class:`SVG`.
+
+        Args:
+            ssa_repr_config (dict): See :attr:`SVG.default_ssa_repr_config`.
+        Returns:
+            str: Contents of SSA document.
+        """
         ssa = []
 
         if self.width is not None and self.height is not None:
