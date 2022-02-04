@@ -6,7 +6,6 @@ from ply_lex import lex
 from ply_yacc import yacc
 import ply_lex_transform
 from s2s_core import SVGBasicEntity, SVGContainerEntity
-from s2s_utilities import collapse_consecutive_objects, collapse_unnecessary_trafos
 
 
 class SVGTrafoMixin(SVGBasicEntity):
@@ -216,6 +215,9 @@ class SVGTransform(SVGContainerEntity):
     # Note: this class in its current form may have issues
     # with empty 'transform-list'. It'll simply crash!
 
+    trafos_all = {"matrix", "skewX", "skewY", "scale", "translate", "rotate"}
+    trafos_unsupported = {"matrix", "skewX", "skewY"}
+
     @property
     def dtype(self):
         return "transform"
@@ -234,9 +236,98 @@ class SVGTransform(SVGContainerEntity):
         parser = yacc(module=S2STransformYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
 
+    @staticmethod
+    def collapse_consecutive_objects_unoptimized_reference(list_of_objects):
+
+        # Alt. name: grouping (summ) similar objects in a sequence (when sequence length is predefined and it shouldn't change).
+        # Do not modify!
+        # In its current form (i.e. two iterations instead of one)
+        # algorithm below is *significantly* less complex & very
+        # general, which makes it ideal for use in everyday life.
+
+        if len(list_of_objects) > 1:
+            for i in range(len(list_of_objects) - 1):
+                curr = list_of_objects[i]
+                next = list_of_objects[i + 1]
+                if curr.dtype == next.dtype:
+                    list_of_objects[i + 1] = curr + next
+                    list_of_objects[i] = None
+            for i in range(len(list_of_objects) - 1, -1, -1):
+                if list_of_objects[i] is None:
+                    del list_of_objects[i]
+        return list_of_objects
+
+    @staticmethod
+    def collapse_consecutive_objects_optimized_alternative(list_of_objects):
+        l = len(list_of_objects) - 1
+        i = 0
+        while i < l:
+            curr = list_of_objects[i]
+            next = list_of_objects[i + 1]
+            if curr.dtype == next.dtype:
+                list_of_objects[i] += next
+                del list_of_objects[i + 1]
+                l -= 1
+            else:
+                i += 1
+        return list_of_objects
+
+    collapse_consecutive_objects = collapse_consecutive_objects_optimized_alternative
+
+    @staticmethod
+    def collapse_unnecessary_trafos(list_of_trafos, unnecessary_transformations):
+        """Finds repeated, unconsecutive trafos and then collapses
+        everything inbetween into the matrix (this is handled by trafos themselves).
+        """
+
+        trafos_unnecessary = SVGTransform.trafos_all & unnecessary_transformations | SVGTransform.trafos_unsupported
+        trafos_all_without_unnecessary = SVGTransform.trafos_all - trafos_unnecessary
+
+        # Create dictionary with trafos indeces.
+        dictionary = {}
+        for i, trafo in enumerate(list_of_trafos):
+            if trafo.dtype in dictionary:
+                dictionary[trafo.dtype].append(i)
+            else:
+                dictionary[trafo.dtype] = [i]
+
+        # Find index of the furthest unsupported by SSA trafo.
+        # Note: by design, the largest idx should be last (since there was no
+        # sorting/shuffle applied), so "max(dictionary[trafo])" should be equal
+        # to "dictionary[trafo][-1]".
+        idx_unnec = -1
+        for trafo in trafos_unnecessary:
+            if trafo in dictionary and dictionary[trafo][-1] > idx_unnec:
+                idx_unnec = dictionary[trafo][-1]
+
+        # Find index of the furthest repetitive and unconsecutive trafo.
+        # Note: 'trafos_all_without_unnecessary' *may* be an empty set, it is
+        # completely acceptable.
+        idx_repet = -1
+        for trafo in trafos_all_without_unnecessary:
+            if (
+                trafo in dictionary
+                and len(dictionary[trafo]) > 1
+                and dictionary[trafo][-2] > idx_repet
+            ):
+                # Implies that indeces are in the "right" order, i.e. not shuffled.
+                # Inside this function it is always true.
+                idx_repet = dictionary[trafo][-2]
+
+        # Merge trafos, if need be.
+        if idx_unnec != -1 or idx_repet != -1:
+            # Note: "+1" for making interval inclusive: [n,m] instead of [n,m).
+            idx = (idx_unnec if idx_unnec > idx_repet else idx_repet) + 1
+            acc = list_of_trafos[0]
+            for i in range(1, idx):
+                acc += list_of_trafos[i]
+            list_of_trafos[:idx] = [acc]
+
+        return list_of_trafos
+
     def ssa_repr(self, ssa_repr_config):
-        trafos = collapse_consecutive_objects(self.data)
-        trafos = collapse_unnecessary_trafos(trafos, ssa_repr_config["unnecessary_transformations"])
+        trafos = SVGTransform.collapse_consecutive_objects(self.data)
+        trafos = SVGTransform.collapse_unnecessary_trafos(trafos, ssa_repr_config["unnecessary_transformations"])
         return "".join(trafo.ssa_repr(ssa_repr_config) for trafo in trafos)
 
     def __add__(self, other):
