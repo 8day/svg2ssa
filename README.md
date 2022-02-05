@@ -55,8 +55,7 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
 * to cx_Freeze:
     1. run `pip install cx-Freeze` to install cx_Freeze;
     2. un-/comment necessary lines in `s2s.py` import section;
-    3. run `cxfreeze s2s.py --icon=s2s_logo.ico` inside svg2ssa directory (may require restarting OS, or provide absolute path to cx_Freeze script);
-        * when lxml is used, add line `--include-modules=lxml._elementpath,gzip,inspect` (try w/o this first because things seem to work even w/o this step).
+    3. run `cxfreeze s2s.py --icon=s2s_logo.ico` inside svg2ssa directory (may require restarting OS, or provide absolute path to cx_Freeze script).
 
 [1]: https://github.com/8day/svg2ssa/blob/pub/examples/traced-2d/liberty-leading-the-people.jpg.svg.ass.png         "Bitmap tracing"
 [2]: https://github.com/8day/svg2ssa/blob/pub/examples/rendered-3d/eva-new-uvs-blender.fbx.blend.obj.svg.ass.png    "Rendering of 3D objects"
