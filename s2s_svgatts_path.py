@@ -199,8 +199,8 @@ class SVGD(SVGContainerEntity):
 
     def ssa_repr(self, ssa_repr_config):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
-        # ``last_abs_seg_data`` -- contains "current point". Also almost whole segment is needed for ``Q``, ``T``, ``S``.
-        # ``last_abs_moveto_data`` -- last seen absolute moveto command.
+        # ``last_abs_seg_data`` -- contains "current point". Every relative point in a shape depends on a previous absolute point, except relative moveto. Also almost whole segment is needed for ``Q``, ``T``, ``S``.
+        # ``last_abs_moveto_data`` -- last seen absolute moveto command. Every relative moveto point in a shape depends on a previous absolute moveto point from previous shape.
         last_abs_seg_dtype = "M"
         last_abs_seg_data = last_abs_moveto_data = [0, 0]
         basic_rel_comms = {"l": "L", "c": "C", "s": "S", "q": "Q", "t": "T"}
@@ -243,7 +243,6 @@ class SVGD(SVGContainerEntity):
                     dtype = "C"
                     data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
 
-                # Unique type of command.
                 elif dtype == "Q":
                     qp0x = last_abs_seg_data[-2]
                     qp0y = last_abs_seg_data[-1]
