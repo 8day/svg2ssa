@@ -8,7 +8,7 @@ svg2ssa is a converter written in Python 3 that is intended to convert *vector g
 The main audience of this software is "advanced" anime typesetters. svg2ssa will help them to create their graphics inside more neat, usable & specifically designed editor like Inkscape. It's hard to enumerate all possible uses and benefits: for some they are minor and not worth it, but for others they may be almost infinite. E.g., Inkscape's feature to trace bitmaps (despite some limits), render 3D objects from Wavefront \*.OBJ files produced by Blender, convert text to shapes. BTW, conversion of text to shapes means that there's no need to embed fonts for a few titles containing a few letters, maybe even drop font embedding altogether.
 
 # How to use svg2ssa (on example of Windows)
-Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe`. After that, type `s2s.exe -i "c:\path to dir\with\file.svg"` to convert SVG to SSA and store it in same directory as SVG. For more info, type `s2s.exe --help`.
+Open command prompt by running `cmd.exe` and navigate to parent directory of `svg2ssa`. After that, type `python -m svg2ssa -i "c:\path to dir\with\file.svg"` to convert SVG to SSA and store it in same directory as SVG. For more info, type `python -m svg2ssa --help`.
 
 # Misc info
 ### The most notable features of Inkscape & svg2ssa combo
@@ -30,7 +30,7 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
 ### The most notable features of svg2ssa
 * subpixel precision by changing the size of coordinate system (\\pN along with hardcoded scaling of drawings; S2S key: `-m {int}`);
 * ability to choose whether to hardcode trafos or convert them to SSA equivalents (S2S key: `-t {scale, translate, rotate}`);
-* other features and how-to can be found by typing `s2s.exe --help` in your terminal.
+* other features and how-to can be found by typing `python -m svg2ssa --help` in your terminal.
 
 ### What you may want to know
 * as Aegisub, both svg2ssa and Inkscape are cross-platform;
@@ -54,8 +54,8 @@ Open command prompt by running `cmd.exe` and navigate to directory with `s2s.exe
 * probably will work as intended only with VSFilter.
 * to cx_Freeze:
     1. run `pip install cx-Freeze` to install cx_Freeze;
-    2. un-/comment necessary lines in `s2s.py` import section;
-    3. run `cxfreeze s2s.py --icon=s2s_logo.ico` inside svg2ssa directory (may require restarting OS, or provide absolute path to cx_Freeze script).
+    2. un-/comment necessary lines in `__main__.py` import section;
+    3. run `cxfreeze ./__main__.py --icon=s2s_logo.ico` inside svg2ssa directory (may require restarting OS, or provide absolute path to cx_Freeze script).
 
 [1]: https://github.com/8day/svg2ssa/blob/pub/examples/traced-2d/liberty-leading-the-people.jpg.svg.ass.png         "Bitmap tracing"
 [2]: https://github.com/8day/svg2ssa/blob/pub/examples/rendered-3d/eva-new-uvs-blender.fbx.blend.obj.svg.ass.png    "Rendering of 3D objects"
