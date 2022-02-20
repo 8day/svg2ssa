@@ -1,5 +1,5 @@
 import re
-from .core import SVGBasicEntity
+from ..core import SVGBasicEntity
 
 
 class SVGColor(SVGBasicEntity):

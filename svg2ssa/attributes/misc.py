@@ -1,5 +1,5 @@
-from .core import SVGBasicEntity
-from .utilities import convert_svglength_to_pixels
+from ..core import SVGBasicEntity
+from ..utilities import convert_svglength_to_pixels
 
 
 class SVGId(SVGBasicEntity):

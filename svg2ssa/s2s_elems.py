@@ -1,9 +1,9 @@
 from .core import SVGContainerEntity
-from .s2s_svgatts_misc import SVGId, SVGStrokeWidth
-from .s2s_svgatts_color import SVGColor, SVGFill, SVGStroke
-from .s2s_svgatts_opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity
-from .s2s_svgatts_trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
-from .s2s_svgatts_path import SVGD
+from .attributes.misc import SVGId, SVGStrokeWidth
+from .attributes.color import SVGColor, SVGFill, SVGStroke
+from .attributes.opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity
+from .attributes.trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
+from .attributes.path import SVGD
 
 
 class SVGElementMixin(SVGContainerEntity):

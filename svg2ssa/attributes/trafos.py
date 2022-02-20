@@ -4,7 +4,7 @@
 from math import radians, sin, cos, tan
 from ply.lex import lex
 from ply.yacc import yacc
-from .core import SVGBasicEntity, SVGContainerEntity
+from ..core import SVGBasicEntity, SVGContainerEntity
 
 
 class SVGTrafoMixin(SVGBasicEntity):

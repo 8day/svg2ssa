@@ -25,7 +25,7 @@ class SVGBasicEntity:
         Returns:
             Any: Instance of a class that called this method.
 
-        E.g., converts data passed to :class:`s2s_svgatts_opacity.SVGOpacity` from ``"0.0"`` to ``0.0`` and then passes it for construction of :class:`s2s_svgatts_opacity.SVGOpacity` itself.
+        E.g., converts data passed to :class:`svg2ssa.attributes.opacity.SVGOpacity` from ``"0.0"`` to ``0.0`` and then passes it for construction of :class:`svg2ssa.attributes.opacity.SVGOpacity` itself.
         """
 
         raise NotImplementedError(f"{cls.__name__}: 'from_raw_data' class method is not redefined.")
