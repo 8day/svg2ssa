@@ -3,7 +3,7 @@ from .attributes.misc import SVGId, SVGStrokeWidth
 from .attributes.color import SVGColor, SVGFill, SVGStroke
 from .attributes.opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity
 from .attributes.transform import SVGTransform, SVGTrafoRotate, SVGTrafoScale
-from .attributes.path import SVGD
+from .attributes.d import SVGD
 
 
 class SVGElementMixin(SVGContainerEntity):
