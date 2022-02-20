@@ -1,4 +1,4 @@
-from .s2s_core import SVGContainerEntity
+from .core import SVGContainerEntity
 from .s2s_svgatts_misc import SVGId, SVGStrokeWidth
 from .s2s_svgatts_color import SVGColor, SVGFill, SVGStroke
 from .s2s_svgatts_opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity

@@ -14,7 +14,7 @@ except ImportError:
     from xml.etree import ElementTree as etree
 
 from .s2s_elems import SVGElementG, SVGElementPath
-from .s2s_utilities import convert_svglength_to_pixels
+from .utilities import convert_svglength_to_pixels
 
 
 DEFAULT_WIDTH = 1920

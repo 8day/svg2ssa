@@ -5,7 +5,7 @@
 # Todo: Since all opacity classes mostly differ by SSA representation string, it'd be probably better to add some code to replace the string to class corresponding one. I.e. ``r"\alpha&H{0:02X}&"`` replaced to ``r"\1a&H{0:02X}&"`` if class is :class:`SVGFillOpacity`. Though it may be a bad idea, since the same thing can be done to color, but there this modification will be overwhelming, unnecessary. So, it's probably better to leave it as is. Well, as I said, ATM this kind of optimization is unnecessary.
 
 
-from .s2s_core import SVGBasicEntity
+from .core import SVGBasicEntity
 
 
 class SVGOpacity(SVGBasicEntity):
