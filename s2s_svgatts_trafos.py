@@ -4,7 +4,6 @@
 from math import radians, sin, cos, tan
 from ply_lex import lex
 from ply_yacc import yacc
-import ply_lex_transform
 from s2s_core import SVGBasicEntity, SVGContainerEntity
 
 
@@ -142,6 +141,44 @@ class SVGTrafoSkewY(SVGTrafoMixin):
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
 
 
+class S2STransformLex:
+    literals = r"()"
+
+    reserved = {
+        "matrix": "MATRIX",
+        "translate": "TRANSLATE",
+        "scale": "SCALE",
+        "rotate": "ROTATE",
+        "skewX": "SKEWX",
+        "skewY": "SKEWY",
+    }
+
+    tokens = ("NMB",) + tuple(reserved.values())
+
+    t_ignore_WSP = r"[ \t\n\r]"
+    t_ignore_COMMA = r","
+
+    def t_ID(t):
+        r"[a-zA-Z]{5,}"
+        t.type = reserved.get(t.value)
+        # Checks whether found word was one from ``reserved``.
+        if not t.type:
+            t_error(t)
+        return t
+
+    def t_NMB(t):
+        """[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
+        t.value = float(t.value)
+        return t
+
+    def t_error(t):
+        # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
+        raise Exception(
+            f"The next illegal character were found in 'transformation' attribute: '{t.value[0]}'.\n"
+            f"These characters were right after it: {t.value[1:11]}"
+        )
+
+
 class S2STransformYacc:
     """Class for PLY Yacc for processing of ``transform`` attr."""
 
@@ -208,7 +245,7 @@ class S2STransformYacc:
             f"First ten characters from that sequence: {p[0:11]}.\n"
         )
 
-    tokens = ply_lex_transform.tokens
+    tokens = S2STransformLex.tokens
 
 
 # Fixme: In its current form it may have issues with empty ``transform-list`` -- it'll simply crash!
@@ -237,7 +274,7 @@ class SVGTransform(SVGContainerEntity):
 
     @classmethod
     def from_raw_data(cls, data):
-        lexer = lex(module=ply_lex_transform)
+        lexer = lex(module=S2STransformLex)
         lexer.input(data)
         parser = yacc(module=S2STransformYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))

@@ -1,9 +1,31 @@
 from math import sqrt
 from ply_lex import lex
 from ply_yacc import yacc
-import ply_lex_d
 from s2s_core import SVGContainerEntity
 from s2s_svgatts_trafos import SVGTrafoScale
+
+
+class S2SDLex:
+    # All SVG commands.
+    literals = "MmLlHhVvCcSsQqTt"
+
+    tokens = ("NMB",)
+
+    t_ignore_WSP = r"[ \t\n\r]"
+    t_ignore_COMMA = r","
+    t_ignore_CLOSE_PATH = r"[Zz]"
+
+    def t_NMB(t):
+        """[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
+        t.value = float(t.value)
+        return t
+
+    def t_error(t):
+        # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
+        raise Exception(
+            f"The next illegal character were found in 'd' attribute: '{t.value[0]}'.\n"
+            f"These characters were right after it: {t.value[1:11]}"
+        )
 
 
 class S2SDYacc:
@@ -163,7 +185,7 @@ class S2SDYacc:
             f"First ten characters from that sequence: {p[0:11]}.\n"
         )
 
-    tokens = ply_lex_d.tokens
+    tokens = S2SDLex.tokens
 
 
 class SVGD(SVGContainerEntity):
@@ -182,7 +204,7 @@ class SVGD(SVGContainerEntity):
 
     @classmethod
     def from_raw_data(cls, data):
-        lexer = lex(module=ply_lex_d)
+        lexer = lex(module=S2SDLex)
         lexer.input(data)
         parser = yacc(module=S2SDYacc(), write_tables=0, debug=False)
         return cls(parser.parse(debug=False, lexer=lexer))
