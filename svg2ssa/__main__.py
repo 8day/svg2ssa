@@ -13,7 +13,7 @@ except ImportError:
     # See http://lxml.de/compatibility.html.
     from xml.etree import ElementTree as etree
 
-from .s2s_elems import SVGElementG, SVGElementPath
+from .elements import SVGElementG, SVGElementPath
 from .utilities import convert_svglength_to_pixels
 
 
