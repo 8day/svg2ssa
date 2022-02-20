@@ -2,7 +2,7 @@ from math import sqrt
 from ply.lex import lex
 from ply.yacc import yacc
 from ..core import SVGContainerEntity
-from .trafos import SVGTrafoScale
+from .transform import SVGTrafoScale
 
 
 class S2SDLex:

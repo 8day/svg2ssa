@@ -2,7 +2,7 @@ from .core import SVGContainerEntity
 from .attributes.misc import SVGId, SVGStrokeWidth
 from .attributes.color import SVGColor, SVGFill, SVGStroke
 from .attributes.opacity import SVGOpacity, SVGFillOpacity, SVGStrokeOpacity
-from .attributes.trafos import SVGTransform, SVGTrafoRotate, SVGTrafoScale
+from .attributes.transform import SVGTransform, SVGTrafoRotate, SVGTrafoScale
 from .attributes.path import SVGD
 
 
