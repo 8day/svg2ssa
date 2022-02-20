@@ -1,5 +1,5 @@
 import re
-from s2s_core import SVGBasicEntity
+from .s2s_core import SVGBasicEntity
 
 
 class SVGColor(SVGBasicEntity):

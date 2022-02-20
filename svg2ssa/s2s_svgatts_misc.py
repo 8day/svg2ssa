@@ -1,5 +1,5 @@
-from s2s_core import SVGBasicEntity
-from s2s_utilities import convert_svglength_to_pixels
+from .s2s_core import SVGBasicEntity
+from .s2s_utilities import convert_svglength_to_pixels
 
 
 class SVGId(SVGBasicEntity):

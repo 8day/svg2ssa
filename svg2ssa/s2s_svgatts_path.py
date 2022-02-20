@@ -1,8 +1,8 @@
 from math import sqrt
 from ply.lex import lex
 from ply.yacc import yacc
-from s2s_core import SVGContainerEntity
-from s2s_svgatts_trafos import SVGTrafoScale
+from .s2s_core import SVGContainerEntity
+from .s2s_svgatts_trafos import SVGTrafoScale
 
 
 class S2SDLex:
