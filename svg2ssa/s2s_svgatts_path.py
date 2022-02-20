@@ -1,6 +1,6 @@
 from math import sqrt
-from ply_lex import lex
-from ply_yacc import yacc
+from ply.lex import lex
+from ply.yacc import yacc
 from s2s_core import SVGContainerEntity
 from s2s_svgatts_trafos import SVGTrafoScale
 

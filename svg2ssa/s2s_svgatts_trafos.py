@@ -2,8 +2,8 @@
 
 
 from math import radians, sin, cos, tan
-from ply_lex import lex
-from ply_yacc import yacc
+from ply.lex import lex
+from ply.yacc import yacc
 from s2s_core import SVGBasicEntity, SVGContainerEntity
 
 
