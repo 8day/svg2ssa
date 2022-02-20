@@ -203,7 +203,7 @@ class SVG:
         return "\n".join(ssa)
 
 
-if __name__ == "__main__":
+def cli():
     from sys import argv as sys_argv
     from os import path as os_path
     from argparse import ArgumentParser
@@ -292,3 +292,7 @@ if __name__ == "__main__":
         svg.to_ssa_file(file_out if file_out else f"{file_in}.ass", args)
     else:
         parser.print_help()
+
+
+if __name__ == "__main__":
+    cli()
