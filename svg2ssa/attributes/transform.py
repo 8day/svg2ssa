@@ -160,6 +160,7 @@ class S2STransformLex:
 
     def t_ID(t):
         """[a-zA-Z]{5,}"""
+
         t.type = reserved.get(t.value)
         # Checks whether found word was one from ``reserved``.
         if not t.type:
@@ -168,6 +169,7 @@ class S2STransformLex:
 
     def t_NMB(t):
         """[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
+
         t.value = float(t.value)
         return t
 
@@ -266,6 +268,7 @@ class SVGTransform(SVGContainerEntity):
 
     def matrix(self):
         """Returns sum of all trafos as a matrix :class:`SVGTrafoMatrix`."""
+
         data = self.data
         acc = data[0].matrix()
         for i in range(1, len(data)):

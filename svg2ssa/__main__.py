@@ -82,6 +82,7 @@ class SVG:
         Returns:
             int: Rounded ``nmb``.
         """
+
         nmb = round(nmb)
         if nmb % mod != 0:
             nmb += mod - (nmb % mod)
@@ -93,6 +94,7 @@ class SVG:
         Args:
             atts (dict[str, str]): Attributes of an element.
         """
+
         curr = SVGElementG.from_raw_data(atts)
         try:
             prev = self.container_element_stack[-1]
@@ -103,6 +105,7 @@ class SVG:
 
     def _g_ended(self):
         """Pops built model of SVG ``g`` element from :attr:`container_element_stack`."""
+
         if self.container_element_stack:
             del self.container_element_stack[-1]
 
@@ -112,6 +115,7 @@ class SVG:
         Args:
             atts (dict[str, str]): Attributes of an element.
         """
+
         curr = SVGElementPath.from_raw_data(atts)
         try:
             prev = self.container_element_stack[-1]
@@ -122,6 +126,7 @@ class SVG:
 
     def _path_ended(self):
         """No processing is required for end tag of element ``path``."""
+
         pass
 
     def _svg_started(self, atts):
@@ -130,11 +135,13 @@ class SVG:
         Args:
             atts (dict[str, str]): Attributes of an element.
         """
+
         self.width = atts.get("width")
         self.height = atts.get("height")
 
     def _svg_ended(self):
         """No processing is required for end tag of element ``svg``."""
+
         pass
 
     _start = dict(path=_path_started, g=_g_started, svg=_svg_started)
@@ -149,6 +156,7 @@ class SVG:
         Args:
             filepath (str): Path to SVG file to be read.
         """
+
         for action, element in etree.iterparse(filepath, ("start", "end")):
             ns_name, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
             if action == "start":
@@ -165,6 +173,7 @@ class SVG:
             filepath (str): Path to SSA file to be written.
             ssa_repr_config (dict): See :attr:`SVG.default_ssa_repr_config`.
         """
+
         ssa = self.ssa_repr({**self.default_ssa_repr_config, **ssa_repr_config})
         with open(filepath, "w+t", buffering=65536, encoding="utf-8") as fh:
             fh.write(ssa)
@@ -178,6 +187,7 @@ class SVG:
         Returns:
             str: Contents of SSA document.
         """
+
         ssa = []
 
         if self.width is not None and self.height is not None:
