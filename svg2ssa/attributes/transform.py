@@ -159,7 +159,7 @@ class S2STransformLex:
     t_ignore_COMMA = r","
 
     def t_ID(t):
-        r"[a-zA-Z]{5,}"
+        """[a-zA-Z]{5,}"""
         t.type = reserved.get(t.value)
         # Checks whether found word was one from ``reserved``.
         if not t.type:
