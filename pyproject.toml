@@ -24,6 +24,9 @@ parsing = ["lxml"]
 [tool.black]
 line-length = 120
 
+[tool.pylint."messages control"]
+disable = ["line-too-long", "no-else-return", "no-else-raise", "abstract-method"]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
