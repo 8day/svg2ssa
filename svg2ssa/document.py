@@ -197,10 +197,11 @@ class SVG:
             height = ssa_repr_config["default_playresx"]
         ssa.append(ssa_repr_config["header_template"].format(width=width, height=height))
 
+        event_template = ssa_repr_config["event_template"]
         for element in self.terminal_element_stack:
             atts = element.ssa_repr(ssa_repr_config)
             ssa.append(
-                ssa_repr_config["event_template"].format(
+                event_template.format(
                     actor=atts.pop("id"),
                     trans=atts.pop("transform"),
                     drwng=atts.pop("d"),
