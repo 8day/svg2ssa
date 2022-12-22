@@ -61,7 +61,7 @@ class SVGContainerEntity(SVGBasicEntity):
     """Similar to :class:`SVGBasicEntity`, but not an abstract class (mixin), and only for containers."""
 
     def __bool__(self):
-        return True if self.data else False
+        return bool(self.data)
 
     def __iter__(self):
         for obj in self.data:
