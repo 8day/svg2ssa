@@ -289,11 +289,11 @@ class SVGTransform(SVGContainerEntity):
         l = len(list_of_objects) - 1
         i = 0
         while i < l:
-            curr = list_of_objects[i]
-            next = list_of_objects[i + 1]
+            cur = list_of_objects[i]
+            nxt = list_of_objects[i + 1]
             # Items can be merged, so merge next item into current *and* adjust sequence length to account for merge.
-            if curr.dtype == next.dtype:
-                list_of_objects[i] += next
+            if cur.dtype == nxt.dtype:
+                list_of_objects[i] += nxt
                 del list_of_objects[i + 1]
                 l -= 1
             # Items can't be merged, so move to next item.
