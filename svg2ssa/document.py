@@ -155,7 +155,7 @@ class SVG:
         """
 
         for action, element in etree.iterparse(filepath, ("start", "end")):
-            ns_name, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
+            _, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
             if action == "start":
                 if local_name in SVG._start:
                     SVG._start[local_name](self, element.attrib)
