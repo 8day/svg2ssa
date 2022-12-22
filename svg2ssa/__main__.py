@@ -3,7 +3,9 @@ def cli():
     from os import path as os_path
     from argparse import ArgumentParser
 
-    from .document import DEFAULT_WIDTH, DEFAULT_HEIGHT, SVG
+    from .document import SVG
+
+    config = SVG.default_ssa_repr_config
 
     parser = ArgumentParser(
         description="Converts SVG (Rec 1.1) into SSA (v4.0+).",
@@ -12,7 +14,7 @@ def cli():
         "-t",
         "--unnecessary_transformations",
         help="Trafos that should be collapsed into matrix, i.e. 'baked'.",
-        default=[],
+        default=list(config["unnecessary_transformations"]),
         choices=["scale", "translate", "rotate"],
         nargs="*",
     )
@@ -20,7 +22,7 @@ def cli():
         "-m",
         "--magnification_level",
         help="Magnification level of the coordinate system by this formula: (level - 1) ^ 2.",
-        default=3,
+        default=config["magnification_level"],
         type=int,
         metavar="int",
     )
@@ -31,7 +33,7 @@ def cli():
             "Stroke transformation. '0' preserves stroke width (left untouched); "
             "'1' preserve stroke area (stroke size is divided by 2)."
         ),
-        default=0,
+        default=config["stroke_preservation"],
         type=int,
         choices=range(2),
     )
@@ -43,7 +45,7 @@ def cli():
             "Should be equal to the video dimensions (and/or to the drawing being converted). "
             "Checked for mod16."
         ),
-        default=DEFAULT_WIDTH,
+        default=config["width"],
         type=int,
         metavar="int",
     )
@@ -55,7 +57,7 @@ def cli():
             "Should be equal to the video dimensions (and/or to the drawing being converted). "
             "Checked for mod16."
         ),
-        default=DEFAULT_HEIGHT,
+        default=config["height"],
         type=int,
         metavar="int",
     )
