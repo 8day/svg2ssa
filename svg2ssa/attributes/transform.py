@@ -32,7 +32,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
 
     def __add__(self, other):
         if isinstance(other, SVGTrafoMatrix):
-            ctm0, ctm1, ctm2, ctm4, ctm5 = self.data
+            ctm0, ctm1, ctm2, ctm3, ctm4, ctm5 = self.data
             m0, m1, m2, m3, m4, m5 = other.data
             data = (
                 ctm0 * m0 + ctm2 * m1,
