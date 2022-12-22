@@ -164,7 +164,7 @@ class S2STransformLex:
         t.type = S2STransformLex.reserved.get(t.value)
         # Checks whether found word was one from ``reserved``.
         if not t.type:
-            t_error(t)
+            S2STransformLex.t_error(t)
         return t
 
     def t_NMB(t):
