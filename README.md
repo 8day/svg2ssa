@@ -56,7 +56,7 @@ Open command prompt by running `cmd.exe` and navigate to parent directory of `sv
 * to cx_Freeze:
     1. run `pip install cx-Freeze` to install cx_Freeze. **Note that it may not support your version of Python (it will error out upon installation from PyPI), therefore you may need to use older version. E.g., cx_Freeze 6.13.0 doesn't support Python 3.11.1, unlike 3.10.9.**;
     2. un-/comment necessary lines in `document.py` import section;
-    3. run `python\Scripts\cxfreeze.exe .\cxfreeze.py --icon=.\s2s_logo.ico --target-name=svg2ssa --target-dir=.\dist\svg2ssa-{xml_parser}-{version}` inside svg2ssa repo.
+    3. run `python\Scripts\cxfreeze.exe .\cxfreeze.py --icon=.\logo.ico --target-name=svg2ssa --target-dir=.\dist\svg2ssa-{xml_parser}-{version}` inside svg2ssa repo.
 
 [1]: https://github.com/8day/svg2ssa/blob/pub/examples/traced-2d/liberty-leading-the-people.jpg.svg.ass.png         "Bitmap tracing"
 [2]: https://github.com/8day/svg2ssa/blob/pub/examples/rendered-3d/eva-new-uvs-blender.fbx.blend.obj.svg.ass.png    "Rendering of 3D objects"
