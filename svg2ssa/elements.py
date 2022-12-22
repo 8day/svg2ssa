@@ -47,9 +47,7 @@ class SVGElementMixin(SVGContainerEntity):
                         atts[key] = val
             del atts["style"]
         # Process attrs.
-        atts = {
-            key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()
-        }
+        atts = {key: cls.atts_to_class_mapping[key].from_raw_data(val) for key, val in atts.items()}
         return cls(atts)
 
     # Beware of mutability issues.

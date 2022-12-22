@@ -331,11 +331,7 @@ class SVGTransform(SVGContainerEntity):
         # ``trafos_all_without_unnecessary`` *may* be an empty set, it is completely acceptable.
         idx_repet = -1
         for trafo in trafos_all_without_unnecessary:
-            if (
-                trafo in dictionary
-                and len(dictionary[trafo]) > 1
-                and dictionary[trafo][-2] > idx_repet
-            ):
+            if trafo in dictionary and len(dictionary[trafo]) > 1 and dictionary[trafo][-2] > idx_repet:
                 # Implies that indices are in the "right" order, i.e. not shuffled.
                 # Inside this function it is always true.
                 idx_repet = dictionary[trafo][-2]

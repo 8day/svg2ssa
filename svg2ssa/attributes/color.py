@@ -164,9 +164,7 @@ class SVGColor(SVGBasicEntity):
     color_hex_full = re.compile(color_hex.format("{6}"), re.I)
     color_hex_short = re.compile(color_hex.format("{3}"), re.I)
     color_funciri = r"rgb\({0},{0},{0}\)\Z"
-    color_funciri_decimal = re.compile(
-        color_funciri.format(r"(?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])")
-    )
+    color_funciri_decimal = re.compile(color_funciri.format(r"(?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"))
     color_funciri_percent = re.compile(color_funciri.format(r"(?:[0-9]?[0-9]|100)%"))
 
     @property

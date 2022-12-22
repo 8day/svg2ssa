@@ -173,8 +173,7 @@ class S2SDYacc:
 
         if (p[4] < 0 or p[4] > 1) or (p[5] < 0 or p[5] > 1):
             raise Exception(
-                "One of the 'flags' in elliptical arc is not valid.\n"
-                f"It were found in this sequence: {p[1:7]}."
+                "One of the 'flags' in elliptical arc is not valid.\n" f"It were found in this sequence: {p[1:7]}."
             )
         else:
             p[0] = [abs(p[1]), abs(p[2]), p[3], p[4], p[5], p[6][0], p[6][1]]
