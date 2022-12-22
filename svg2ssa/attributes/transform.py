@@ -161,7 +161,7 @@ class S2STransformLex:
     def t_ID(t):
         """[a-zA-Z]{5,}"""
 
-        t.type = reserved.get(t.value)
+        t.type = S2STransformLex.reserved.get(t.value)
         # Checks whether found word was one from ``reserved``.
         if not t.type:
             t_error(t)
