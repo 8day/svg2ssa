@@ -39,7 +39,7 @@ class SVGElementMixin(SVGContainerEntity):
         atts = {key: val for key, val in data.items() if key in cls.supported}
         # Unpack properties from ``style`` to the common set of attrs.
         if "style" in atts:
-            tokens = re.sub("\s+", "", atts["style"])
+            tokens = re.sub(r"\s+", "", atts["style"])
             tokens = re.findall(r"(?:([^:]+?):([^;]+?)(?:;|;\Z|\Z))", tokens)
             if tokens:
                 for key, val in tokens:
