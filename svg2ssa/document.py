@@ -11,10 +11,15 @@ import re
 
 # Comment when cx_Freeze'ing to prevent loading of :mod:`lxml` even if :mod:`xml.etree` is needed.
 try:
-    from lxml import etree
+    from defusedxml import ElementTree as etree
 except ImportError:
-    # See http://lxml.de/compatibility.html.
-    from xml.etree import ElementTree as etree
+    try:
+        # See https://bandit.readthedocs.io/en/1.7.4/blacklists/blacklist_imports.html#b410-import-lxml.
+        from lxml import etree
+    except ImportError:
+        # See https://bandit.readthedocs.io/en/1.7.4/blacklists/blacklist_calls.html#b313-b320-xml
+        # See http://lxml.de/compatibility.html.
+        from xml.etree import ElementTree as etree
 
 from .elements import SVGElementG, SVGElementPath
 from .utilities import convert_svglength_to_pixels

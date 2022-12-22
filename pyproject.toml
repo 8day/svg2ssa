@@ -19,7 +19,8 @@ python = "^3.7"
 ply = "^3.4"
 
 [tool.poetry.extras]
-parsing = ["lxml"]
+fast-parsing = ["lxml"]
+safe-parsing = ["defusedxml"]
 
 [tool.black]
 line-length = 120
