@@ -7,7 +7,7 @@ from ..core import SVGContainerEntity
 from .transform import SVGTrafoScale
 
 
-# pylint: disable=missing-class-docstring
+# pylint: disable=missing-class-docstring,missing-function-docstring,no-self-argument,invalid-name
 class S2SDLex:
     # All SVG commands.
     literals = "MmLlHhVvCcSsQqTt"
@@ -18,14 +18,14 @@ class S2SDLex:
     t_ignore_COMMA = r","
     t_ignore_CLOSE_PATH = r"[Zz]"
 
-    # pylint: disable=no-self-argument,attribute-defined-outside-init
+    # pylint: disable=attribute-defined-outside-init
     def t_NMB(t):
         r"""[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
 
         t.value = float(t.value)
         return t
 
-    # pylint: disable=no-self-argument,missing-function-docstring,unsubscriptable-object
+    # pylint: disable=unsubscriptable-object
     def t_error(t):
         # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
         raise Exception(
@@ -34,6 +34,7 @@ class S2SDLex:
         )
 
 
+# pylint: disable=invalid-name
 class S2SDYacc:
     """Class for PLY Yacc for attr ``d``."""
 

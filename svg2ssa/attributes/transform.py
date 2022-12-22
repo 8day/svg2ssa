@@ -28,6 +28,7 @@ class SVGTrafoMixin(SVGBasicEntity):
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
 
+# pylint: disable=invalid-name
 class SVGTrafoMatrix(SVGTrafoMixin):
     """Class for SVG ``matrix`` from ``transform`` attr."""
 
@@ -57,6 +58,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
             raise TypeError(f"{self.__class__.__name__}: You have tried to concatenate different types of objects.")
 
 
+# pylint: disable=invalid-name
 class SVGTrafoTranslate(SVGTrafoMixin):
     """Class for SVG ``translate`` from ``transform`` attr."""
 
@@ -76,6 +78,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
         return f"\\pos({tx},{ty})"
 
 
+# pylint: disable=invalid-name
 class SVGTrafoRotate(SVGTrafoMixin):
     """Class for SVG ``rotate`` from ``transform`` attr."""
 
@@ -106,6 +109,7 @@ class SVGTrafoRotate(SVGTrafoMixin):
             return f"\\org({cx},{cy})\frz{-ra}"
 
 
+# pylint: disable=invalid-name
 class SVGTrafoScale(SVGTrafoMixin):
     """Class for SVG ``scale`` from ``transform`` attr."""
 
@@ -125,6 +129,7 @@ class SVGTrafoScale(SVGTrafoMixin):
         return f"\\fscx{sx}\fscy{sy}"
 
 
+# pylint: disable=invalid-name
 class SVGTrafoSkewX(SVGTrafoMixin):
     """Class for SVG ``skewX`` from ``transform`` attr."""
 
@@ -137,6 +142,7 @@ class SVGTrafoSkewX(SVGTrafoMixin):
         return SVGTrafoMatrix((1, 0, skX, 1, 0, 0))
 
 
+# pylint: disable=invalid-name
 class SVGTrafoSkewY(SVGTrafoMixin):
     """Class for SVG ``skewY`` from ``transform`` attr."""
 
@@ -149,7 +155,7 @@ class SVGTrafoSkewY(SVGTrafoMixin):
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
 
 
-# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring,missing-function-docstring,no-self-argument,invalid-name
 class S2STransformLex:
     literals = r"()"
 
@@ -167,7 +173,7 @@ class S2STransformLex:
     t_ignore_WSP = r"[ \t\n\r]"
     t_ignore_COMMA = r","
 
-    # pylint: disable=no-self-argument,attribute-defined-outside-init
+    # pylint: disable=attribute-defined-outside-init
     def t_ID(t):
         """[a-zA-Z]{5,}"""
 
@@ -177,14 +183,14 @@ class S2STransformLex:
             S2STransformLex.t_error(t)
         return t
 
-    # pylint: disable=no-self-argument,attribute-defined-outside-init
+    # pylint: disable=attribute-defined-outside-init
     def t_NMB(t):
         r"""[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
 
         t.value = float(t.value)
         return t
 
-    # pylint: disable=no-self-argument,missing-function-docstring,unsubscriptable-object
+    # pylint: disable=unsubscriptable-object
     def t_error(t):
         # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
         raise Exception(
@@ -193,6 +199,7 @@ class S2STransformLex:
         )
 
 
+# pylint: disable=invalid-name
 class S2STransformYacc:
     """Class for PLY Yacc for processing of ``transform`` attr."""
 
@@ -252,6 +259,7 @@ class S2STransformYacc:
 
         p[0] = SVGTrafoSkewY((p[3],))
 
+    # pylint: disable=missing-function-docstring
     def p_error(self, p):
         raise Exception(
             "Some error happened while 'yacc' were parsing 'transformation' attribute. "
