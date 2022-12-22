@@ -125,8 +125,6 @@ class SVG:
     def _path_ended(self):
         """No processing is required for end tag of element ``path``."""
 
-        pass
-
     def _svg_started(self, atts):
         """Stores SVG :attr:`width` and :attr:`height`.
 
@@ -139,8 +137,6 @@ class SVG:
 
     def _svg_ended(self):
         """No processing is required for end tag of element ``svg``."""
-
-        pass
 
     _start = dict(path=_path_started, g=_g_started, svg=_svg_started)
     """dict[str, Callable[None, [dict, dict]]]: Maps names of elements to handlers of their start tag."""
