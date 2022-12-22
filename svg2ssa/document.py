@@ -3,6 +3,9 @@
 
 import re
 
+# Uncomment when cx_Freeze'ing with :mod:`defusedxml`.
+# from defusedxml import ElementTree as etree
+
 # Uncomment when cx_Freeze'ing with :mod:`lxml`.
 # from lxml import etree
 
