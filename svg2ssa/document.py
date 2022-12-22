@@ -1,3 +1,6 @@
+"""Logic for the model of SVG document."""
+
+
 import re
 
 # Uncomment when cx_Freeze'ing with :mod:`lxml`.

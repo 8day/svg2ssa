@@ -1,3 +1,6 @@
+"""Core data structures upon which models of SVG attributes and elements are built."""
+
+
 class SVGBasicEntity:
     """Abstract class for modeling misc SVG entities: elements, attributes, and their data."""
 

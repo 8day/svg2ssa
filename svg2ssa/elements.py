@@ -1,3 +1,6 @@
+"""Logic for the models of SVG document's elements."""
+
+
 import re
 
 from .core import SVGContainerEntity
@@ -65,6 +68,8 @@ class SVGElementMixin(SVGContainerEntity):
 
 
 class SVGElementG(SVGElementMixin):
+    """Model for SVG element ``g``."""
+
     supported = {"transform", "style"} | SVGElementMixin.atts_style
     """set[str]: Set of attrs supported by SVG element ``g``."""
 
@@ -74,6 +79,8 @@ class SVGElementG(SVGElementMixin):
 
 
 class SVGElementPath(SVGElementMixin):
+    """Model for SVG element ``path``."""
+
     supported = {"d", "id", "transform", "style"} | SVGElementMixin.atts_style
     """set[str]: Set of attrs supported by SVG element ``path``."""
 

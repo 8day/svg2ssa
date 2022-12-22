@@ -1,3 +1,6 @@
+"""Logic for the models of SVG document's attributes describing color."""
+
+
 import re
 from ..core import SVGBasicEntity
 

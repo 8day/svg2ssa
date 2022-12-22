@@ -1,3 +1,6 @@
+"""Logic for the models of SVG document's attributes describing opacity."""
+
+
 # Seems that a real problem is that not all properties are inherited from ``g``-elements etc. E.g., ``stroke-opacity`` with the same value on ``path``-element and ``g``-element doesn't have 1/2 effect, it stayed the same in IE browser. Seems that only ``opacity`` affects subsequent elements and ``stroke-opacity``, ``fill-opacity`` etc. override the same properties on g-element/containers.
 
 # Fixme: ``fill-opacity`` & ``opacity`` conflict: ``fill-opacity`` should depend on ``opacity``! I.e. when ``opacity=.5`` and ``fill-opacity=.5``, opacity in SSA must be .25, not .5!

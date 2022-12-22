@@ -1,4 +1,10 @@
+"""Logic for use of svg2ssa as a proper standalone app."""
+
+
+# pylint: disable=import-outside-toplevel
 def cli():
+    """Reusable CLI logic."""
+
     from sys import argv as sys_argv
     from os import path as os_path
     from argparse import ArgumentParser

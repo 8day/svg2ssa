@@ -1,3 +1,6 @@
+"""Misc utilities which are used by multiple scripts, and therefore must be separate and independent."""
+
+
 import re
 
 

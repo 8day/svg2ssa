@@ -1,3 +1,6 @@
+"""Logic for the models of SVG document's attributes describing transformations."""
+
+
 # Trafos use tuple as their container for data for immutability.
 
 

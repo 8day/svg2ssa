@@ -1,3 +1,6 @@
+"""Logic for the models of misc SVG document's attributes."""
+
+
 from ..core import SVGBasicEntity
 from ..utilities import convert_svglength_to_pixels
 

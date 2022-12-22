@@ -1,3 +1,6 @@
+"""Logic for the models of SVG document's attributes describing shapes."""
+
+
 from ply.lex import lex
 from ply.yacc import yacc
 from ..core import SVGContainerEntity
