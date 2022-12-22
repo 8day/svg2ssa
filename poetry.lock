@@ -13,9 +13,10 @@ files = [
 ]
 
 [extras]
-parsing = []
+fast-parsing = []
+safe-parsing = []
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "f39ac21249bd6fd20f9f535cc6f8f9511315a37750a4df4928dfa3e34db9a418"
+content-hash = "c4ee19e919dc0807efd9c64a19a6ed26f3516d5b1e0f77825f5ebebf4f0f9e67"
