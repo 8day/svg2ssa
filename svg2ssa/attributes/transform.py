@@ -13,6 +13,11 @@ from ..core import SVGBasicEntity, SVGContainerEntity
 class SVGTrafoMixin(SVGBasicEntity):
     """Generalized superclass for SVG ``transform`` attribute and its "values"."""
 
+    def matrix(self):
+        """Returns an instance of :class:`SVGTrafoMatrix` for transformations to be mergeable."""
+
+        raise NotImplementedError(f"{self.__class__.__name__}: 'matrix' property is not redefined.")
+
     def __add__(self, other):
         if isinstance(other, type(self)):
             # Doesn't work w/o explicit construction of tuple (:class:`range`` vs :class:`tuple`).
