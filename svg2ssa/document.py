@@ -172,9 +172,9 @@ class SVG:
         """
 
         ssa = self.ssa_repr({**self.ssa_repr_config, **ssa_repr_config})
-        with open(filepath, "w+t", buffering=65536, encoding="utf-8") as fh:
-            fh.write(ssa)
-            fh.write("\n")
+        with open(filepath, "w+t", buffering=65536, encoding="utf-8") as ssa_file:
+            ssa_file.write(ssa)
+            ssa_file.write("\n")
 
     def ssa_repr(self, ssa_repr_config):
         """Creates SSA representation from an instance of :class:`SVG`.

@@ -12,10 +12,10 @@ import re
 # floating_point_constant = f'(?:{fractional_constant}{exponent}?|{digit_sequence}{exponent})'
 # integer_constant = digit_sequence
 # Order was swapped because of ambiguity: ``float`` is ``int`` w/o fraction, but can be changed to ``f'{sign}?(?:{floating_point_constant}|{integer_constant})'`` since ``sign`` present in both cases.
-# number = f'{sign}?{floating_point_constant}|{sign}?{integer_constant}'
-number = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
-length_number = re.compile(f"^({number})$")
-length_units = re.compile(f"^({number})(px|pt|pc|cm|mm|in)$", re.I)
+# NUMBER = f'{sign}?{floating_point_constant}|{sign}?{integer_constant}'
+NUMBER = r"[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"
+length_number = re.compile(f"^({NUMBER})$")
+length_units = re.compile(f"^({NUMBER})(px|pt|pc|cm|mm|in)$", re.I)
 
 
 # Fixme: Should support ``%`` as well! (Read ``<length>`` spec.)
