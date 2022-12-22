@@ -1,3 +1,5 @@
+import re
+
 from .core import SVGContainerEntity
 from .attributes.misc import SVGId, SVGStrokeWidth
 from .attributes.color import SVGColor, SVGFill, SVGStroke
