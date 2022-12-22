@@ -144,6 +144,7 @@ class SVGTrafoSkewY(SVGTrafoMixin):
         return SVGTrafoMatrix((1, skY, 0, 1, 0, 0))
 
 
+# pylint: disable=missing-module-docstring
 class S2STransformLex:
     literals = r"()"
 
@@ -161,6 +162,7 @@ class S2STransformLex:
     t_ignore_WSP = r"[ \t\n\r]"
     t_ignore_COMMA = r","
 
+    # pylint: disable=no-self-argument,attribute-defined-outside-init
     def t_ID(t):
         """[a-zA-Z]{5,}"""
 
@@ -170,12 +172,14 @@ class S2STransformLex:
             S2STransformLex.t_error(t)
         return t
 
+    # pylint: disable=no-self-argument,attribute-defined-outside-init
     def t_NMB(t):
         r"""[+-]?(?:(?:(?:[0-9]+)?\.(?:[0-9]+)|(?:[0-9]+)\.)(?:[eE][+-]?(?:[0-9]+))?|(?:[0-9]+)(?:[eE][+-]?(?:[0-9]+)))|[+-]?(?:[0-9]+)"""
 
         t.value = float(t.value)
         return t
 
+    # pylint: disable=no-self-argument,missing-function-docstring,unsubscriptable-object
     def t_error(t):
         # Fixme: When ``t.value[0]`` will be the last character in the sequence, ``t.value[1:11]`` may cause errors.
         raise Exception(
