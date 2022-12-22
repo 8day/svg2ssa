@@ -4,6 +4,8 @@ version = "0.0.0a0"
 description = ""
 authors = ["8day"]
 license = "BSD-3-Clause"
+readme = "README.md"
+homepage = "https://github.com/8day/svg2ssa"
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
 	"Environment :: Console",
