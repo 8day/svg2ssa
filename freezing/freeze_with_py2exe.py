@@ -6,6 +6,8 @@ To "freeze", simply make sure that :mod:`py2exe` and all other dependencies are 
 """
 
 
+from shutil import make_archive, rmtree 
+
 from py2exe import freeze
 from tomlkit import parse
 
@@ -23,3 +25,6 @@ freeze(
     ),
     version_info=dict(version=VERSION),
 )
+
+make_archive(f"..\\dist\\svg2ssa-{VERSION}", "zip", "..\\dist", f".\\svg2ssa-{VERSION}")
+rmtree(f"..\\dist\\svg2ssa-{VERSION}")

@@ -6,6 +6,8 @@ To "freeze", simply make sure that :mod:`cx_Freeze` and all other dependencies a
 """
 
 
+from shutil import make_archive, rmtree 
+
 from cx_Freeze.executable import Executable
 from cx_Freeze.freezer import Freezer
 from tomlkit import parse
@@ -22,3 +24,6 @@ freezer = Freezer(
     targetDir=f"..\\dist\\svg2ssa-{VERSION}",
 )
 freezer.Freeze()
+
+make_archive(f"..\\dist\\svg2ssa-{VERSION}", "zip", "..\\dist", f".\\svg2ssa-{VERSION}")
+rmtree(f"..\\dist\\svg2ssa-{VERSION}")
