@@ -7,9 +7,13 @@ svg2ssa is a converter written in Python 3 that is intended to convert *vector g
 
 The main audience of this software is "advanced" anime typesetters. svg2ssa will help them to create their graphics inside more neat, usable & specifically designed editor like Inkscape. It's hard to enumerate all possible uses and benefits: for some they are minor and not worth it, but for others they may be almost infinite. E.g., Inkscape's feature to trace bitmaps (despite some limits), render 3D objects from Wavefront \*.OBJ files produced by Blender, convert text to shapes. BTW, conversion of text to shapes means that there's no need to embed fonts for a few titles containing a few letters, maybe even drop font embedding altogether.
 
-# How to use svg2ssa
-
-1. install `svg2ssa` from PyPI: `pip install svg2ssa`.
+# How to use
+1. acquire version of `svg2ssa`:
+	I. install from PyPI:
+		a. `pip install svg2ssa` - for use with whatever XML parser you have available, which most likely is built-in `xml.etree`.
+		b. `pip install svg2ssa[fast-parsing]` - for use with fast XML parser `lxml`.
+		c. `pip install svg2ssa[safe-parsing]` - for use with safest XML parser `defusedxml`.
+	II. download one of the standalone executables for Windows at https://github.com/8day/svg2ssa/releases.
 2. convert SVG to SSA: `python -m svg2ssa -i "c:\path to dir\with\file.svg" -o "c:\path to another dir\with\file.ass"`.
 3. for more info: `python -m svg2ssa --help`.
 

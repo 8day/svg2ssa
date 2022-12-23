@@ -7,3 +7,4 @@ When making new release, in Notepad++:
 6. run `poetry lock`.
 7. run `poetry build`.
 8. make executable with cx_Freeze for every supported XML parser.
+9. upload to PyPI with `poetry publish`.
