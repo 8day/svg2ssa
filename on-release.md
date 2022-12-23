@@ -6,5 +6,5 @@ When making new release, in Notepad++:
 5. set version tag to `v{YYYY}.{MM}.{DD}.{release_SID_for_the_day}` for the latest commit from which the release will be made.
 6. run `poetry lock`.
 7. run `poetry build`.
-8. make standalone app for Windows either with py2exe (29 MB) or cx_Freeze (37.4 MB) by executing their respective scripts at `.\freezing`.
+8. make standalone app for Windows with cx_Freeze by executing `freeze_with_cx_Freeze.py`.
 9. upload to PyPI with `poetry publish`.
