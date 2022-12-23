@@ -10,9 +10,8 @@ The main audience of this software is "advanced" anime typesetters. svg2ssa will
 # How to use
 1. acquire version of `svg2ssa`:
 	I. install from PyPI:
-		a. `pip install svg2ssa` - for use with whatever XML parser you have available, which most likely is built-in `xml.etree`.
-		b. `pip install svg2ssa[fast-parsing]` - for use with fast XML parser `lxml`.
-		c. `pip install svg2ssa[safe-parsing]` - for use with safest XML parser `defusedxml`.
+		a. `pip install svg2ssa` - for use with safe XML parser `defusedxml`.
+		b. `pip install svg2ssa[fast-parsing]` - for use with fast XML parser `lxml`. Note that for it to be used, you'll have to add explicit flag `-p lxml.etree`.
 	II. download one of the standalone executables for Windows at https://github.com/8day/svg2ssa/releases.
 2. convert SVG to SSA: `python -m svg2ssa -i "c:\path to dir\with\file.svg" -o "c:\path to another dir\with\file.ass"`.
 3. for more info: `python -m svg2ssa --help`.

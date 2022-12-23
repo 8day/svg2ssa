@@ -5,7 +5,7 @@ name = "defusedxml"
 version = "0.7.1"
 description = "XML bomb protection for Python stdlib modules"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 files = [
     {file = "defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61"},
@@ -119,9 +119,8 @@ files = [
 
 [extras]
 fast-parsing = ["lxml"]
-safe-parsing = ["defusedxml"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "efa7ac73b4da3ed6209fd8ca2239c3eab597bf4c1641fe092107be2fc6c62fd2"
+content-hash = "df9b5cc0c832132a43b8cdf135963ae3cc0b186b94fbbf6fd501191e275e8e5f"
