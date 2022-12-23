@@ -3,27 +3,6 @@
 
 import re
 
-# Uncomment when cx_Freeze'ing with :mod:`defusedxml`.
-# from defusedxml import ElementTree as etree
-
-# Uncomment when cx_Freeze'ing with :mod:`lxml`.
-# from lxml import etree
-
-# Uncomment when cx_Freeze'ing with :mod:`xml.etree`.
-# from xml.etree import ElementTree as etree
-
-# Comment when cx_Freeze'ing to prevent loading of :mod:`lxml` even if :mod:`xml.etree` is needed.
-try:
-    from defusedxml import ElementTree as etree
-except ImportError:
-    try:
-        # See https://bandit.readthedocs.io/en/1.7.4/blacklists/blacklist_imports.html#b410-import-lxml.
-        from lxml import etree
-    except ImportError:
-        # See https://bandit.readthedocs.io/en/1.7.4/blacklists/blacklist_calls.html#b313-b320-xml
-        # See http://lxml.de/compatibility.html.
-        from xml.etree import ElementTree as etree
-
 from .elements import SVGElementG, SVGElementPath
 from .utilities import convert_svglength_to_pixels
 
@@ -155,14 +134,15 @@ class SVG:
     _end = dict(path=_path_ended, g=_g_ended, svg=_svg_ended)
     """dict[str, Callable[None, [dict, dict]]]: Maps names of elements to handlers of their end tag."""
 
-    def from_svg_file(self, filepath):
+    def from_svg_file(self, filepath, xml_parser):
         """Constructs :class:`SVG` out of SVG file stored under ``filepath``.
 
         Args:
             filepath (str): Path to SVG file to be read.
+            xml_parser (xml.etree.ElementTree): XML parser with an API equivalent to :class:`xml.etree.ElementTree`.
         """
 
-        for action, element in etree.iterparse(filepath, ("start", "end")):
+        for action, element in xml_parser.iterparse(filepath, ("start", "end")):
             _, local_name = re.search(r"^(\{.+?\})(.+)$", element.tag).group(1, 2)
             if action == "start":
                 if local_name in SVG._start:

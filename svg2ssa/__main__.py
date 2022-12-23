@@ -8,6 +8,7 @@ def cli():
     from sys import argv as sys_argv
     from os import path as os_path
     from argparse import ArgumentParser
+    from importlib import import_module
 
     from .document import SVG
 
@@ -82,16 +83,25 @@ def cli():
         default="",
         metavar="str",
     )
+    parser.add_argument(
+        "-p",
+        "--xml_parser",
+        help="Name of an XML parser object with an API equivalent to xml.etree.ElementTree.",
+        default="defusedxml.ElementTree",
+        # Because of dynamic importing with :func:`importlib.import_module`, for safety set of available parsers must be limited to known parsers.
+        choices=["defusedxml.ElementTree", "lxml.etree", "xml.etree.ElementTree"],
+    )
 
     args = vars(parser.parse_args(sys_argv[1:]))
     args["unnecessary_transformations"] = set(args["unnecessary_transformations"])
 
     file_in = args.pop("file_in")
     file_out = args.pop("file_out")
+    xml_parser = import_module(args.pop("xml_parser"))
 
     if os_path.isfile(file_in):
         svg = SVG()
-        svg.from_svg_file(file_in)
+        svg.from_svg_file(file_in, xml_parser)
         # User shouldn't be able to inject anything bad because :mod:`argparse` checks whether option is supported, so this should be safe.
         # :mod:`argparse` maps data to ``--``-prefixed options instead of ``-``-prefixed, therefore this will result in something like ``stroke_preservation = 1`` and not ``s = 1`` or whatever.
         svg.to_ssa_file(file_out if file_out else f"{file_in}.ass", args)
