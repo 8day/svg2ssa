@@ -1,18 +1,28 @@
 """Logic for use of svg2ssa as a proper standalone app."""
 
 
+from sys import argv as sys_argv
+from os import path as os_path
+from argparse import ArgumentParser
+from importlib import import_module
+
+from .document import SVG
+
+config = SVG.default_ssa_repr_config
+
+
 # pylint: disable=import-outside-toplevel
-def cli():
+def cli(
+    t=list(config["unnecessary_transformations"]),
+    m=config["magnification_level"],
+    s=config["stroke_preservation"],
+    x=config["width"],
+    y=config["height"],
+    i="",
+    o="",
+    p="defusedxml.ElementTree",
+):
     """Reusable CLI logic."""
-
-    from sys import argv as sys_argv
-    from os import path as os_path
-    from argparse import ArgumentParser
-    from importlib import import_module
-
-    from .document import SVG
-
-    config = SVG.default_ssa_repr_config
 
     parser = ArgumentParser(
         description="Converts SVG (Rec 1.1) into SSA (v4.0+).",
@@ -21,7 +31,7 @@ def cli():
         "-t",
         "--unnecessary_transformations",
         help="Trafos that should be collapsed into matrix, i.e. 'baked'.",
-        default=list(config["unnecessary_transformations"]),
+        default=t,
         choices=["scale", "translate", "rotate"],
         nargs="*",
     )
@@ -29,7 +39,7 @@ def cli():
         "-m",
         "--magnification_level",
         help="Magnification level of the coordinate system by this formula: (level - 1) ^ 2.",
-        default=config["magnification_level"],
+        default=m,
         type=int,
         metavar="int",
     )
@@ -40,7 +50,7 @@ def cli():
             "Stroke transformation. '0' preserves stroke width (left untouched); "
             "'1' preserve stroke area (stroke size is divided by 2)."
         ),
-        default=config["stroke_preservation"],
+        default=s,
         type=int,
         choices=range(2),
     )
@@ -52,7 +62,7 @@ def cli():
             "Should be equal to the video dimensions (and/or to the drawing being converted). "
             "Checked for mod16."
         ),
-        default=config["width"],
+        default=x,
         type=int,
         metavar="int",
     )
@@ -64,7 +74,7 @@ def cli():
             "Should be equal to the video dimensions (and/or to the drawing being converted). "
             "Checked for mod16."
         ),
-        default=config["height"],
+        default=y,
         type=int,
         metavar="int",
     )
@@ -72,7 +82,7 @@ def cli():
         "-i",
         "--file_in",
         help="SVG file to be read. Path containing whitespace must be quoted.",
-        default="",
+        default=i,
         metavar="str",
         required=True,
     )
@@ -80,14 +90,14 @@ def cli():
         "-o",
         "--file_out",
         help="SSA file to be written. Path containing whitespace must be quoted.",
-        default="",
+        default=o,
         metavar="str",
     )
     parser.add_argument(
         "-p",
         "--xml_parser",
         help="Name of an XML parser object with an API equivalent to xml.etree.ElementTree.",
-        default="defusedxml.ElementTree",
+        default=p,
         # Because of dynamic importing with :func:`importlib.import_module`, for safety set of available parsers must be limited to known parsers.
         choices=["defusedxml.ElementTree", "lxml.etree", "xml.etree.ElementTree"],
     )
