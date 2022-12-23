@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "svg2ssa"
-version = "2022.12.22.0"
+version = "2022.12.23.0"
 description = "Converts subset of SVG 1.1 to SSA v4+"
 authors = ["8day"]
 license = "BSD-3-Clause"
