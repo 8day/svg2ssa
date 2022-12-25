@@ -170,9 +170,7 @@ class SVGColor(SVGBasicEntity):
     color_funciri_decimal = re.compile(color_funciri.format(r"(?:[01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"))
     color_funciri_percent = re.compile(color_funciri.format(r"(?:[0-9]?[0-9]|100)%"))
 
-    @property
-    def svg_name(self):
-        return "color"
+    svg_name = "color"
 
     @classmethod
     def from_raw_data(cls, data):
@@ -220,9 +218,7 @@ class SVGFill(SVGColor):
     Inherited:    yes
     """
 
-    @property
-    def svg_name(self):
-        return "fill"
+    svg_name = "fill"
 
 
 class SVGStroke(SVGColor):
@@ -233,9 +229,7 @@ class SVGStroke(SVGColor):
     Inherited:    yes
     """
 
-    @property
-    def svg_name(self):
-        return "stroke"
+    svg_name = "stroke"
 
     def ssa_repr(self, ssa_repr_config):
         red, green, blue = self.data

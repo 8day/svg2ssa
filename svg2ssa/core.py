@@ -12,6 +12,8 @@ class SVGBasicEntity:
     def svg_name(self):
         """Name of the entity in SVG standard.
 
+        Should be class attribute as there is no need for it to be modifiable within instances of classes.
+
         Returns:
             str: Name of the entity in SVG standard.
         """

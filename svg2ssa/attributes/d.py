@@ -202,13 +202,11 @@ class SVGD(SVGContainerEntity):
     Inherited: no
     """
 
+    svg_name = "d"
+
     def __init__(self, data):
         super().__init__(data)
         self.ctm = SVGTrafoScale((1, 1)).matrix()
-
-    @property
-    def svg_name(self):
-        return "d"
 
     @classmethod
     def from_raw_data(cls, data):

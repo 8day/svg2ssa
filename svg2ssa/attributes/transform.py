@@ -32,9 +32,7 @@ class SVGTrafoMixin(SVGBasicEntity):
 class SVGTrafoMatrix(SVGTrafoMixin):
     """Class for SVG ``matrix`` from ``transform`` attr."""
 
-    @property
-    def svg_name(self):
-        return "matrix"
+    svg_name = "matrix"
 
     def matrix(self):
         return self
@@ -65,9 +63,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
     def __init__(self, data):
         super().__init__(data if len(data) == 2 else (data[0], 0))
 
-    @property
-    def svg_name(self):
-        return "translate"
+    svg_name = "translate"
 
     def matrix(self):
         tx, ty = self.data
@@ -82,12 +78,10 @@ class SVGTrafoTranslate(SVGTrafoMixin):
 class SVGTrafoRotate(SVGTrafoMixin):
     """Class for SVG ``rotate`` from ``transform`` attr."""
 
+    svg_name = "rotate"
+
     def __init__(self, data):
         super().__init__(data if len(data) == 3 else (data[0], 0, 0))
-
-    @property
-    def svg_name(self):
-        return "rotate"
 
     def matrix(self):
         ra, cx, cy = self.data
@@ -113,12 +107,10 @@ class SVGTrafoRotate(SVGTrafoMixin):
 class SVGTrafoScale(SVGTrafoMixin):
     """Class for SVG ``scale`` from ``transform`` attr."""
 
+    svg_name = "scale"
+
     def __init__(self, data):
         super().__init__(data if len(data) == 2 else (data[0], data[0]))
-
-    @property
-    def svg_name(self):
-        return "scale"
 
     def matrix(self):
         sx, sy = self.data
@@ -133,9 +125,7 @@ class SVGTrafoScale(SVGTrafoMixin):
 class SVGTrafoSkewX(SVGTrafoMixin):
     """Class for SVG ``skewX`` from ``transform`` attr."""
 
-    @property
-    def svg_name(self):
-        return "skewX"
+    svg_name = "skewX"
 
     def matrix(self):
         skX = tan(self.data[0])
@@ -146,9 +136,7 @@ class SVGTrafoSkewX(SVGTrafoMixin):
 class SVGTrafoSkewY(SVGTrafoMixin):
     """Class for SVG ``skewY`` from ``transform`` attr."""
 
-    @property
-    def svg_name(self):
-        return "skewY"
+    svg_name = "skewY"
 
     def matrix(self):
         skY = tan(self.data[0])
@@ -282,9 +270,7 @@ class SVGTransform(SVGContainerEntity):
     trafos_unsupported = {"matrix", "skewX", "skewY"}
     """set[str]: IDs of unsupported trafos."""
 
-    @property
-    def svg_name(self):
-        return "transform"
+    svg_name = "transform"
 
     def matrix(self):
         """Returns sum of all trafos as a matrix :class:`SVGTrafoMatrix`."""

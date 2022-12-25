@@ -13,9 +13,7 @@ class SVGId(SVGBasicEntity):
     Inherited:    no
     """
 
-    @property
-    def svg_name(self):
-        return "id"
+    svg_name = "id"
 
     @classmethod
     def from_raw_data(cls, data):
@@ -37,9 +35,7 @@ class SVGStrokeWidth(SVGBasicEntity):
     Inherited:    yes
     """
 
-    @property
-    def svg_name(self):
-        return "stroke-width"
+    svg_name = "stroke-width"
 
     @classmethod
     def from_raw_data(cls, data):

@@ -73,9 +73,7 @@ class SVGElementG(SVGElementMixin):
     supported = {"transform", "style"} | SVGElementMixin.atts_style
     """set[str]: Set of attrs supported by SVG element ``g``."""
 
-    @property
-    def svg_name(self):
-        return "g"
+    svg_name = "g"
 
 
 class SVGElementPath(SVGElementMixin):
@@ -84,9 +82,7 @@ class SVGElementPath(SVGElementMixin):
     supported = {"d", "id", "transform", "style"} | SVGElementMixin.atts_style
     """set[str]: Set of attrs supported by SVG element ``path``."""
 
-    @property
-    def svg_name(self):
-        return "path"
+    svg_name = "path"
 
     def ssa_repr(self, ssa_repr_config):
         # Process exceptional cases.

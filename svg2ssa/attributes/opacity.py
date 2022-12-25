@@ -19,9 +19,7 @@ class SVGOpacity(SVGBasicEntity):
     Inherited:    no
     """
 
-    @property
-    def svg_name(self):
-        return "opacity"
+    svg_name = "opacity"
 
     # Todo: Add clamping of out-of-range values.
     @classmethod
@@ -44,9 +42,7 @@ class SVGFillOpacity(SVGOpacity):
     Inherited:    yes
     """
 
-    @property
-    def svg_name(self):
-        return "fill-opacity"
+    svg_name = "fill-opacity"
 
     def ssa_repr(self, ssa_repr_config):
         return f"\\1a&H{round(255 - (self.data * 255)):02X}&"
@@ -60,9 +56,7 @@ class SVGStrokeOpacity(SVGOpacity):
     Inherited:    yes
     """
 
-    @property
-    def svg_name(self):
-        return "stroke-opacity"
+    svg_name = "stroke-opacity"
 
     def ssa_repr(self, ssa_repr_config):
         return f"\\3a&H{round(255 - (self.data * 255)):02X}&"
