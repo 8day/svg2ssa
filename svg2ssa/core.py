@@ -9,14 +9,14 @@ class SVGBasicEntity:
         """Any: Data."""
 
     @property
-    def dtype(self):
-        """Type of data modeled by the class.
+    def svg_name(self):
+        """Name of the entity in SVG standard.
 
         Returns:
             str: Name of the entity in SVG standard.
         """
 
-        raise NotImplementedError(f"{self.__class__.__name__}: 'dtype' property is not redefined.")
+        raise NotImplementedError(f"{self.__class__.__name__}: 'svg_name' property is not redefined.")
 
     @classmethod
     def from_raw_data(cls, data):
@@ -57,7 +57,7 @@ class SVGBasicEntity:
     def __repr__(self):
         """Returns representation of :attr:`data` suitable for debugging."""
 
-        return f"{self.__class__.__name__}( '{self.dtype!s}', {self.data!s} )"
+        return f"{self.__class__.__name__}( '{self.svg_name!s}', {self.data!s} )"
 
 
 class SVGContainerEntity(SVGBasicEntity):
@@ -85,7 +85,7 @@ class SVGContainerEntity(SVGBasicEntity):
     def __contains__(self, obj):
         return any(obj == existing_obj for existing_obj in self.data)
 
-    def contains_obj_with_dtype(self, dtype):
-        """Returns boolean telling whether there is an item with attribute ``dtype`` set to certain value."""
+    def contains_obj_with_svg_name(self, svg_name):
+        """Returns boolean telling whether there is an item with attribute ``svg_name`` set to certain value."""
 
-        return any(dtype == obj.dtype for obj in self.data)
+        return any(svg_name == obj.svg_name for obj in self.data)

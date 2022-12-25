@@ -207,7 +207,7 @@ class SVGD(SVGContainerEntity):
         self.ctm = SVGTrafoScale((1, 1)).matrix()
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "d"
 
     @classmethod
@@ -218,9 +218,9 @@ class SVGD(SVGContainerEntity):
         return cls(parser.parse(debug=False, lexer=lexer))
 
     @staticmethod
-    def control_point(last_abs_seg_dtype, last_abs_seg_data, dtype):
+    def control_point(last_abs_seg_svg_name, last_abs_seg_data, svg_name):
         # ``T`` & ``S`` are automatically unpacked to ``Q`` & ``C``, hence this statement.
-        if last_abs_seg_dtype == dtype:
+        if last_abs_seg_svg_name == svg_name:
             ctrlp2x, ctrlp2y, cpx, cpy = last_abs_seg_data[-4:]
             ctrlp = [2 * cpx - ctrlp2x, 2 * cpy - ctrlp2y]
         else:
@@ -231,53 +231,53 @@ class SVGD(SVGContainerEntity):
         ctma, ctmb, ctmc, ctmd, ctme, ctmf = self.ctm.data
         # ``last_abs_seg_data`` -- contains "current point". Every relative point in a shape depends on a previous absolute point, except relative moveto. Also almost whole segment is needed for ``Q``, ``T``, ``S``.
         # ``last_abs_moveto_data`` -- last seen absolute moveto command. Every relative moveto point in a shape depends on a previous absolute moveto point from previous shape.
-        last_abs_seg_dtype = "M"
+        last_abs_seg_svg_name = "M"
         last_abs_seg_data = last_abs_moveto_data = [0, 0]
         basic_rel_comms = {"l": "L", "c": "C", "s": "S", "q": "Q", "t": "T"}
         terminal_comms = {"M": "m", "L": "l", "C": "b"}
         segs = []
         for seg in self.data:
-            dtype, *data = seg
+            svg_name, *data = seg
             while True:
                 # Convert rel comms to abs.
-                if dtype in basic_rel_comms:
-                    dtype = basic_rel_comms[dtype]
+                if svg_name in basic_rel_comms:
+                    svg_name = basic_rel_comms[svg_name]
                     cpx = last_abs_seg_data[-2]
                     cpy = last_abs_seg_data[-1]
                     for i in range(0, len(data), 2):
                         data[i] += cpx
                         data[i + 1] += cpy
 
-                if dtype == "m":
-                    dtype = "M"
+                if svg_name == "m":
+                    svg_name = "M"
                     data[0] += last_abs_moveto_data[0]
                     data[1] += last_abs_moveto_data[1]
 
-                elif dtype == "H":
-                    dtype = "L"
+                elif svg_name == "H":
+                    svg_name = "L"
                     data.insert(1, last_abs_seg_data[-1])
 
-                elif dtype == "h":
-                    dtype = "H"
+                elif svg_name == "h":
+                    svg_name = "H"
                     data[0] += last_abs_seg_data[-2]
 
-                elif dtype == "V":
-                    dtype = "L"
+                elif svg_name == "V":
+                    svg_name = "L"
                     data.insert(0, last_abs_seg_data[-2])
 
-                elif dtype == "v":
-                    dtype = "V"
+                elif svg_name == "v":
+                    svg_name = "V"
                     data[0] += last_abs_seg_data[-1]
 
-                elif dtype == "S":
-                    dtype = "C"
-                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
+                elif svg_name == "S":
+                    svg_name = "C"
+                    data = SVGD.control_point(last_abs_seg_svg_name, last_abs_seg_data, svg_name) + data
 
-                elif dtype == "Q":
+                elif svg_name == "Q":
                     qp0x = last_abs_seg_data[-2]
                     qp0y = last_abs_seg_data[-1]
                     qp1x, qp1y, qp2x, qp2y = data
-                    dtype = "C"
+                    svg_name = "C"
                     data = [
                         qp0x + (2 / 3) * (qp1x - qp0x),
                         qp0y + (2 / 3) * (qp1y - qp0y),
@@ -287,14 +287,14 @@ class SVGD(SVGContainerEntity):
                         qp2y,
                     ]
 
-                elif dtype == "T":
-                    dtype = "Q"
-                    data = SVGD.control_point(last_abs_seg_dtype, last_abs_seg_data, dtype) + data
+                elif svg_name == "T":
+                    svg_name = "Q"
+                    data = SVGD.control_point(last_abs_seg_svg_name, last_abs_seg_data, svg_name) + data
 
-                if dtype in terminal_comms:
-                    last_abs_seg_dtype = dtype
+                if svg_name in terminal_comms:
+                    last_abs_seg_svg_name = svg_name
                     last_abs_seg_data = data
-                    if dtype == "M":
+                    if svg_name == "M":
                         last_abs_moveto_data = data
 
                     # Apply CTM to terminal, abs comms.
@@ -306,7 +306,7 @@ class SVGD(SVGContainerEntity):
                         processed.append(str(round(ctmb * x + ctmd * y + ctmf)))
 
                     # Convert to SSA representation.
-                    segs.append(f"{terminal_comms[dtype]} {' '.join(processed)}")
+                    segs.append(f"{terminal_comms[svg_name]} {' '.join(processed)}")
                     break
 
         return " ".join(segs)

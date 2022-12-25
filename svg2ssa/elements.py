@@ -74,7 +74,7 @@ class SVGElementG(SVGElementMixin):
     """set[str]: Set of attrs supported by SVG element ``g``."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "g"
 
 
@@ -85,7 +85,7 @@ class SVGElementPath(SVGElementMixin):
     """set[str]: Set of attrs supported by SVG element ``path``."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "path"
 
     def ssa_repr(self, ssa_repr_config):
@@ -97,21 +97,21 @@ class SVGElementPath(SVGElementMixin):
             # Create ``\org`` if it is absent so that each next SSA layer automatically layed on top of previous w/o any shifting.
             # ATM only VSFilter behaves like this, maybe libass as well, but not ffdshow subtitles filter.
             # ``\pos`` also will do the trick, but if it's not ``\pos(0,0)``.
-            if trafos.contains_obj_with_dtype("rotate"):
-                if trafos.contains_obj_with_dtype("translate"):
+            if trafos.contains_obj_with_svg_name("rotate"):
+                if trafos.contains_obj_with_svg_name("translate"):
                     for i, trafo in enumerate(trafos):
                         # If there's empty ``\pos``, then there's no need in it, so remove ``\pos``, -- there's still ``\org`` after all.
-                        if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
+                        if trafo.svg_name == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
                             del trafos.data[i]
                             break
                 else:
                     # There's still ``\org``, so everything is OK.
                     pass
             else:
-                if trafos.contains_obj_with_dtype("translate"):
+                if trafos.contains_obj_with_svg_name("translate"):
                     for i, trafo in enumerate(trafos):
                         # If there's empty ```\pos``, then there's no need in it, so remove ``\pos``, but add ``\org(0,0)`` to maintain collision detection override.
-                        if trafo.dtype == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
+                        if trafo.svg_name == "translate" and trafo.data[0] == 0 and trafo.data[1] == 0:
                             del trafos.data[i]
                             atts["transform"] = trafos + SVGTrafoRotate((0, 0, 0))
                             break
@@ -119,7 +119,7 @@ class SVGElementPath(SVGElementMixin):
                     # There's no ``\org``, so add it.
                     atts["transform"] = trafos + SVGTrafoRotate((0, 0, 0))
             # Create CTM for path to emulate subpixel precision.
-            if trafos.contains_obj_with_dtype("matrix"):
+            if trafos.contains_obj_with_svg_name("matrix"):
                 val = 2 ** (ssa_repr_config["magnification_level"] - 1)
                 path_ctm = SVGTrafoScale((val, val)).matrix() + trafos.data[0]
             else:

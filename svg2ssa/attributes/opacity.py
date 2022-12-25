@@ -20,7 +20,7 @@ class SVGOpacity(SVGBasicEntity):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "opacity"
 
     # Todo: Add clamping of out-of-range values.
@@ -45,7 +45,7 @@ class SVGFillOpacity(SVGOpacity):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "fill-opacity"
 
     def ssa_repr(self, ssa_repr_config):
@@ -61,7 +61,7 @@ class SVGStrokeOpacity(SVGOpacity):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "stroke-opacity"
 
     def ssa_repr(self, ssa_repr_config):

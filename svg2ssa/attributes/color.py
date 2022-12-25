@@ -171,7 +171,7 @@ class SVGColor(SVGBasicEntity):
     color_funciri_percent = re.compile(color_funciri.format(r"(?:[0-9]?[0-9]|100)%"))
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "color"
 
     @classmethod
@@ -221,7 +221,7 @@ class SVGFill(SVGColor):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "fill"
 
 
@@ -234,7 +234,7 @@ class SVGStroke(SVGColor):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "stroke"
 
     def ssa_repr(self, ssa_repr_config):

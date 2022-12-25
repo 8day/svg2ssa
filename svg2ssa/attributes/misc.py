@@ -14,7 +14,7 @@ class SVGId(SVGBasicEntity):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "id"
 
     @classmethod
@@ -38,7 +38,7 @@ class SVGStrokeWidth(SVGBasicEntity):
     """
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "stroke-width"
 
     @classmethod

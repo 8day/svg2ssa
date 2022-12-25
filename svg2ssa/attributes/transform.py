@@ -33,7 +33,7 @@ class SVGTrafoMatrix(SVGTrafoMixin):
     """Class for SVG ``matrix`` from ``transform`` attr."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "matrix"
 
     def matrix(self):
@@ -66,7 +66,7 @@ class SVGTrafoTranslate(SVGTrafoMixin):
         super().__init__(data if len(data) == 2 else (data[0], 0))
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "translate"
 
     def matrix(self):
@@ -86,7 +86,7 @@ class SVGTrafoRotate(SVGTrafoMixin):
         super().__init__(data if len(data) == 3 else (data[0], 0, 0))
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "rotate"
 
     def matrix(self):
@@ -117,7 +117,7 @@ class SVGTrafoScale(SVGTrafoMixin):
         super().__init__(data if len(data) == 2 else (data[0], data[0]))
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "scale"
 
     def matrix(self):
@@ -134,7 +134,7 @@ class SVGTrafoSkewX(SVGTrafoMixin):
     """Class for SVG ``skewX`` from ``transform`` attr."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "skewX"
 
     def matrix(self):
@@ -147,7 +147,7 @@ class SVGTrafoSkewY(SVGTrafoMixin):
     """Class for SVG ``skewY`` from ``transform`` attr."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "skewY"
 
     def matrix(self):
@@ -283,7 +283,7 @@ class SVGTransform(SVGContainerEntity):
     """set[str]: IDs of unsupported trafos."""
 
     @property
-    def dtype(self):
+    def svg_name(self):
         return "transform"
 
     def matrix(self):
@@ -303,7 +303,7 @@ class SVGTransform(SVGContainerEntity):
         return cls(parser.parse(debug=False, lexer=lexer))
 
     def collapse_consecutive_objects(self):
-        """Collapses sequences of consecutive objects with same value of attr ``dtype`` into one object."""
+        """Collapses sequences of consecutive objects with same value of attr ``svg_name`` into one object."""
 
         list_of_objects = self.data
         l = len(list_of_objects) - 1
@@ -312,7 +312,7 @@ class SVGTransform(SVGContainerEntity):
             cur = list_of_objects[i]
             nxt = list_of_objects[i + 1]
             # Items can be merged, so merge next item into current *and* adjust sequence length to account for merge.
-            if cur.dtype == nxt.dtype:
+            if cur.svg_name == nxt.svg_name:
                 list_of_objects[i] += nxt
                 del list_of_objects[i + 1]
                 l -= 1
@@ -335,10 +335,10 @@ class SVGTransform(SVGContainerEntity):
         # Create dictionary with trafos indices.
         dictionary = {}
         for i, trafo in enumerate(list_of_trafos):
-            if trafo.dtype in dictionary:
-                dictionary[trafo.dtype].append(i)
+            if trafo.svg_name in dictionary:
+                dictionary[trafo.svg_name].append(i)
             else:
-                dictionary[trafo.dtype] = [i]
+                dictionary[trafo.svg_name] = [i]
 
         # Find index of the furthest unsupported by SSA trafo.
         # By design, the largest idx should be last (since there was no sorting/shuffle applied), so ``max(dictionary[trafo])`` should be equal to ``dictionary[trafo][-1]``.
