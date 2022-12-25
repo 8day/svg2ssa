@@ -195,6 +195,7 @@ class S2SDYacc:
     tokens = S2SDLex.tokens
 
 
+# Todo: Ideally CTM should not be part of :class:`SVGD` -- it should've been passed through something like :meth:`SVGD.to_absolute`, which would reflect SVG design. After all, ATM it is required that :data:`SVGD.ctm` was set to meaningful value before conversion to SSA by :meth:`SVGElementPath.ssa_repr`, meaning an extra step no matter the solution, so we might as well do the right thing. Also this way we'll be able to remove that useless :meth:`SVGD.__init__` override and avoid importing `SVGTransform` logic, which would improve code. The problem is that this would require processing :data:`SVGD.data` two times: once to convert relative commands to absolute, and another to convert them to SSA representation, and considering the nature of this program, it's better to leave things as is for efficiency's sake.
 class SVGD(SVGContainerEntity):
     """Class for SVG ``d`` attribute.
 
